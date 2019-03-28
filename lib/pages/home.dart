@@ -3,6 +3,7 @@ import 'package:flutter_app/pages/first.dart';
 import 'package:flutter_app/pages/second.dart';
 import 'package:flutter_app/pages/third.dart';
 import 'package:flutter_app/pages/publish.dart';
+import 'package:flutter_app/pages/search.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -61,7 +62,10 @@ class MyHomeState extends State<HomePage>
         actions: <Widget>[
           GestureDetector(
             onTap: (){
-              Navigator.pushNamed(context, 'search');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SearchPage()),
+              );
             },
             child: Icon(
               Icons.search,

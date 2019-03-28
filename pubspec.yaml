@@ -29,10 +29,16 @@ dependencies:
   shared_preferences: ^0.5.1+1
   scoped_model: ^1.0.1
   fluro: ^1.4.0
+  date_format: ^1.0.6
+
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+
 
 
 # For information on the generic Dart part of this file, see the
