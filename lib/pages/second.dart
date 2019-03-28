@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_app/manager/manager.dart';
 import 'package:flutter_app/common/common.dart';
-import 'package:flutter_app/pages/publish.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -18,17 +17,12 @@ class SecondState extends State<SecondTab> with AutomaticKeepAliveClientMixin {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState>();
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         key: _scaffoldKey,
-        floatingActionButton: new FloatingActionButton(
-          heroTag: "btn2",
-          child: new Icon(Icons.add),
-          onPressed: _add,
-        ),
         body: getContent());
   }
 
@@ -36,13 +30,6 @@ class SecondState extends State<SecondTab> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     _loadData();
-  }
-
-  void _add() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PublishPage()),
-    );
   }
 
   void _loadData() async {
