@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/tabs/first.dart';
-import 'package:flutter_app/tabs/second.dart';
-import 'package:flutter_app/tabs/third.dart';
+import 'package:flutter_app/pages/first.dart';
+import 'package:flutter_app/pages/second.dart';
+import 'package:flutter_app/pages/third.dart';
 
 class HomePage extends StatefulWidget {
   @override

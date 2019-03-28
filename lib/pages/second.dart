@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter_app/manager.dart';
+import 'package:flutter_app/manager/manager.dart';
 import 'package:flutter_app/common/common.dart';
-import 'package:flutter_app/tabs/publish.dart';
+import 'package:flutter_app/pages/publish.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 

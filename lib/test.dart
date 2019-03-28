@@ -1,7 +1,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/home.dart';
+import 'package:flutter_app/pages/home.dart';
 
 class HomeState extends State<HomePage> {
   @override

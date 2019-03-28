@@ -1,10 +1,10 @@
-# pinche
-
 ## TODO
 - Client
-    - Search
+    - Search Page
+    - About me
 - Server
-    - Search
-    - first & second page's API
-    - Splash
-
+    - API
+        - Search
+        - first & second page's API
+        - Upgrade
+    - File Download

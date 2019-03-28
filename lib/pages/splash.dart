@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/common/common.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_app/home.dart';
-import 'package:flutter_app/tabs/first.dart';
-import 'package:flutter_app/tabs/second.dart';
-import 'package:flutter_app/tabs/third.dart';
+import 'package:flutter_app/pages/home.dart';
+import 'package:flutter_app/pages/first.dart';
+import 'package:flutter_app/pages/second.dart';
+import 'package:flutter_app/pages/third.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SplashPage extends StatefulWidget {
