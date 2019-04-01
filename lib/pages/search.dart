@@ -88,7 +88,6 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   _doPublish() {
 //    Timer(const Duration(seconds: 2), () {
-//      Navigator.pop(context, DialogDemoAction.cancel);
 //      Navigator.pop(context);
 //    });
 //    _upload();

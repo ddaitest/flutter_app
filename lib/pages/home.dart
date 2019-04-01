@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/first.dart';
+import 'package:flutter_app/pages/search.dart';
 import 'package:flutter_app/pages/second.dart';
 import 'package:flutter_app/pages/third.dart';
+import 'package:flutter_app/router/routers.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -60,7 +62,16 @@ class MyHomeState extends State<HomePage>
         // Title
         title: new Text(getTitle()),
         actions: <Widget>[
-          new IconButton(icon: const Icon(Icons.search), onPressed: null)
+          new IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchPage()),
+                ).then((map) {
+                  print("callback = $map");
+                });
+              })
         ],
         // Set the background color of the App Bar
         backgroundColor: Colors.blue,

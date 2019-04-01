@@ -83,7 +83,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
 
   Widget _buildRow(Event event, int index) {
     return new Card(
-      child: ItemView(event, index,0),
+      child: ItemView(event, index, 0),
     );
   }
 
