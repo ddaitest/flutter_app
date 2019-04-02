@@ -47,7 +47,7 @@ class SplashState extends State<SplashPage> {
                   height: 150.0,
                 ),
                 new Text(
-                  '无佣金，更快捷 $getSplashDB',
+                  '无佣金，更快捷',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 34.0,
