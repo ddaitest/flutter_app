@@ -14,83 +14,52 @@ class SplashPage extends StatefulWidget {
   SplashState createState() => SplashState();
 }
 
-// SingleTickerProviderStateMixin is used for animation
+// 闪屏展示页面，首次安装时展示可滑动页面，第二次展示固定图片
 class SplashState extends State<SplashPage> {
-  bool update = true;
-  String updateURL = "";
-  String updateMessage = "";
-
-//  // Create a tab controller
-//
-//  TabController controller;
-//  int page = 0;
-//  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  checkVersion() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      update = prefs.getBool("update") ?? true;
-      updateURL = prefs.getString("updateURL") ?? "http://www.baidu.com";
-      updateMessage = prefs.getString("updateMessage") ?? "";
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    checkVersion();
-    Timer(const Duration(seconds: 2), () {
-//      Navigator.popAndPushNamed(context, '/home');
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-//      Navigator.pop(context);
-//      Navigator.push(
-//        context,
-//        MaterialPageRoute(builder: (context) => HomePage()),
-//      );
-//      Navigator.pushNamed(context, routeName)
-//      Navigator.pop(context);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
+    // TODO: implement build
     return new Scaffold(
-      body: Container(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: getContent(),
-          ),
-        ),
+      body: new Stack(
+        children: <Widget>[
+          new Container(
+            width: double.infinity,
+            color: Colors.blue,
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Image.asset(
+                  'images/Splash_first.png',
+                  color: Colors.white,
+                  width: 150.0,
+                  height: 150.0,
+                ),
+                new Text(
+                  '无佣金,更快捷',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 34.0,
+                  ),
+                ),
+                new Text(
+                  '''平台不收取佣金
+                  更快捷的叫车方式''',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+
       ),
     );
   }
 
-  getContent() {
-    if (update) {
-      return <Widget>[
-        Text(
-          "请升级版本",
-          style: fontCall,
-        ),
-        Text(
-          updateMessage,
-          style: fontCall,
-        ),
-        RaisedButton(
-          onPressed: () {
-            launch(updateURL);
-          },
-          child: Text("更新"),
-        )
-      ];
-    } else {
-      return <Widget>[
-        Text(
-          "HELLO WORLD",
-          style: fontCall,
-        ),
-      ];
-    }
-  }
+
+
 }
