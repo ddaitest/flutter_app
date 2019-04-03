@@ -1,56 +1,17 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/common/common.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_app/pages/home.dart';
-import 'package:flutter_app/pages/first.dart';
-import 'package:flutter_app/pages/second.dart';
-import 'package:flutter_app/pages/third.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SplashPage extends StatefulWidget {
+class UpdatePage extends StatefulWidget {
   @override
-  SplashState createState() => SplashState();
+  UpdateState createState() => UpdateState();
 }
 
-// SingleTickerProviderStateMixin is used for animation
-class SplashState extends State<SplashPage> {
+class UpdateState extends State<UpdatePage> {
 
-  bool update = true;
+  bool showUpdate = true;
   String updateURL = "";
   String updateMessage = "";
-
-//  // Create a tab controller
-//
-//  TabController controller;
-//  int page = 0;
-//  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  checkVersion() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      update = prefs.getBool("update") ?? true;
-      updateURL = prefs.getString("updateURL") ?? "http://www.baidu.com";
-      updateMessage = prefs.getString("updateMessage") ?? "";
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    checkVersion();
-    Timer(const Duration(seconds: 2), () {
-//      Navigator.popAndPushNamed(context, '/home');
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
-//      Navigator.pop(context);
-//      Navigator.push(
-//        context,
-//        MaterialPageRoute(builder: (context) => HomePage()),
-//      );
-//      Navigator.pushNamed(context, routeName)
-//      Navigator.pop(context);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +28,12 @@ class SplashState extends State<SplashPage> {
     );
   }
 
+  clickUpgrade() {
+    launch(updateURL);
+  }
+
   getContent() {
-    if (update) {
+    if (showUpdate) {
       return <Widget>[
         Text(
           "请升级版本",
@@ -79,9 +44,7 @@ class SplashState extends State<SplashPage> {
           style: fontCall,
         ),
         RaisedButton(
-          onPressed: () {
-            launch(updateURL);
-          },
+          onPressed: clickUpgrade,
           child: Text("更新"),
         )
       ];
