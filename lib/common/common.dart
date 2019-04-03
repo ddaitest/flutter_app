@@ -11,7 +11,7 @@ final TextStyle fontTarget = const TextStyle(
     fontSize: 20.0, color: Colors.black87, fontWeight: FontWeight.bold);
 final TextStyle fontX = const TextStyle(fontSize: 14.0, color: Colors.black54);
 final TextStyle fontCall = const TextStyle(
-    fontSize: 14.0, color: Colors.blueAccent, fontWeight: FontWeight.w500);
+    fontSize: 14.0, color: Colors.white, fontWeight: FontWeight.w500);
 
 class ItemView extends StatelessWidget {
   final Event event;
