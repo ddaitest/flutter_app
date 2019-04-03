@@ -28,7 +28,17 @@ class SplashState extends State<SplashPage> {
   checkVersion() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
+      if (prefs.getBool("update") == null) {
+        update = true;
+      } else {
+        update = prefs.getBool("update");
+      }
+
+      update =
+          (prefs.getBool("update") == null) ? true : prefs.getBool("update");
+
       update = prefs.getBool("update") ?? true;
+
       updateURL = prefs.getString("updateURL") ?? "http://www.baidu.com";
       updateMessage = prefs.getString("updateMessage") ?? "";
     });
@@ -40,7 +50,8 @@ class SplashState extends State<SplashPage> {
     checkVersion();
     Timer(const Duration(seconds: 2), () {
 //      Navigator.popAndPushNamed(context, '/home');
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
 //      Navigator.pop(context);
 //      Navigator.push(
 //        context,

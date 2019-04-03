@@ -13,14 +13,12 @@ final TextStyle fontX = const TextStyle(fontSize: 14.0, color: Colors.black54);
 final TextStyle fontCall = const TextStyle(
     fontSize: 14.0, color: Colors.blueAccent, fontWeight: FontWeight.w500);
 
-
-
 class ItemView extends StatelessWidget {
   final Event event;
   final int index;
   final int type;
 
-  ItemView(this.event, this.index,this.type);
+  ItemView(this.event, this.index, this.type);
 
   void _launchcaller(String url) async {
     if (await canLaunch(url)) {
@@ -57,6 +55,7 @@ class ItemView extends StatelessWidget {
 
   _getStartTime() {
     final dt = new DateTime.fromMillisecondsSinceEpoch(event.time);
+    print("test == ${event.time}");
     return Row(
       children: <Widget>[
         Icon(
@@ -66,7 +65,7 @@ class ItemView extends StatelessWidget {
         ),
         SizedBox(width: 8.0),
         Text(
-          new DateFormat("HH:mm  y年M月D日").format(dt),
+          new DateFormat("HH:mm  y年M月d日").format(dt),
           style: fontTime,
         ),
       ],

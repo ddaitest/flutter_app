@@ -14,7 +14,7 @@ class SearchPage extends StatelessWidget {
         ),
         body: MyCustomForm()
 //        MyCustomForm(),
-    );
+        );
   }
 }
 
@@ -45,8 +45,6 @@ class MyCustomFormState extends State<MyCustomForm> {
     myControllerRemark.dispose();
     super.dispose();
   }
-
-
 
   DateTime _fromDate = DateTime.now();
   TimeOfDay _fromTime = TimeOfDay.fromDateTime(DateTime.now());
@@ -210,11 +208,11 @@ class MyCustomFormState extends State<MyCustomForm> {
 class _DateTimePicker extends StatelessWidget {
   const _DateTimePicker(
       {Key key,
-        this.labelText,
-        this.selectedDate,
-        this.selectedTime,
-        this.selectDate,
-        this.selectTime})
+      this.labelText,
+      this.selectedDate,
+      this.selectedTime,
+      this.selectDate,
+      this.selectTime})
       : super(key: key);
 
   final String labelText;
@@ -269,7 +267,7 @@ class _DateTimePicker extends StatelessWidget {
           flex: 4,
           child: _InputDropdown(
             labelText: labelText,
-            valueText: DateFormat.yMMMd().format(selectedDate),
+            valueText: DateFormat("y年M月d日").format(selectedDate),
             valueStyle: valueStyle,
             onPressed: () {
               _selectDate(context);
@@ -280,7 +278,9 @@ class _DateTimePicker extends StatelessWidget {
         Expanded(
           flex: 3,
           child: _InputDropdown(
-            valueText: selectedTime.format(context),
+//            valueText: selectedTime.format(context),
+            valueText: MaterialLocalizations.of(context)
+                .formatTimeOfDay(selectedTime, alwaysUse24HourFormat: true),
             valueStyle: valueStyle,
             onPressed: () {
               _selectTime(context);
@@ -295,11 +295,11 @@ class _DateTimePicker extends StatelessWidget {
 class _InputDropdown extends StatelessWidget {
   const _InputDropdown(
       {Key key,
-        this.child,
-        this.labelText,
-        this.valueText,
-        this.valueStyle,
-        this.onPressed})
+      this.child,
+      this.labelText,
+      this.valueText,
+      this.valueStyle,
+      this.onPressed})
       : super(key: key);
 
   final String labelText;

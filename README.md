@@ -1,6 +1,7 @@
 ## TODO
 - Client
     - Search Page
+    - State Model
     - About me
 - Server
     - API

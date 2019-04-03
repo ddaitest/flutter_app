@@ -62,40 +62,37 @@ class MyHomeState extends State<HomePage>
       appBar: AppBar(
         title: Text(getTitle()),
         actions: <Widget>[
-          GestureDetector(
-            onTap: (){
+          IconButton(
+            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SearchPage()),
+              ).then((map) {
+                print("callback = $map");
+              });
+            },
+            icon: const Icon(
+              Icons.search,
+              size: 30,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PublishPage()),
               );
             },
-            child: Icon(
-              Icons.search,
+            icon: const Icon(
+              Icons.add_circle_outline,
+              size: 30,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 30.0,right: 20.0),
-            child: GestureDetector(
-              onTap: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PublishPage()),
-                );
-
-              },
-              child: Icon(Icons.add),
-            ),
-          ),
-          new IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SearchPage()),
-                ).then((map) {
-                  print("callback = $map");
-                });
-              }),
+          SizedBox(width: 10),
+//          Padding(
+//            padding: const EdgeInsets.only(left: 30.0, right: 20.0),
+//            child:
+//          ),
         ],
       ),
       // Set the TabBar view as the body of the Scaffold
