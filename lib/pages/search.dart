@@ -46,6 +46,8 @@ class MyCustomFormState extends State<MyCustomForm> {
     super.dispose();
   }
 
+
+
   DateTime _fromDate = DateTime.now();
   TimeOfDay _fromTime = TimeOfDay.fromDateTime(DateTime.now());
 
@@ -118,9 +120,9 @@ class MyCustomFormState extends State<MyCustomForm> {
         children: <Widget>[
           TextFormField(
             decoration: InputDecoration(
-              hintText: '请输入 出发点',
+              hintText: '请输入出发点',
               icon: Icon(Icons.pin_drop),
-              labelText: '出发：（可选）',
+              labelText: '出发地',
             ),
             controller: myControllerStart,
             // The validator receives the text the user has typed in
@@ -132,9 +134,9 @@ class MyCustomFormState extends State<MyCustomForm> {
           ),
           TextFormField(
             decoration: InputDecoration(
-              hintText: '请输入 到达点',
+              hintText: '请输入目的地',
               icon: Icon(Icons.assistant_photo),
-              labelText: '到达：（可选）',
+              labelText: '目的地',
             ),
             controller: myControllerEnd,
             // The validator receives the text the user has typed in
@@ -168,7 +170,7 @@ class MyCustomFormState extends State<MyCustomForm> {
 //            controller: myControllerRemark,
 //          ),
           _DateTimePicker(
-            labelText: '筛选日期',
+            labelText: '出发日期',
             selectedDate: _fromDate,
             selectedTime: _fromTime,
             selectDate: (DateTime date) {
@@ -197,7 +199,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                 _doPublish();
               }
             },
-            child: Text('发布'),
+            child: Text('搜索'),
           ),
         ],
       ),

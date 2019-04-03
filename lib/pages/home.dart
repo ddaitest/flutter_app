@@ -4,6 +4,7 @@ import 'package:flutter_app/pages/search.dart';
 import 'package:flutter_app/pages/second.dart';
 import 'package:flutter_app/pages/third.dart';
 import 'package:flutter_app/router/routers.dart';
+import 'package:flutter_app/pages/publish.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -58,10 +59,33 @@ class MyHomeState extends State<HomePage>
     return new Scaffold(
       key: _scaffoldKey,
       // Appbar
-      appBar: new AppBar(
-        // Title
-        title: new Text(getTitle()),
+      appBar: AppBar(
+        title: Text(getTitle()),
         actions: <Widget>[
+          GestureDetector(
+            onTap: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SearchPage()),
+              );
+            },
+            child: Icon(
+              Icons.search,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 30.0,right: 20.0),
+            child: GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PublishPage()),
+                );
+
+              },
+              child: Icon(Icons.add),
+            ),
+          ),
           new IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {
@@ -71,10 +95,8 @@ class MyHomeState extends State<HomePage>
                 ).then((map) {
                   print("callback = $map");
                 });
-              })
+              }),
         ],
-        // Set the background color of the App Bar
-        backgroundColor: Colors.blue,
       ),
       // Set the TabBar view as the body of the Scaffold
       body: new TabBarView(
@@ -93,13 +115,13 @@ class MyHomeState extends State<HomePage>
           tabs: <Tab>[
             new Tab(
               // set icon to the tab
-              icon: new Icon(Icons.departure_board),
+              icon: new Icon(Icons.directions_car),
             ),
             new Tab(
-              icon: new Icon(Icons.group_add),
+              icon: new Icon(Icons.record_voice_over),
             ),
             new Tab(
-              icon: new Icon(Icons.favorite),
+              icon: new Icon(Icons.build),
             ),
           ],
           // setup the controller
