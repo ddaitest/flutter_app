@@ -35,6 +35,17 @@ class SplashState extends State<SplashPage> {
     });
   }
 
+  _getContent() {
+
+    if (showUpdate == true) {
+      return _getUpgrade();
+    } else if (fristShowWelcome == true) {
+      return _getWelcome();
+    } else {
+      return _getSplash();
+    }
+  }
+
   clickWelcome() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool("welcome", false);
@@ -69,17 +80,6 @@ class SplashState extends State<SplashPage> {
         ),
       ),
     );
-  }
-
-  _getContent() {
-
-    if (showUpdate == true) {
-      return _getUpgrade();
-    } else if (fristShowWelcome == true) {
-      return _getWelcome();
-    } else {
-      return _getSplash();
-    }
   }
 
   _getWelcome() {
