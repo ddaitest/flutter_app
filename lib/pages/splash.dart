@@ -12,7 +12,7 @@ class SplashPage extends StatefulWidget {
 
 // 闪屏展示页面，首次安装时展示可滑动页面，第二次展示固定图片
 class SplashState extends State<SplashPage> {
-  bool showWelcome = true;
+  bool fristShowWelcome = true;
   bool showUpdate = true;
   String updateURL = "";
   String updateMessage = "";
@@ -21,14 +21,13 @@ class SplashState extends State<SplashPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      showWelcome = prefs.getBool("welcome") ?? true;
+      fristShowWelcome = prefs.getBool("welcome") ?? true;
       showUpdate = prefs.getBool("update") ?? false;
       updateURL = prefs.getString("updateURL") ?? "http://www.baidu.com";
       updateMessage = prefs.getString("updateMessage") ?? "";
 
-      print("initState   showUpdate= $showUpdate ; showWelcome=$showWelcome");
-      if (!showUpdate && !showWelcome) {
-        Timer(const Duration(seconds: 2), () {
+      if (showUpdate == false && fristShowWelcome == false) {
+        Timer(const Duration(seconds: 1), () {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomePage()));
         });
@@ -74,10 +73,9 @@ class SplashState extends State<SplashPage> {
 
   _getContent() {
 
-    print("_getContent  showUpdate= $showUpdate ; showWelcome=$showWelcome");
-    if (showUpdate) {
+    if (showUpdate == true) {
       return _getUpgrade();
-    } else if (showWelcome) {
+    } else if (fristShowWelcome == true) {
       return _getWelcome();
     } else {
       return _getSplash();
@@ -130,9 +128,11 @@ class SplashState extends State<SplashPage> {
 
   _getSplash() {
     return <Widget>[
-      Text(
-        "HELLO WORLD",
-        style: fontCall,
+      Image.asset(
+        'images/Splash_first.png',
+        color: Colors.white,
+        width: 150.0,
+        height: 150.0,
       ),
     ];
   }

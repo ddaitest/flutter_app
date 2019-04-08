@@ -13,7 +13,7 @@ class ThirdTab extends StatelessWidget {
             children: <Widget>[
               new Icon(
 //                Icons.airport_shuttle,
-                Icons.hot_tub,
+                Icons.email,
                 size: 78.0,
                 color: Colors.blue,
               ),
@@ -34,10 +34,5 @@ class ThirdTab extends StatelessWidget {
 }
 
 _launchURL() async {
-  const url = 'https://www.baidu.com';
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
-  }
+  launch('https://www.baidu.com');
 }

@@ -55,7 +55,6 @@ class ItemView extends StatelessWidget {
 
   _getStartTime() {
     final dt = new DateTime.fromMillisecondsSinceEpoch(event.time);
-    print("test == ${event.time}");
     return Row(
       children: <Widget>[
         Icon(
@@ -74,7 +73,7 @@ class ItemView extends StatelessWidget {
 
   _getStart2End() {
     return Container(
-      padding: EdgeInsets.only(top: 8, bottom: 8),
+      padding: EdgeInsets.only(top: 10, bottom: 5),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -87,15 +86,17 @@ class ItemView extends StatelessWidget {
             ),
             flex: 1,
           ),
-          Icon(
-            Icons.arrow_forward,
-            color: Colors.black87,
+          Padding(
+            padding: const EdgeInsets.only(right: 30),
+          child:Icon(
+              Icons.forward,
+            ),
           ),
           Expanded(
             child: Text(
               event.end ?? "end",
               style: fontTarget,
-              textAlign: TextAlign.left,
+              textAlign: TextAlign.center,
             ),
             flex: 1,
           ),
