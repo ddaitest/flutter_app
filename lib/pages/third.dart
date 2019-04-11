@@ -30,7 +30,7 @@ class ThirdTabState extends State<ThirdTab> {
                     'images/icon.png',
                   ),
                   Text(
-                    'v $versionName',
+                    versionName,
                     style: TextStyle(
                       fontSize: 18.0,
                       color: Colors.black,
