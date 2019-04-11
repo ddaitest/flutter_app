@@ -43,7 +43,7 @@ class MyHomeState extends State<HomePage>
     } else if (page == 1) {
       return "车找人";
     } else {
-      return "关于";
+      return "关于爱拼车";
     }
   }
 
