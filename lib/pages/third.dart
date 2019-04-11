@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ThirdTab extends StatefulWidget {
   @override
@@ -9,7 +9,11 @@ class ThirdTab extends StatefulWidget {
 }
 
 class ThirdTabState extends State<ThirdTab> {
-  String versionName = '';
+  String localVersionName = '';
+  String onlineVersionName = '1.0.1';
+  int LocalVersionName;
+  int OnlineVersionName;
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +34,7 @@ class ThirdTabState extends State<ThirdTab> {
                     'images/icon.png',
                   ),
                   Text(
-                    versionName,
+                    '$localVersionName',
                     style: TextStyle(
                       fontSize: 18.0,
                       color: Colors.black,
@@ -40,7 +44,6 @@ class ThirdTabState extends State<ThirdTab> {
               ),
             ),
           ),
-
           Container(
             margin: const EdgeInsets.only(top: 20.0),
             color: Colors.white,
@@ -56,7 +59,7 @@ class ThirdTabState extends State<ThirdTab> {
             color: Colors.white,
             child: ListTile(
               title: Text('版本升级'),
-              onTap: null,
+              onTap: _checkVersion,
               trailing: Icon(Icons.arrow_forward_ios),
             ),
           ),
@@ -65,7 +68,7 @@ class ThirdTabState extends State<ThirdTab> {
             color: Colors.white,
             child: ListTile(
               title: Text('官方网站'),
-              onTap: _launchURL,
+              onTap: _aboutURL,
               trailing: Icon(Icons.arrow_forward_ios),
             ),
           ),
@@ -74,17 +77,36 @@ class ThirdTabState extends State<ThirdTab> {
     );
   }
 
-  _getVersion() async{
+  _getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    versionName = packageInfo.version ?? ' ';
-    return versionName;
+    localVersionName = packageInfo.version ?? ' ';
+    return localVersionName;
+  }
+
+  _checkVersion() {
+    LocalVersionName = int.parse(localVersionName.replaceAll('.', ''));
+    OnlineVersionName = int.parse(onlineVersionName.replaceAll('.', ''));
+    if (LocalVersionName < OnlineVersionName) {
+      _updateURL();
+    }else{
+      _checkVersionToast();
+    }
   }
 }
 
-
-
-_launchURL() async {
+_aboutURL() async {
   launch('https://www.baidu.com');
 }
 
+_updateURL() async {
+  launch('http:///www.sina.com.cn');
+}
 
+_checkVersionToast(){
+  Fluttertoast.showToast(
+    msg: '当前已是最新版本',
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    timeInSecForIos: 1,
+  );
+}
