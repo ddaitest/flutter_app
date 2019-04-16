@@ -16,10 +16,9 @@ class SplashState extends State<SplashPage> {
   bool fristShowWelcome = true;
   bool mustUpdate = false;
   bool showUpdate = true;
-  String adShowUrl = '';
-  String updateURL = "";
-  String updateMessage =
-      "风急天高猿啸哀，\n渚清沙白鸟飞回。\n无边落木萧萧下，\n不尽长江滚滚来。\n万里悲秋常作客，\n百年多病独登台。\n艰难苦恨繁霜鬓，\n潦倒新停浊酒杯。";
+  String adShowUrl = 'https://img.zcool.cn/community/012de8571049406ac7251f05224c19.png@1280w_1l_2o_100sh.png';
+  String updateURL = '';
+  String updateMessage ='';
   TimerUtil _timerUtil;
   int _status = 0;
   int _count = 3;
@@ -29,10 +28,10 @@ class SplashState extends State<SplashPage> {
 
     setState(() {
       fristShowWelcome = prefs.getBool("welcome") ?? true;
-      showUpdate = prefs.getBool("update") ?? true;
+      showUpdate = prefs.getBool("update") ?? false;
       mustUpdate = prefs.getBool("mustUpdate") ?? false;
       updateURL = prefs.getString("updateURL") ?? "http://www.baidu.com";
-      updateMessage = prefs.getString("updateMessage") ?? "";
+      updateMessage = prefs.getString("updateMessage") ?? "11111";
 
       if (showUpdate == false && fristShowWelcome == false) {
         Timer(const Duration(seconds: 3), () {
@@ -198,33 +197,39 @@ class SplashState extends State<SplashPage> {
         ),
         Text(
           updateMessage,
-          style: fontCall,
+          style: TextStyle(fontSize: 20, color: Colors.white),
         ),
         Column(
           children: <Widget>[
-            FlatButton(
-              color: Colors.white,
-              shape: BeveledRectangleBorder(
-                side: BorderSide(
-                  color: Colors.white,
-                  width: 1,
+            Padding(
+              padding: EdgeInsets.only(top:30.0),
+              child: FlatButton(
+                color: Colors.white,
+                shape: BeveledRectangleBorder(
+                  side: BorderSide(
+                    color: Colors.white,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                borderRadius: BorderRadius.circular(2),
+                onPressed: clickUpgrade,
+                child: Text("立刻更新"),
               ),
-              onPressed: clickUpgrade,
-              child: Text("立刻更新"),
             ),
-            FlatButton(
-              color: Colors.white,
-              shape: BeveledRectangleBorder(
-                side: BorderSide(
-                  color: Colors.white,
-                  width: 1,
+            Padding(
+              padding: EdgeInsets.only(top: 5.0),
+              child: FlatButton(
+                color: Colors.white,
+                shape: BeveledRectangleBorder(
+                  side: BorderSide(
+                    color: Colors.white,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                borderRadius: BorderRadius.circular(2),
+                onPressed: _goHomepage,
+                child: Text("跳过"),
               ),
-              onPressed: _goHomepage,
-              child: Text("跳过"),
             )
           ],
         )
