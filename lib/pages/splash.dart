@@ -19,9 +19,6 @@ class SplashState extends State<SplashPage> {
   String adShowUrl = 'https://img.zcool.cn/community/012de8571049406ac7251f05224c19.png@1280w_1l_2o_100sh.png';
   String updateURL = '';
   String updateMessage ='';
-  TimerUtil _timerUtil;
-  int _status = 0;
-  int _count = 3;
 
   initValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -127,22 +124,6 @@ class SplashState extends State<SplashPage> {
     ];
   }
 
-  void _doCountDown() {
-    setState(() {
-      _status = 1;
-    });
-    _timerUtil = new TimerUtil(mTotalTime: 3 * 1000);
-    _timerUtil.setOnTimerTickCallback((int tick) {
-      double _tick = tick / 1000;
-      setState(() {
-        _count = _tick.toInt();
-      });
-      if (_tick == 0) {
-        _goHomepage();
-      }
-    });
-    _timerUtil.startCountDown();
-  }
 
   _goHomepage() {
     Navigator.pushReplacement(
