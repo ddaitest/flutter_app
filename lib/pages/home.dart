@@ -64,12 +64,13 @@ class MyHomeState extends State<HomePage>
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SearchPage()),
-              ).then((map) {
-                print("callback = $map");
-              });
+              _neverSatisfied();
+//              Navigator.push(
+//                context,
+//                MaterialPageRoute(builder: (context) => SearchPage()),
+//              ).then((map) {
+//                print("callback = $map");
+//              });
             },
             icon: const Icon(
               Icons.search,
@@ -98,7 +99,7 @@ class MyHomeState extends State<HomePage>
       // Set the TabBar view as the body of the Scaffold
       body: new TabBarView(
         // Add tabs as widgets
-        children: <Widget>[new FirstTab(), new SecondTab(), new ThirdTab()],
+        children: <Widget>[new FirstTab(), new SecondTab(), new ThirdTab(),],
         // set the controller
         controller: controller,
       ),
@@ -125,6 +126,39 @@ class MyHomeState extends State<HomePage>
           controller: controller,
         ),
       ),
+    );
+  }
+
+  Future<void> _neverSatisfied() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('这是一个dialog！'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('我可以变成广告'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('继续'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchPage()),
+                ).then((map) {
+                  print("callback = $map");
+                });
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
