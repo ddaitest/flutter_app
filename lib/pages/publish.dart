@@ -275,7 +275,7 @@ class _DateTimePicker extends StatelessWidget {
           flex: 4,
           child: _InputDropdown(
             labelText: labelText,
-            valueText: DateFormat.yMMMd().format(selectedDate),
+            valueText: DateFormat("y年M月d日").format(selectedDate),
             valueStyle: valueStyle,
             onPressed: () {
               _selectDate(context);
@@ -286,7 +286,8 @@ class _DateTimePicker extends StatelessWidget {
         Expanded(
           flex: 3,
           child: _InputDropdown(
-            valueText: selectedTime.format(context),
+            valueText: MaterialLocalizations.of(context)
+                .formatTimeOfDay(selectedTime, alwaysUse24HourFormat: true),
             valueStyle: valueStyle,
             onPressed: () {
               _selectTime(context);

@@ -10,9 +10,12 @@ class ThirdTab extends StatefulWidget {
 
 class ThirdTabState extends State<ThirdTab> {
   String localVersionName = '';
-  String onlineVersionName = '1.0.1';
-  int LocalVersionName;
-  int OnlineVersionName;
+  String telphoneNum = '12345678';
+  String website = 'www.baidu.com';
+
+//  String onlineVersionName = '1.0.0';
+//  int LocalVersionName;
+//  int OnlineVersionName;
 
   @override
   void initState() {
@@ -22,60 +25,57 @@ class ThirdTabState extends State<ThirdTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.only(top: 80.0),
-            child: Center(
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top:100.0),
+          child: Image.asset(
+            'images/icon.png',
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top:0.0),
+          child: Text(
+            localVersionName,
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 100.0),
+          child: FlatButton(
+            onPressed: (){
+              _launchcaller('tel:' + telphoneNum);
+            },
+            child: Column(
+              children: <Widget>[
+                Text(
+                  '合作电话：' + telphoneNum,
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ],
+            ),
+          ),
+              ),
+        Padding(
+            padding: const EdgeInsets.only(top: 40.0),
+            child: FlatButton(
+              onPressed: _aboutURL,
               child: Column(
                 children: <Widget>[
-                  Image.asset(
-                    'images/icon.png',
-                  ),
                   Text(
-                    '$localVersionName',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.black,
-                    ),
-                  )
+                    '公司网址：' + website,
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
                 ],
               ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 20.0),
-            color: Colors.white,
-            height: 50.0,
-            child: ListTile(
-              title: Text('功能介绍'),
-              onTap: null,
-              trailing: Icon(Icons.arrow_forward_ios),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 3.0),
-            color: Colors.white,
-            child: ListTile(
-              title: Text('版本升级'),
-              onTap: _checkVersion,
-              trailing: Icon(Icons.arrow_forward_ios),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 3.0),
-            color: Colors.white,
-            child: ListTile(
-              title: Text('官方网站'),
-              onTap: _aboutURL,
-              trailing: Icon(Icons.arrow_forward_ios),
-            ),
-          ),
-        ],
-      ),
+          )
+      ],
     );
-  }
+ }
 
   _getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -83,30 +83,38 @@ class ThirdTabState extends State<ThirdTab> {
     return localVersionName;
   }
 
-  _checkVersion() {
-    LocalVersionName = int.parse(localVersionName.replaceAll('.', ''));
-    OnlineVersionName = int.parse(onlineVersionName.replaceAll('.', ''));
-    if (LocalVersionName < OnlineVersionName) {
-      _updateURL();
-    }else{
-      _checkVersionToast();
+//
+//  _checkVersion() {
+//    LocalVersionName = int.parse(localVersionName.replaceAll('.', ''));
+//    OnlineVersionName = int.parse(onlineVersionName.replaceAll('.', ''));
+//    if (LocalVersionName < OnlineVersionName) {
+//      _updateURL();
+//    }else{
+//      _checkVersionToast();
+//    }
+//  }
+//}
+
+  _aboutURL() async {
+    launch('https://$website');
+  }
+//
+//_updateURL() async {
+//  launch('http:///www.sina.com.cn');
+//}
+//
+//_checkVersionToast(){
+//  Fluttertoast.showToast(
+//    msg: '当前已是最新版本',
+//    toastLength: Toast.LENGTH_SHORT,
+//    gravity: ToastGravity.BOTTOM,
+//    timeInSecForIos: 1,
+//  );
+  void _launchcaller(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
-}
-
-_aboutURL() async {
-  launch('https://www.baidu.com');
-}
-
-_updateURL() async {
-  launch('http:///www.sina.com.cn');
-}
-
-_checkVersionToast(){
-  Fluttertoast.showToast(
-    msg: '当前已是最新版本',
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.BOTTOM,
-    timeInSecForIos: 1,
-  );
 }

@@ -10,8 +10,8 @@ final TextStyle fontTime = const TextStyle(
 final TextStyle fontTarget = const TextStyle(
     fontSize: 20.0, color: Colors.black87, fontWeight: FontWeight.bold);
 final TextStyle fontX = const TextStyle(fontSize: 14.0, color: Colors.black54);
-final TextStyle fontCall = const TextStyle(
-    fontSize: 14.0, color: Colors.white, fontWeight: FontWeight.w500);
+final TextStyle fontCall = TextStyle(
+    fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w500);
 
 class ItemView extends StatelessWidget {
   final Event event;
@@ -145,7 +145,7 @@ class ItemView extends StatelessWidget {
               ),
               Text(
                 "打电话",
-                style: fontCall,
+                style: TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w500),
               ),
             ],
           ),

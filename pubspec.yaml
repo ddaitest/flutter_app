@@ -33,6 +33,7 @@ dependencies:
   sqflite: ^1.0.0
   package_info: ^0.4.0+2
   fluttertoast: ^2.1.1
+  common_utils: ^1.1.1
 
   flutter_localizations:
     sdk: flutter
@@ -60,6 +61,7 @@ flutter:
     - images/icon.png
     - images/Splash_first.png
     - images/lake.jpg
+    - images/splash_ad.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
