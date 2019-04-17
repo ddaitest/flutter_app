@@ -12,8 +12,6 @@ class HomePage extends StatefulWidget {
   MyHomeState createState() => MyHomeState();
 }
 
-void search() {}
-
 // SingleTickerProviderStateMixin is used for animation
 class MyHomeState extends State<HomePage>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
@@ -25,7 +23,6 @@ class MyHomeState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-
     // Initialize the Tab Controller
     controller = new TabController(length: 3, vsync: this);
     controller.addListener(() {
@@ -64,13 +61,12 @@ class MyHomeState extends State<HomePage>
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              _neverSatisfied();
-//              Navigator.push(
-//                context,
-//                MaterialPageRoute(builder: (context) => SearchPage()),
-//              ).then((map) {
-//                print("callback = $map");
-//              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SearchPage()),
+              ).then((map) {
+                print("callback = $map");
+              });
             },
             icon: const Icon(
               Icons.search,
@@ -128,8 +124,7 @@ class MyHomeState extends State<HomePage>
       ),
     );
   }
-
-  Future<void> _neverSatisfied() async {
+  Future<void> showDialogCard() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -148,12 +143,6 @@ class MyHomeState extends State<HomePage>
               child: Text('继续'),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SearchPage()),
-                ).then((map) {
-                  print("callback = $map");
-                });
               },
             ),
           ],
@@ -161,6 +150,7 @@ class MyHomeState extends State<HomePage>
       },
     );
   }
+
 
   @override
   bool get wantKeepAlive => true;

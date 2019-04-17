@@ -22,8 +22,8 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        key: _scaffoldKey,
-        body: getContent());
+      key: _scaffoldKey,
+      body: getContent());
   }
 
   @override
@@ -33,6 +33,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   }
 
   void _loadData() async {
+    showDialogCard();
     String dataURL = "http://39.96.16.125:8082/api/event/";
     http.Response response = await http.get(dataURL);
     print("DDAI= end=${response.body}");
@@ -76,4 +77,33 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
 
   @override
   bool get wantKeepAlive => true;
+
+  Future<void> showDialogCard() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+
+            child: Image.asset(
+                'images/DialogAd.png',
+              fit: BoxFit.cover,
+              width: 300,
+              height: 500,
+            ),
+          ),
+//          actions: <Widget>[
+//            FlatButton(
+//              child: Text('继续'),
+//              onPressed: () {
+//                Navigator.of(context).pop();
+//              },
+//            ),
+//          ],
+        );
+      },
+    );
+  }
 }
+
