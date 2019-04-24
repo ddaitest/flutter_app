@@ -4,6 +4,10 @@ import 'package:flutter_app/manager/manager.dart';
 import 'package:flutter_app/common/common.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:dio/dio.dart';
+import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class FirstTab extends StatefulWidget {
   @override
@@ -13,27 +17,43 @@ class FirstTab extends StatefulWidget {
 }
 
 class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
+  String showCard_url;
+  String showCard_goto;
   final List<Event> data = new List();
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-  GlobalKey<RefreshIndicatorState>();
-
+      GlobalKey<RefreshIndicatorState>();
+  String adImageUrl =
+      'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1556056419719&di=7857ab1235d4161922d7433fd8b2252f&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b4345732e24e6ac725263177fd29.jpg';
+//  String adImageUrl = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1556056419719&di=7857ab1235d4161922d7433fd8b2252f&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b4345732e24e6ac725263177fd29.jpg';
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      key: _scaffoldKey,
-      body: getContent());
+    return new Scaffold(key: _scaffoldKey, body: getContent());
   }
 
   @override
   void initState() {
     super.initState();
+    _getAdData();
     _loadData();
   }
 
+  _getAdData() async {
+    String apiUrl = 'http://127.0.0.1:5000/api/ad';
+    Response response = await Dio().get(apiUrl);
+    Map<String, dynamic> json_data = jsonDecode(response.data);
+    showCard_url = json_data['showCard_url'];
+    showCard_goto = json_data['showCard_goto'];
+    print('LC ############# $showCard_url');
+    print('LC ############# $showCard_goto');
+  }
+
   void _loadData() async {
-    showDialogCard();
+    if (showCard_url != null){
+      showDialogCard();
+    }else if(showCard_url != ''){
+      showDialogCard();
+    }
     String dataURL = "http://39.96.16.125:8082/api/event/";
     http.Response response = await http.get(dataURL);
     print("DDAI= end=${response.body}");
@@ -84,26 +104,21 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          content: SingleChildScrollView(
+            backgroundColor: Colors.transparent,
+            content: GestureDetector(
+              onTap: () {
+                launch(showCard_goto);
+                Navigator.of(context).pop();
+              },
+              child: CachedNetworkImage(
+                imageUrl: showCard_url,
+                fit: BoxFit.cover,
+                width: 500,
+                height: 300,
 
-            child: Image.asset(
-                'images/DialogAd.png',
-              fit: BoxFit.cover,
-              width: 300,
-              height: 500,
-            ),
-          ),
-//          actions: <Widget>[
-//            FlatButton(
-//              child: Text('继续'),
-//              onPressed: () {
-//                Navigator.of(context).pop();
-//              },
-//            ),
-//          ],
-        );
+              ),
+            ));
       },
     );
   }
 }
-

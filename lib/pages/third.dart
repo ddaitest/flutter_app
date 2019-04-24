@@ -60,20 +60,6 @@ class ThirdTabState extends State<ThirdTab> {
             ),
           ),
               ),
-        Padding(
-            padding: const EdgeInsets.only(top: 40.0),
-            child: FlatButton(
-              onPressed: _aboutURL,
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    '公司网址：' + website,
-                    style: TextStyle(fontSize: 20, color: Colors.black),
-                  ),
-                ],
-              ),
-            ),
-          )
       ],
     );
  }

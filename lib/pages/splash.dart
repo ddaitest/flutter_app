@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:common_utils/common_utils.dart';
+import 'package:dio/dio.dart';
+import 'dart:convert';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -16,15 +18,18 @@ class SplashState extends State<SplashPage> {
   bool fristShowWelcome = true;
   bool mustUpdate = false;
   bool showUpdate = true;
-  String adShowUrl = 'https://img.zcool.cn/community/012de8571049406ac7251f05224c19.png@1280w_1l_2o_100sh.png';
+  String splash_url;
+  String splash_goto;
   String updateURL = '';
   String updateMessage ='';
 
   initValue() async {
+    _getAdData();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     setState(() {
       fristShowWelcome = prefs.getBool("welcome") ?? true;
+      splash_url = prefs.getString("splash_url") ?? '';
+      splash_goto = prefs.getString("splash_goto") ?? '';
       showUpdate = prefs.getBool("update") ?? false;
       mustUpdate = prefs.getBool("mustUpdate") ?? false;
       updateURL = prefs.getString("updateURL") ?? "http://www.baidu.com";
@@ -36,6 +41,19 @@ class SplashState extends State<SplashPage> {
         });
       }
     });
+  }
+
+  _getAdData() async {
+    String apiUrl = 'http://127.0.0.1:5000/api/ad';
+    Response response = await Dio().get(apiUrl);
+    Map<String, dynamic> json_data = jsonDecode(response.data);
+    splash_url = json_data['splash_url'];
+    splash_goto = json_data['splash_goto'];
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString("splash_url", splash_url);
+    sharedPreferences.setString("splash_goto", splash_goto);
+    print('LC ############# $splash_url');
+    print('LC ############# $splash_goto');
   }
 
   _getContent() {
@@ -133,7 +151,16 @@ class SplashState extends State<SplashPage> {
   }
 
   _getSplash() {
-    if (adShowUrl == '') {
+    if (splash_url == null) {
+      return <Widget>[
+        Image.asset(
+          'images/Splash_first.png',
+          color: Colors.white,
+          width: 150.0,
+          height: 150.0,
+        ),
+      ];
+    } else if(splash_url == ''){
       return <Widget>[
         Image.asset(
           'images/Splash_first.png',
@@ -144,12 +171,18 @@ class SplashState extends State<SplashPage> {
       ];
     } else {
       return <Widget>[
-        Image.network(
-          adShowUrl,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          fit: BoxFit.fill,
-        ),
+        GestureDetector(
+          onTap: (){
+            launch(splash_goto);
+          },
+          child: Image.network(
+            splash_url,
+            fit: BoxFit.fill,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+          ),
+        )
+
       ];
     }
   }
