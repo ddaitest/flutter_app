@@ -44,7 +44,7 @@ class SplashState extends State<SplashPage> {
   }
 
   _getAdData() async {
-    String apiUrl = 'http://127.0.0.1:5000/api/ad';
+    String apiUrl = 'http://192.168.123.171:5000/api/ad';
     Response response = await Dio().get(apiUrl);
     Map<String, dynamic> json_data = jsonDecode(response.data);
     splash_url = json_data['splash_url'];

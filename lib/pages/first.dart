@@ -23,9 +23,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  String adImageUrl =
-      'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1556056419719&di=7857ab1235d4161922d7433fd8b2252f&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b4345732e24e6ac725263177fd29.jpg';
-//  String adImageUrl = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1556056419719&di=7857ab1235d4161922d7433fd8b2252f&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01b4345732e24e6ac725263177fd29.jpg';
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(key: _scaffoldKey, body: getContent());
@@ -39,7 +37,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   }
 
   _getAdData() async {
-    String apiUrl = 'http://127.0.0.1:5000/api/ad';
+    String apiUrl = 'http://192.168.123.171:5000/api/ad';
     Response response = await Dio().get(apiUrl);
     Map<String, dynamic> json_data = jsonDecode(response.data);
     showCard_url = json_data['showCard_url'];
