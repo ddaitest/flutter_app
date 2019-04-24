@@ -36,7 +36,6 @@ class MyHomeState extends State<HomePage>
 
   String getTitle() {
     if (page == 0) {
-//      showDialogCard();
       return "车找人";
     } else if (page == 1) {
       return "人找车";
