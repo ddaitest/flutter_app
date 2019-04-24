@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dio/dio.dart';
-import 'dart:convert';
+import 'package:flutter_app/pages/home.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class FirstTab extends StatefulWidget {
@@ -25,16 +25,21 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
       GlobalKey<RefreshIndicatorState>();
 
   @override
-  Widget build(BuildContext context) {
-    return new Scaffold(key: _scaffoldKey, body: getContent());
+  void initState() {
+    super.initState();
+    _loadData();
+    _getAdData();
   }
 
   @override
-  void initState() {
-    super.initState();
-    _getAdData();
-    _loadData();
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        key: _scaffoldKey,
+        body: getContent(),
+    );
   }
+
+
 
   _getAdData() async {
     String apiUrl = 'http://192.168.123.171:5000/api/ad';
@@ -44,14 +49,14 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
     showCard_goto = json_data['showCard_goto'];
     print('LC ############# $showCard_url');
     print('LC ############# $showCard_goto');
-  }
-
-  void _loadData() async {
     if (showCard_url != null){
       showDialogCard();
     }else if(showCard_url != ''){
       showDialogCard();
     }
+  }
+
+  void _loadData() async {
     String dataURL = "http://39.96.16.125:8082/api/event/";
     http.Response response = await http.get(dataURL);
     print("DDAI= end=${response.body}");
@@ -96,6 +101,12 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
+  @override
+  void dispose() {
+    // Dispose of the Tab Controller
+    super.dispose();
+  }
+
   Future<void> showDialogCard() async {
     return showDialog<void>(
       context: context,
@@ -113,7 +124,6 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
                 fit: BoxFit.cover,
                 width: 500,
                 height: 300,
-
               ),
             ));
       },
