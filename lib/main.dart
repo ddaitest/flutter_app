@@ -6,7 +6,7 @@ import 'package:flutter_app/pages/search.dart';
 import 'package:flutter_app/pages/splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:flutter_jpush/flutter_jpush.dart';
+import 'package:flutter_jpush/flutter_jpush.dart';
 
 
 void main() => runApp(MyApp());
@@ -25,7 +25,7 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-//    _startupJpush();
+    _startupJpush();
   }
 
   @override
@@ -43,11 +43,11 @@ class MyAppState extends State<MyApp> {
 //    return new MaterialApp(home: new VideoPage());
   }
 
-//  void _startupJpush() async {
-//    print("初始化jpush");
-//    await FlutterJPush.startup();
-//    print("初始化jpush成功");
-//  }
+  void _startupJpush() async {
+    print("初始化jpush");
+    await FlutterJPush.startup();
+    print("初始化jpush成功");
+  }
 
 
 }
