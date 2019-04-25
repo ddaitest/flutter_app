@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/manager/manager.dart';
-
+import 'package:flutter_app/pages/home.dart';
 //import 'package:flutter_app/common/DateUtil.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 final TextStyle fontTime = const TextStyle(
     fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.black87);
@@ -156,32 +157,47 @@ class ItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 16, right: 16),
-      child: Row(
-        children: <Widget>[
-          _getAvatar(),
-          Expanded(
-            child: Column(
-              children: event.remark != null && event.remark.isNotEmpty
-                  ? <Widget>[
-                      _getStartTime(),
-                      _getStart2End(),
-                      _getRemark(),
-                      Divider(),
-                      _getAction(),
-                    ]
-                  : <Widget>[
-                      _getStartTime(),
-                      _getStart2End(),
-                      Divider(),
-                      _getAction(),
-                    ],
-            ),
-            flex: 1,
+    if(index == 2){
+      return Container(
+        padding: EdgeInsets.all(1),
+        child: Card(
+          child: CachedNetworkImage(
+            imageUrl: 'http://img.zcool.cn/community/01acaf5722af116ac7253812b32635.jpg@1280w_1l_2o_100sh.jpg',
+            fit: BoxFit.fitWidth,
+            width: 500,
+            height: 120,
           ),
-        ],
-      ),
-    );
+        ),
+      );
+    }else{
+      return Container(
+        padding: EdgeInsets.only(top: 16, right: 16),
+        child: Row(
+          children: <Widget>[
+            _getAvatar(),
+            Expanded(
+              child: Column(
+                children: event.remark != null && event.remark.isNotEmpty
+                    ? <Widget>[
+                  _getStartTime(),
+                  _getStart2End(),
+                  _getRemark(),
+                  Divider(),
+                  _getAction(),
+                ]
+                    : <Widget>[
+                  _getStartTime(),
+                  _getStart2End(),
+                  Divider(),
+                  _getAction(),
+                ],
+              ),
+              flex: 1,
+            ),
+          ],
+        ),
+      );
+    }
+
   }
 }

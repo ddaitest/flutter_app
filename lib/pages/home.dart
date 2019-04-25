@@ -163,16 +163,20 @@ class MyHomeState extends State<HomePage>
   Future<bool> _onWillPop() {
     return showDialog(
           context: context,
-          builder: (context) => new AlertDialog(
+          builder: (context) => AlertDialog(
                 title: Text('确定退出吗?'),
                 content: Text('退出后将不能收到最新的拼车信息'),
                 actions: <Widget>[
                   FlatButton(
-                    onPressed: () => Navigator.of(context).pop(false),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
                     child: new Text('否'),
                   ),
                   FlatButton(
-                    onPressed: () => Navigator.of(context).pop(true),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
                     child: new Text('是'),
                   ),
                 ],
