@@ -53,77 +53,85 @@ class MyHomeState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      key: _scaffoldKey,
-      // Appbar
-      appBar: AppBar(
-        title: Text(getTitle()),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SearchPage()),
-              ).then((map) {
-                print("callback = $map");
-              });
-            },
-            icon: const Icon(
-              Icons.search,
-              size: 30,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        key: _scaffoldKey,
+        // Appbar
+        appBar: AppBar(
+          title: Text(getTitle()),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchPage()),
+                ).then((map) {
+                  print("callback = $map");
+                });
+              },
+              icon: const Icon(
+                Icons.search,
+                size: 30,
+              ),
             ),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PublishPage()),
-              );
-            },
-            icon: const Icon(
-              Icons.add_circle_outline,
-              size: 30,
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PublishPage()),
+                );
+              },
+              icon: const Icon(
+                Icons.add_circle_outline,
+                size: 30,
+              ),
             ),
-          ),
-          SizedBox(width: 10),
+            SizedBox(width: 10),
 //          Padding(
 //            padding: const EdgeInsets.only(left: 30.0, right: 20.0),
 //            child:
 //          ),
-        ],
-      ),
-      // Set the TabBar view as the body of the Scaffold
-      body: new TabBarView(
-        // Add tabs as widgets
-        children: <Widget>[new FirstTab(), new SecondTab(), new ThirdTab(),],
-        // set the controller
-        controller: controller,
-      ),
-      // Set the bottom navigation bar
-
-      bottomNavigationBar: new Material(
-        // set the color of the bottom navigation bar
-        color: Colors.blue,
-        // set the tab bar as the child of bottom navigation bar
-        child: new TabBar(
-          tabs: <Tab>[
-            new Tab(
-              // set icon to the tab
-              icon: new Icon(Icons.directions_car),
-            ),
-            new Tab(
-              icon: new Icon(Icons.record_voice_over),
-            ),
-            new Tab(
-              icon: new Icon(Icons.build),
-            ),
           ],
-          // setup the controller
+        ),
+        // Set the TabBar view as the body of the Scaffold
+        body: new TabBarView(
+          // Add tabs as widgets
+          children: <Widget>[
+            new FirstTab(),
+            new SecondTab(),
+            new ThirdTab(),
+          ],
+          // set the controller
           controller: controller,
+        ),
+        // Set the bottom navigation bar
+
+        bottomNavigationBar: new Material(
+          // set the color of the bottom navigation bar
+          color: Colors.blue,
+          // set the tab bar as the child of bottom navigation bar
+          child: new TabBar(
+            tabs: <Tab>[
+              new Tab(
+                // set icon to the tab
+                icon: new Icon(Icons.directions_car),
+              ),
+              new Tab(
+                icon: new Icon(Icons.record_voice_over),
+              ),
+              new Tab(
+                icon: new Icon(Icons.build),
+              ),
+            ],
+            // setup the controller
+            controller: controller,
+          ),
         ),
       ),
     );
   }
+
   Future<void> showDialogCard() async {
     return showDialog<void>(
       context: context,
@@ -151,6 +159,27 @@ class MyHomeState extends State<HomePage>
     );
   }
 
+  //主界面back弹窗
+  Future<bool> _onWillPop() {
+    return showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+                title: Text('确定退出吗?'),
+                content: Text('退出后将不能收到最新的拼车信息'),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: new Text('否'),
+                  ),
+                  FlatButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: new Text('是'),
+                  ),
+                ],
+              ),
+        ) ??
+        false;
+  }
 
   @override
   bool get wantKeepAlive => true;
