@@ -17,13 +17,18 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-  GlobalKey<RefreshIndicatorState>();
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      key: _scaffoldKey,
-      body: getContent());
+        key: _scaffoldKey,
+        floatingActionButton: FloatingActionButton(
+          onPressed: null,
+          child: Icon(Icons.add),
+        ),
+        body: getView());
+//        body: getContent());
   }
 
   @override
@@ -45,6 +50,42 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
       data.clear();
       data.addAll(newData);
     });
+  }
+
+  getView() {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Card(
+            color: Colors.blue,
+            child: getSearchView(),
+          ),
+          Expanded(
+            child: getContent(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  getSearchView() {
+    return Container(
+      height: 50,
+      padding: EdgeInsets.only(left: 8, right: 8),
+      child: Row(
+        children: <Widget>[
+          Icon(Icons.search, color: Colors.white),
+          Expanded(
+            child: Text(
+              "筛选:北京->天津",
+              style: TextStyle(color: Colors.white),
+            ),
+            flex: 1,
+          ),
+          Icon(Icons.clear, color: Colors.white),
+        ],
+      ),
+    );
   }
 
   getContent() {
@@ -85,9 +126,8 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
       builder: (BuildContext context) {
         return AlertDialog(
           content: SingleChildScrollView(
-
             child: Image.asset(
-                'images/DialogAd.png',
+              'images/DialogAd.png',
               fit: BoxFit.cover,
               width: 300,
               height: 500,
@@ -106,4 +146,3 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
     );
   }
 }
-

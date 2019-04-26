@@ -21,7 +21,7 @@ class HomeState extends State<HomePage> {
       appBar: AppBar(
         title: Text("Home"),
         actions: <Widget>[
-          new IconButton(icon: const Icon(Icons.search), onPressed: search)
+//          new IconButton(icon: const Icon(Icons.search), onPressed: search)
         ],
       ),
       body: new ListView(

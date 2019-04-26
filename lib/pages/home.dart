@@ -91,11 +91,19 @@ class MyHomeState extends State<HomePage>
 //            child:
 //          ),
         ],
+//        bottom: PreferredSize(
+//          child: getSearchView(),
+//          preferredSize: Size.fromHeight(50.0),
+//        ),
       ),
       // Set the TabBar view as the body of the Scaffold
       body: new TabBarView(
         // Add tabs as widgets
-        children: <Widget>[new FirstTab(), new SecondTab(), new ThirdTab(),],
+        children: <Widget>[
+          new FirstTab(),
+          new SecondTab(),
+          new ThirdTab(),
+        ],
         // set the controller
         controller: controller,
       ),
@@ -124,6 +132,7 @@ class MyHomeState extends State<HomePage>
       ),
     );
   }
+
   Future<void> showDialogCard() async {
     return showDialog<void>(
       context: context,
@@ -151,7 +160,7 @@ class MyHomeState extends State<HomePage>
     );
   }
 
-
   @override
   bool get wantKeepAlive => true;
+
 }
