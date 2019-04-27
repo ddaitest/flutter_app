@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:common_utils/common_utils.dart';
-import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class SplashPage extends StatefulWidget {
@@ -44,14 +44,18 @@ class SplashState extends State<SplashPage> {
   }
 
   _getAdData() async {
-    String apiUrl = 'http://192.168.123.171:5000/api/ad';
-    Response response = await Dio().get(apiUrl);
-    Map<String, dynamic> json_data = jsonDecode(response.data);
-    splash_url = json_data['splash_url'];
-    splash_goto = json_data['splash_goto'];
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setString("splash_url", splash_url);
-    sharedPreferences.setString("splash_goto", splash_goto);
+    String apiUrl = "http://34.92.69.146:5000/api/ad/";
+    var response = await http.get(apiUrl);
+    if (response.statusCode == 200) {
+      List datalist = jsonDecode(response.body);
+      for (var i in datalist) {
+        splash_url = i['splash_url'];
+        splash_goto = i['splash_goto'];
+      }
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      sharedPreferences.setString("splash_url", splash_url);
+      sharedPreferences.setString("splash_goto", splash_goto);
+    }
     print('LC ############# $splash_url');
     print('LC ############# $splash_goto');
   }

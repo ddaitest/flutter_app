@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter_app/manager/manager.dart';
 import 'package:flutter_app/pages/home.dart';
+
 //import 'package:flutter_app/common/DateUtil.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,8 +14,8 @@ final TextStyle fontTime = const TextStyle(
 final TextStyle fontTarget = const TextStyle(
     fontSize: 20.0, color: Colors.black87, fontWeight: FontWeight.bold);
 final TextStyle fontX = const TextStyle(fontSize: 14.0, color: Colors.black54);
-final TextStyle fontCall = TextStyle(
-    fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w500);
+final TextStyle fontCall =
+    TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w500);
 
 class ItemView extends StatelessWidget {
   final Event event;
@@ -89,7 +92,7 @@ class ItemView extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 30),
-          child:Icon(
+            child: Icon(
               Icons.forward,
             ),
           ),
@@ -146,7 +149,10 @@ class ItemView extends StatelessWidget {
               ),
               Text(
                 "打电话",
-                style: TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -157,47 +163,32 @@ class ItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(index == 2){
-      return Container(
-        padding: EdgeInsets.all(1),
-        child: Card(
-          child: CachedNetworkImage(
-            imageUrl: 'http://img.zcool.cn/community/01acaf5722af116ac7253812b32635.jpg@1280w_1l_2o_100sh.jpg',
-            fit: BoxFit.fitWidth,
-            width: 500,
-            height: 120,
-          ),
-        ),
-      );
-    }else{
-      return Container(
-        padding: EdgeInsets.only(top: 16, right: 16),
-        child: Row(
-          children: <Widget>[
-            _getAvatar(),
-            Expanded(
-              child: Column(
-                children: event.remark != null && event.remark.isNotEmpty
-                    ? <Widget>[
-                  _getStartTime(),
-                  _getStart2End(),
-                  _getRemark(),
-                  Divider(),
-                  _getAction(),
-                ]
-                    : <Widget>[
-                  _getStartTime(),
-                  _getStart2End(),
-                  Divider(),
-                  _getAction(),
-                ],
-              ),
-              flex: 1,
+    return Container(
+      padding: EdgeInsets.only(top: 16, right: 16),
+      child: Row(
+        children: <Widget>[
+          _getAvatar(),
+          Expanded(
+            child: Column(
+              children: event.remark != null && event.remark.isNotEmpty
+                  ? <Widget>[
+                      _getStartTime(),
+                      _getStart2End(),
+                      _getRemark(),
+                      Divider(),
+                      _getAction(),
+                    ]
+                  : <Widget>[
+                      _getStartTime(),
+                      _getStart2End(),
+                      Divider(),
+                      _getAction(),
+                    ],
             ),
-          ],
-        ),
-      );
-    }
-
+            flex: 1,
+          ),
+        ],
+      ),
+    );
   }
 }

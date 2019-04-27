@@ -19,6 +19,10 @@ class FirstTab extends StatefulWidget {
 class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   String showCard_url;
   String showCard_goto;
+  String list_url;
+  String list_goto;
+  String AdURL = "http://34.92.69.146:5000/api/ad/";
+  List datalist;
   final List<Event> data = new List();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
@@ -42,17 +46,20 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
 
 
   _getAdData() async {
-    String apiUrl = 'http://192.168.123.171:5000/api/ad';
-    Response response = await Dio().get(apiUrl);
-    Map<String, dynamic> json_data = jsonDecode(response.data);
-    showCard_url = json_data['showCard_url'];
-    showCard_goto = json_data['showCard_goto'];
-    print('LC ############# $showCard_url');
-    print('LC ############# $showCard_goto');
-    if (showCard_url != null){
-      showDialogCard();
-    }else if(showCard_url != ''){
-      showDialogCard();
+    var response = await http.get(AdURL);
+    if(response.statusCode == 200){
+      datalist = jsonDecode(response.body);
+      for(var i in datalist){
+        list_url = i['list_url'];
+        list_goto = i['list_goto'];
+        showCard_goto = i['showCard_goto'];
+        showCard_url = i['showCard_url'];
+      }
+    }
+    if (showCard_url != null && showCard_url != ''){
+      Timer(const Duration(seconds: 1), () {
+        showDialogCard();
+      });
     }
   }
 
@@ -93,6 +100,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _buildRow(Event event, int index) {
+//    print('LC############ $index');
     return new Card(
       child: ItemView(event, index, 0),
     );
