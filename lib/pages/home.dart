@@ -5,6 +5,7 @@ import 'package:flutter_app/pages/second.dart';
 import 'package:flutter_app/pages/third.dart';
 import 'package:flutter_app/router/routers.dart';
 import 'package:flutter_app/pages/publish.dart';
+import 'package:flutter_app/common/common.dart';
 
 class HomePage extends StatefulWidget {
   @override

@@ -26,7 +26,7 @@ dependencies:
   intl: 0.15.7
   url_launcher: 5.0.1
   flutter_datetime_picker: ^1.0.7
-  cached_network_image: ^0.6.2
+  cached_network_image: ^0.7.0
   video_player: ^0.10.0+2
   shared_preferences: ^0.5.1+1
   scoped_model: ^1.0.1
@@ -38,6 +38,8 @@ dependencies:
   common_utils: ^1.1.1
   dio: 2.1.0
   flutter_jpush: ^0.0.4
+
+#  flutter_umeng_analytics: ^0.0.2
 
 
   flutter_localizations:
@@ -63,11 +65,12 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - images/icon.png
+    - images/ic_launcher.png
     - images/Splash_first.png
     - images/lake.jpg
     - images/splash_ad.png
     - images/DialogAd.png
+    - images/welcome.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

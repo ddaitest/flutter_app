@@ -38,26 +38,24 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        key: _scaffoldKey,
-        body: getContent(),
+      key: _scaffoldKey,
+      body: getContent(),
     );
   }
 
-
-
   _getAdData() async {
     var response = await http.get(AdURL);
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       datalist = jsonDecode(response.body);
-      for(var i in datalist){
+      for (var i in datalist) {
         list_url = i['list_url'];
         list_goto = i['list_goto'];
         showCard_goto = i['showCard_goto'];
         showCard_url = i['showCard_url'];
       }
     }
-    if (showCard_url != null && showCard_url != ''){
-      Timer(const Duration(seconds: 1), () {
+    if (showCard_url != null && showCard_url != '') {
+      Timer(const Duration(seconds: 2), () {
         showDialogCard();
       });
     }
