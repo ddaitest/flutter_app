@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_app/manager/main_model.dart';
 import 'package:flutter_app/manager/manager.dart';
 import 'package:flutter_app/common/common.dart';
+import 'package:flutter_app/common/ItemView2.dart';
+import 'package:flutter_app/pages/search.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 class FirstTab extends StatefulWidget {
   @override
@@ -27,7 +31,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
           onPressed: null,
           child: Icon(Icons.add),
         ),
-        body: getView());
+        body: getBodyView(context));
 //        body: getContent());
   }
 
@@ -38,7 +42,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   }
 
   void _loadData() async {
-    showDialogCard();
+//    showDialogCard();
     String dataURL = "http://39.96.16.125:8082/api/event/";
     http.Response response = await http.get(dataURL);
     print("DDAI= end=${response.body}");
@@ -52,43 +56,103 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
     });
   }
 
-  getView() {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Card(
-            color: Colors.blue,
-            child: getSearchView(),
+  getBodyView(BuildContext context) {
+    var views = <Widget>[];
+    var model = MainModel.of(context);
+    //添加搜索
+    var searchCondition = model.getSearchCondition(true);
+    if (searchCondition != null) {
+      views.add(getSearchView(
+        searchCondition,
+        () {
+          print("11111");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SearchPage(findVehicle: true)),
+          ).then((map) {
+            print("callback = $map");
+          });
+        },
+        () {
+          print("22222");
+          model.updateSearchCondition(null);
+        },
+      ));
+    }
+    //添加banner
+    if (model.getBannerData() > 0) {
+      views.add(getBannerView());
+    }
+    //添加列表
+    views.add(Expanded(child: getListView()));
+
+    return Container(child: Column(children: views));
+  }
+
+  /// View: 当前搜索信息。
+  getSearchView(
+      SearchCondition condition, Function callSearch, Function callClean) {
+    return Card(
+      color: Colors.blue,
+      child: Container(
+        height: 50,
+        padding: EdgeInsets.only(left: 8, right: 8),
+        child: InkWell(
+          child: Row(
+            children: <Widget>[
+              SizedBox(width: 8),
+              Icon(Icons.search, color: Colors.white),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  getDesc(condition),
+                  style: TextStyle(color: Colors.white),
+                ),
+                flex: 1,
+              ),
+              InkWell(
+                child: Container(
+                  child: Icon(
+                    Icons.clear,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  padding: EdgeInsets.all(10),
+                ),
+                onTap: callClean,
+              ),
+            ],
           ),
-          Expanded(
-            child: getContent(),
-          ),
-        ],
+          onTap: callSearch,
+        ),
       ),
     );
   }
 
-  getSearchView() {
+  /// View: Banner
+  getBannerView() {
     return Container(
-      height: 50,
-      padding: EdgeInsets.only(left: 8, right: 8),
-      child: Row(
-        children: <Widget>[
-          Icon(Icons.search, color: Colors.white),
-          Expanded(
-            child: Text(
-              "筛选:北京->天津",
-              style: TextStyle(color: Colors.white),
-            ),
-            flex: 1,
-          ),
-          Icon(Icons.clear, color: Colors.white),
-        ],
+      height: 120,
+      child: new Swiper(
+        itemBuilder: (BuildContext context, int index) {
+          return new Image.network(
+            "http://b-ssl.duitang.com/uploads/item/201607/04/20160704170016_hytGj.thumb.700_0.jpeg",
+            fit: BoxFit.fitWidth,
+          );
+        },
+        itemHeight: 120,
+        itemCount: 3,
+        viewportFraction: 0.8,
+        scale: 0.9,
+        pagination: new SwiperPagination(),
+        control: new SwiperControl(),
       ),
     );
   }
 
-  getContent() {
+  /// View: 列表。
+  getListView() {
     if (data.length > 0) {
       return RefreshIndicator(
         key: _refreshIndicatorKey,
@@ -101,19 +165,14 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _list() {
-    return new ListView.builder(
+    return new ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
       itemCount: data.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _buildRow(data[index], index);
-      },
+      itemBuilder: (BuildContext context, int index) =>
+          ItemView2(data[index], index, 0),
+      separatorBuilder: (context, index) =>
+          Container(), //TODO wait to insert AD.
     ).build(context);
-  }
-
-  Widget _buildRow(Event event, int index) {
-    return new Card(
-      child: ItemView(event, index, 0),
-    );
   }
 
   @override

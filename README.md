@@ -1,11 +1,16 @@
 ## TODO
 - Client
-    - Search Page
+    - Search View
+    - Search Logic
+    - Banner View
+    - Banner Logic
     - State Model
     - About me
+    - Splash
+    - Home AD
+
 - Server
-    - API
-        - Search
-        - first & second page's API
-        - Upgrade
-    - File Download
+    - Search API
+    - first & second page's API
+    - Upgrade
+    - AD API

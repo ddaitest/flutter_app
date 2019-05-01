@@ -1,17 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/utils.dart';
+import 'package:flutter_app/manager/main_model.dart';
 import 'package:flutter_app/manager/manager.dart';
-
-//import 'package:flutter_app/common/DateUtil.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 final TextStyle fontTime = const TextStyle(
     fontSize: 18.0, fontWeight: FontWeight.w500, color: Colors.black87);
 final TextStyle fontTarget = const TextStyle(
     fontSize: 20.0, color: Colors.black87, fontWeight: FontWeight.bold);
 final TextStyle fontX = const TextStyle(fontSize: 14.0, color: Colors.black54);
-final TextStyle fontCall = TextStyle(
-    fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w500);
+final TextStyle fontCall =
+    TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w500);
+
+final dateFormat = DateFormat("M月d日");
+final timeFormat = DateFormat("HH:mm");
+
+///根据筛选条件，生成描述语句
+String getDesc(SearchCondition condition) {
+  String result = "筛选条件: ";
+  if (condition.time != null) {
+    final dt = new DateTime.fromMillisecondsSinceEpoch(condition.time);
+    var time = DateFormat("M月d日 HH:mm").format(dt);
+    result = result + "$time";
+  }
+  if (condition.pickup != null) {
+    result = result + " 从:${condition.pickup} ";
+  }
+  if (condition.dropoff != null) {
+    result = result + " 到:${condition.dropoff}";
+  }
+  return result;
+}
+
+getIcon(int type) {
+  if (type == 0) {
+    return Icons.departure_board;
+  } else {
+    return Icons.group_add;
+  }
+}
 
 class ItemView extends StatelessWidget {
   final Event event;
@@ -20,29 +47,13 @@ class ItemView extends StatelessWidget {
 
   ItemView(this.event, this.index, this.type);
 
-  void _launchcaller(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  _getIcon() {
-    if (type == 0) {
-      return Icons.departure_board;
-    } else {
-      return Icons.group_add;
-    }
-  }
-
   _getAvatar() {
     return Container(
       width: 50,
       margin: EdgeInsets.only(left: 16, right: 16),
       height: 50,
       child: Icon(
-        _getIcon(),
+        getIcon(type),
         color: Colors.white,
       ),
       decoration: BoxDecoration(
@@ -88,7 +99,7 @@ class ItemView extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 30),
-          child:Icon(
+            child: Icon(
               Icons.forward,
             ),
           ),
@@ -131,7 +142,7 @@ class ItemView extends StatelessWidget {
         )),
         FlatButton(
           onPressed: () {
-            _launchcaller('tel:' + event.phone);
+            launchcaller('tel:' + event.phone);
           },
           child: Row(
             children: <Widget>[
@@ -145,7 +156,10 @@ class ItemView extends StatelessWidget {
               ),
               Text(
                 "打电话",
-                style: TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500),
               ),
             ],
           ),

@@ -63,7 +63,10 @@ class MyHomeState extends State<HomePage>
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SearchPage()),
+                MaterialPageRoute(
+                    builder: (context) => SearchPage(
+                          findVehicle: page == 0,
+                        )),
               ).then((map) {
                 print("callback = $map");
               });
@@ -162,5 +165,4 @@ class MyHomeState extends State<HomePage>
 
   @override
   bool get wantKeepAlive => true;
-
 }
