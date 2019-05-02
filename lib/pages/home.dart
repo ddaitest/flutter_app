@@ -64,9 +64,7 @@ class MyHomeState extends State<HomePage>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => SearchPage(
-                          findVehicle: page == 0,
-                        )),
+                    builder: (context) => SearchPage(findVehicle: page == 0)),
               ).then((map) {
                 print("callback = $map");
               });
@@ -118,16 +116,9 @@ class MyHomeState extends State<HomePage>
         // set the tab bar as the child of bottom navigation bar
         child: new TabBar(
           tabs: <Tab>[
-            new Tab(
-              // set icon to the tab
-              icon: new Icon(Icons.directions_car),
-            ),
-            new Tab(
-              icon: new Icon(Icons.record_voice_over),
-            ),
-            new Tab(
-              icon: new Icon(Icons.build),
-            ),
+            new Tab(icon: new Icon(Icons.directions_car)),
+            new Tab(icon: new Icon(Icons.record_voice_over)),
+            new Tab(icon: new Icon(Icons.build)),
           ],
           // setup the controller
           controller: controller,

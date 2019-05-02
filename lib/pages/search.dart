@@ -69,7 +69,7 @@ class MyCustomFormState extends State<MyCustomForm> {
       _fromTime.minute,
     );
 
-    model.updateSearchCondition(new SearchCondition(
+    model.updateSearchCondition(findVehicle,new SearchCondition(
         pickup: myControllerStart.text,
         dropoff: myControllerEnd.text,
         time: x.millisecondsSinceEpoch));

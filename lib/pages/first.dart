@@ -17,14 +17,16 @@ class FirstTab extends StatefulWidget {
 }
 
 class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
-  final List<Event> data = new List();
+//  final List<Event> data = new List();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
+  MainModel model;
 
   @override
   Widget build(BuildContext context) {
+    model = model ?? MainModel.of(context);
     return new Scaffold(
         key: _scaffoldKey,
         floatingActionButton: FloatingActionButton(
@@ -32,33 +34,19 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
           child: Icon(Icons.add),
         ),
         body: getBodyView(context));
-//        body: getContent());
   }
 
   @override
   void initState() {
     super.initState();
-    _loadData();
-  }
-
-  void _loadData() async {
-//    showDialogCard();
-    String dataURL = "http://39.96.16.125:8082/api/event/";
-    http.Response response = await http.get(dataURL);
-    print("DDAI= end=${response.body}");
-    final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
-    final newData = parsed.map<Event>((json) => Event.fromJson(json)).toList();
-    data.clear();
-    data.addAll(newData);
-    setState(() {
-      data.clear();
-      data.addAll(newData);
+    Future.delayed(Duration.zero, () {
+      model = model ?? MainModel.of(context);
+      model.queryVehicleList(0);
     });
   }
 
   getBodyView(BuildContext context) {
     var views = <Widget>[];
-    var model = MainModel.of(context);
     //添加搜索
     var searchCondition = model.getSearchCondition(true);
     if (searchCondition != null) {
@@ -76,7 +64,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
         },
         () {
           print("22222");
-          model.updateSearchCondition(null);
+          model.updateSearchCondition(true, null);
         },
       ));
     }
@@ -153,10 +141,10 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
 
   /// View: 列表。
   getListView() {
-    if (data.length > 0) {
+    if (model.getVehicleList().length > 0) {
       return RefreshIndicator(
         key: _refreshIndicatorKey,
-        onRefresh: () => new Future(() => _loadData()),
+        onRefresh: () => new Future(() => model.queryVehicleList(0)),
         child: _list(),
       );
     } else {
@@ -165,6 +153,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _list() {
+    var data = model.getVehicleList();
     return new ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
       itemCount: data.length,
@@ -178,30 +167,30 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  Future<void> showDialogCard() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: true, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SingleChildScrollView(
-            child: Image.asset(
-              'images/DialogAd.png',
-              fit: BoxFit.cover,
-              width: 300,
-              height: 500,
-            ),
-          ),
-//          actions: <Widget>[
-//            FlatButton(
-//              child: Text('继续'),
-//              onPressed: () {
-//                Navigator.of(context).pop();
-//              },
+//  Future<void> showDialogCard() async {
+//    return showDialog<void>(
+//      context: context,
+//      barrierDismissible: true, // user must tap button!
+//      builder: (BuildContext context) {
+//        return AlertDialog(
+//          content: SingleChildScrollView(
+//            child: Image.asset(
+//              'images/DialogAd.png',
+//              fit: BoxFit.cover,
+//              width: 300,
+//              height: 500,
 //            ),
-//          ],
-        );
-      },
-    );
-  }
+//          ),
+////          actions: <Widget>[
+////            FlatButton(
+////              child: Text('继续'),
+////              onPressed: () {
+////                Navigator.of(context).pop();
+////              },
+////            ),
+////          ],
+//        );
+//      },
+//    );
+//  }
 }
