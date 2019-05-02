@@ -26,7 +26,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    model = model ?? MainModel.of(context);
+    model = MainModel.of(context);
     return new Scaffold(
         key: _scaffoldKey,
         floatingActionButton: FloatingActionButton(
@@ -40,8 +40,8 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      model = model ?? MainModel.of(context);
-      model.queryVehicleList(0);
+//      model = model ?? MainModel.of(context);
+      MainModel.of(context).queryVehicleList(0);
     });
   }
 
@@ -49,6 +49,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
     var views = <Widget>[];
     //添加搜索
     var searchCondition = model.getSearchCondition(true);
+    print("getBodyView searchCondition=$searchCondition");
     if (searchCondition != null) {
       views.add(getSearchView(
         searchCondition,

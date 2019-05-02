@@ -8,8 +8,6 @@ import 'package:equatable/equatable.dart';
 import 'package:dio/dio.dart';
 
 class MainModel extends Model {
-
-
   /// Wraps [ScopedModel.of] for this [Model].
   static MainModel of(BuildContext context) =>
       ScopedModel.of<MainModel>(context, rebuildOnChange: true);
@@ -28,6 +26,7 @@ class MainModel extends Model {
 
   ///更新筛选条件
   updateSearchCondition(bool forFindVehicle, SearchCondition newCondition) {
+//        _findVehicle = newCondition;
     if (forFindVehicle) {
       //如果条件改变，根据新的条件，刷新数据
       if (_findVehicle != newCondition) {
@@ -100,7 +99,8 @@ class MainModel extends Model {
 
 ///搜索条件
 class SearchCondition extends Equatable {
-  SearchCondition({this.time, this.pickup, this.dropoff});
+  SearchCondition({this.time, this.pickup, this.dropoff})
+      : super([time, pickup, dropoff]);
 
   ///时间
   num time;
