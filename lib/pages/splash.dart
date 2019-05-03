@@ -19,7 +19,7 @@ final TextStyle splashFont = const TextStyle(
     fontWeight: FontWeight.w500,
     color: Colors.white);
 final TextStyle splashFontNow = const TextStyle(
-    fontSize: 20.0, fontWeight: FontWeight.w500, color: Colors.white);
+    fontSize: 20.0, fontWeight: FontWeight.w500, color: Colors.black);
 
 // 闪屏展示页面，首次安装时展示可滑动页面，第二次展示固定图片
 class SplashState extends State<SplashPage> {
@@ -36,8 +36,8 @@ class SplashState extends State<SplashPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       fristShowWelcome = prefs.getBool("welcome") ?? true;
-      splash_url = prefs.getString("splash_url") ?? '';
-      splash_goto = prefs.getString("splash_goto") ?? '';
+      splash_url = prefs.getString("splash_url") ?? null;
+      splash_goto = prefs.getString("splash_goto") ?? null;
       showUpdate = prefs.getBool("update") ?? false;
       mustUpdate = prefs.getBool("mustUpdate") ?? true;
       updateURL = prefs.getString("updateURL") ?? "http://www.baidu.com";
@@ -107,7 +107,7 @@ class SplashState extends State<SplashPage> {
 
   _getWelcome() {
     return Container(
-      color: Colors.blue,
+//      color: Colors.blue,
       constraints: BoxConstraints.expand(
         width: double.infinity,
         height: double.infinity,
@@ -138,7 +138,7 @@ class SplashState extends State<SplashPage> {
                   EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15),
               child: Text(
                 '立即启程',
-                style: splashFontNow,
+                style: TextStyle(fontSize: 20, color: Colors.black),
               ),
             ),
           ),

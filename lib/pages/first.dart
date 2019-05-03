@@ -62,6 +62,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   }
 
   void _loadData() async {
+    upgradeCard();
     String dataURL = "http://39.96.16.125:8082/api/event/";
     http.Response response = await http.get(dataURL);
     print("DDAI= end=${response.body}");
@@ -130,6 +131,56 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
                 fit: BoxFit.cover,
                 width: 500,
                 height: 300,
+              ),
+            ));
+      },
+    );
+  }
+
+  Future<void> upgradeCard() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+            backgroundColor: Colors.transparent,
+            content: Container(
+              width: 400,
+              height: 400,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: ExactAssetImage('images/Upgrade_Card.png'),
+                    fit: BoxFit.cover),
+              ),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.bottomCenter,
+                    margin: EdgeInsets.only(top: 180.0),
+                    child: Text(
+                      "1、在你需要的每个地方\n2、载着你去往每个地方\n3、无佣金，乘客少花钱\n4、不抽成，车主多挣钱",
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.fromLTRB(15, 42, 15, 40),
+                    child: MaterialButton(
+                      minWidth: 250,
+                      height: 50,
+                      color: Colors.blue,
+                      onPressed: null,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
+//                      padding: EdgeInsets.only(
+//                          top: 10, bottom: 10, left: 15, right: 15),
+                      child: Text(
+                        '立即更新',
+                        style: TextStyle(fontSize: 17, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ));
       },

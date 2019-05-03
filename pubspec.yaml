@@ -71,6 +71,7 @@ flutter:
     - images/splash_ad.png
     - images/DialogAd.png
     - images/welcome.png
+    - images/Upgrade_Card.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
