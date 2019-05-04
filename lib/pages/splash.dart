@@ -24,12 +24,12 @@ final TextStyle splashFontNow = const TextStyle(
 // 闪屏展示页面，首次安装时展示可滑动页面，第二次展示固定图片
 class SplashState extends State<SplashPage> {
   bool fristShowWelcome = true;
-  bool mustUpdate = false;
-  bool showUpdate = true;
   String splash_url;
   String splash_goto;
-  String updateURL;
-  String updateMessage;
+  String showCard_url;
+  String showCard_goto;
+  String list_url;
+  String list_goto;
 
   initValue() async {
     _getAdData();
@@ -38,12 +38,7 @@ class SplashState extends State<SplashPage> {
       fristShowWelcome = prefs.getBool("welcome") ?? true;
       splash_url = prefs.getString("splash_url") ?? null;
       splash_goto = prefs.getString("splash_goto") ?? null;
-      showUpdate = prefs.getBool("update") ?? false;
-      mustUpdate = prefs.getBool("mustUpdate") ?? true;
-      updateURL = prefs.getString("updateURL") ?? "http://www.baidu.com";
-      updateMessage = prefs.getString("updateMessage") ?? "11111";
-
-      if (showUpdate == false && fristShowWelcome == false) {
+      if (fristShowWelcome == false) {
         Timer(const Duration(seconds: 3), () {
           _goHomepage();
         });
@@ -59,20 +54,26 @@ class SplashState extends State<SplashPage> {
       for (var i in datalist) {
         splash_url = i['splash_url'];
         splash_goto = i['splash_goto'];
+        showCard_url = i['showCard_url'];
+        showCard_goto = i['showCard_goto'];
+        list_url = i['list_url'];
+        list_goto = i['list_goto'];
       }
       SharedPreferences sharedPreferences =
           await SharedPreferences.getInstance();
       sharedPreferences.setString("splash_url", splash_url);
       sharedPreferences.setString("splash_goto", splash_goto);
+      sharedPreferences.setString("showCard_url", showCard_url);
+      sharedPreferences.setString("showCard_goto", showCard_goto);
+      sharedPreferences.setString("list_url", list_url);
+      sharedPreferences.setString("list_goto", list_goto);
     }
     print('LC ############# $splash_url');
     print('LC ############# $splash_goto');
   }
 
   _getContent() {
-    if (showUpdate == true) {
-      return _getUpgrade();
-    } else if (fristShowWelcome == true) {
+    if (fristShowWelcome == true) {
       return _getWelcome();
     } else {
       return _getSplash();
@@ -83,10 +84,6 @@ class SplashState extends State<SplashPage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool("welcome", false);
     _goHomepage();
-  }
-
-  clickUpgrade() {
-    launch(updateURL);
   }
 
   @override
@@ -155,21 +152,7 @@ class SplashState extends State<SplashPage> {
   }
 
   _getSplash() {
-    if (splash_url == null) {
-      return Image.asset(
-        'images/Splash_first.png',
-        color: Colors.white,
-        width: 150.0,
-        height: 150.0,
-      );
-    } else if (splash_url == '') {
-      return Image.asset(
-        'images/Splash_first.png',
-        color: Colors.white,
-        width: 150.0,
-        height: 150.0,
-      );
-    } else {
+    if (splash_url != null) {
       return GestureDetector(
         onTap: () {
           launch(splash_goto);
@@ -186,105 +169,15 @@ class SplashState extends State<SplashPage> {
               ),
             )),
       );
-    }
-  }
-
-  _getUpgrade() {
-    if (mustUpdate == true) {
-      return Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.blue,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 200),
-              child: Text(
-                "这是普通升级",
-                style: fontCall,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 100),
-              child: Text(
-                updateMessage,
-                style: fontCall,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 100),
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                ),
-                onPressed: clickUpgrade,
-                child: Text("立刻更新"),
-              ),
-            )
-          ],
-        ),
-      );
     } else {
       return Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Colors.blue,
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 200),
-              child: Text(
-                "这是强制升级",
-                style: fontCall,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 100),
-              child: Text(
-                updateMessage,
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 100),
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 30.0),
-                    child: FlatButton(
-                      color: Colors.white,
-                      shape: BeveledRectangleBorder(
-                        side: BorderSide(
-                          color: Colors.white,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                      onPressed: clickUpgrade,
-                      child: Text("立刻更新"),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 5.0),
-                    child: FlatButton(
-                      color: Colors.white,
-                      shape: BeveledRectangleBorder(
-                        side: BorderSide(
-                          color: Colors.white,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                      onPressed: _goHomepage,
-                      child: Text("跳过"),
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
+        constraints: BoxConstraints.expand(
+          width: double.infinity,
+          height: double.infinity,
+        ),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: ExactAssetImage('images/welcome.png'), fit: BoxFit.cover),
         ),
       );
     }
