@@ -213,13 +213,40 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
 
   Widget _list() {
     return new ListView.separated(
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: data.length,
-      itemBuilder: (BuildContext context, int index) =>
-          ItemView2(data[index], index, 0),
-      separatorBuilder: (context, index) =>
-          Container(), //TODO wait to insert AD.
-    ).build(context);
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: data.length,
+        itemBuilder: (BuildContext context, int index) =>
+            ItemView2(data[index], index, 0),
+        separatorBuilder: (BuildContext context, int index) {
+          if (index == 1) {
+            if (list_url != null ||
+                list_url.isNotEmpty ||
+                list_goto != null ||
+                list_goto.isNotEmpty) {
+              return Card(
+                margin: EdgeInsets.all(8),
+                child: Container(
+                  padding: EdgeInsets.all(1),
+                  child: Card(
+                    child: GestureDetector(
+                      onTap: () {
+                        launch(list_goto);
+                      },
+                      child: CachedNetworkImage(
+                        imageUrl: list_url,
+                        fit: BoxFit.fitWidth,
+                        width: 500,
+                        height: 130,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
+          } else {
+            return Container();
+          }
+        }).build(context);
   }
 
   @override
