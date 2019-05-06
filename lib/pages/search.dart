@@ -69,25 +69,43 @@ class MyCustomFormState extends State<MyCustomForm> {
       _fromTime.minute,
     );
 
-    model.updateSearchCondition(findVehicle,new SearchCondition(
-        pickup: myControllerStart.text,
-        dropoff: myControllerEnd.text,
-        time: x.millisecondsSinceEpoch));
+    model.updateSearchCondition(
+        findVehicle,
+        new SearchCondition(
+            pickup: myControllerStart.text,
+            dropoff: myControllerEnd.text,
+            time: x.millisecondsSinceEpoch));
     Navigator.pop(context);
   }
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      print("ERROR. initState work");
+      model = model ?? MainModel.of(context);
+      var condition = model.getSearchCondition(findVehicle);
+      if (condition != null) {
+        if (condition.pickup != null) {
+          myControllerStart.text = condition.pickup;
+        }
+        if (condition.dropoff != null) {
+          myControllerEnd.text = condition.dropoff;
+        }
+        if (condition.time != null) {
+          setState(() {
+            _fromDate = DateTime.fromMillisecondsSinceEpoch(condition.time);
+            _fromTime = TimeOfDay.fromDateTime(_fromDate);
+          });
+        }
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    model = MainModel.of(context);
-    var condition = model.getSearchCondition(findVehicle);
-    if (condition != null) {
-      if (condition.pickup != null) {
-        myControllerStart.text = condition.pickup;
-      }
-      if (condition.dropoff != null) {
-        myControllerEnd.text = condition.dropoff;
-      }
-    }
+    model = model ?? MainModel.of(context);
+    print("ERROR. build work");
     // Build a Form widget using the _formKey we created above
     return Form(
       key: _formKey,

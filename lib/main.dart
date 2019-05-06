@@ -13,17 +13,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("ERROR. MyApp.build ${context.hashCode}");
     API.init();
     return new ScopedModel<MainModel>(
         model: mainModel,
         child: new MaterialApp(
           debugShowCheckedModeBanner: false,
           home: new SplashPage(),
-          routes: <String, WidgetBuilder>{
-            '/publish': (BuildContext context) => PublishPage(),
-            '/search': (BuildContext context) => SearchPage(),
-          },
+//          routes: <String, WidgetBuilder>{
+//            '/publish': (BuildContext context) => PublishPage(),
+//            '/search': (BuildContext context) => SearchPage(),
+//          },
         ));
   }
 }
