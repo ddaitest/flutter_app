@@ -18,6 +18,7 @@ class API {
       return response; // continue
     },
     onError: (DioError e) {
+      print("xx ${e.message}");
       return e; //continue
     },
   );

@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_app/log/log.dart';
 import 'package:flutter_app/manager/main_model.dart';
-import 'package:flutter_app/manager/manager.dart';
 import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/common/ItemView2.dart';
 import 'package:flutter_app/pages/search.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
@@ -27,6 +26,8 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     model = MainModel.of(context);
+    print("WARN. build  model=${model.hashCode}; context=${context.hashCode}");
+//    model.queryVehicleList(0);
     return new Scaffold(
         key: _scaffoldKey,
         floatingActionButton: FloatingActionButton(
@@ -40,8 +41,10 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-//      model = model ?? MainModel.of(context);
-      MainModel.of(context).queryVehicleList(0);
+      var x = MainModel.of(context);
+      x.queryVehicleList(0);
+      print("WARN. initState  model=${model.hashCode}; context=${context.hashCode}");
+//      MainModel.of(context).queryVehicleList(0);
     });
   }
 
@@ -125,8 +128,9 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
       height: 120,
       child: new Swiper(
         itemBuilder: (BuildContext context, int index) {
-          return new Image.network(
-            "http://b-ssl.duitang.com/uploads/item/201607/04/20160704170016_hytGj.thumb.700_0.jpeg",
+          return Image(
+            image: new CachedNetworkImageProvider(
+                "https://desk-fd.zol-img.com.cn/t_s720x360c5/g5/M00/03/02/ChMkJ1v9A1mIN_iKABERj1MSlcQAAtatAEvvFEAERGn385.jpg"),
             fit: BoxFit.fitWidth,
           );
         },
@@ -142,7 +146,9 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
 
   /// View: 列表。
   getListView() {
-    if (model.getVehicleList().length > 0) {
+    var listData = model.getVehicleList();
+    print("====== listData = ${listData.length} @ ${model.hashCode}");
+    if (listData.length > 0) {
       return RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: () => new Future(() => model.queryVehicleList(0)),

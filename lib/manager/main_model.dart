@@ -3,7 +3,6 @@ import 'package:flutter_app/manager/api.dart';
 import 'dart:convert';
 import 'package:flutter_app/manager/manager.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:http/http.dart' as http;
 import 'package:equatable/equatable.dart';
 import 'package:dio/dio.dart';
 
@@ -63,11 +62,11 @@ class MainModel extends Model {
       dropOff: condition.dropoff,
       time: condition.time,
     );
-    print("DDAI= end=${response.data.toString()}");
     final parsed = response.data.cast<Map<String, dynamic>>();
     final newData = parsed.map<Event>((json) => Event.fromJson(json)).toList();
     _vehicleList.clear();
     _vehicleList.addAll(newData);
+    print("====== notifyListeners ${newData.length}");
     notifyListeners();
   }
 

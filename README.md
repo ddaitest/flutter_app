@@ -1,16 +1,17 @@
 ## TODO
 - Client
-    - Search View
-    - Search Logic
-    - Banner View
+    - List load more.
+    - scoped model instance changed.
+    - search text field's value changed.
     - Banner Logic
-    - State Model
     - About me
     - Splash
     - Home AD
 
 - Server
     - Search API
+    - Banner API
     - first & second page's API
     - Upgrade
     - AD API
+    - https
