@@ -8,7 +8,7 @@ import 'package:flutter_app/pages/splash.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:flutter_jpush/flutter_jpush.dart';
+//import 'package:flutter_jpush/flutter_jpush.dart';
 import 'dart:io';
 //import 'package:flutter_umeng_analytics/flutter_umeng_analytics.dart';
 
@@ -27,7 +27,7 @@ class MyAppState extends State<MyApp> {
     super.initState();
 //    _umeng();
 //    UMengAnalytics.beginPageView("StartUp");
-    _startupJpush();
+//    _startupJpush();
   }
 
   @override
@@ -44,11 +44,11 @@ class MyAppState extends State<MyApp> {
         ));
   }
 
-  void _startupJpush() async {
-    print("初始化jpush");
-    await FlutterJPush.startup();
-    print("初始化jpush成功");
-  }
+//  void _startupJpush() async {
+//    print("初始化jpush");
+//    await FlutterJPush.startup();
+//    print("初始化jpush成功");
+//  }
 
 //  _umeng()async{
 //    if (Platform.isAndroid)
