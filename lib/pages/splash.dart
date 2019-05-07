@@ -161,12 +161,11 @@ class SplashState extends State<SplashPage> {
               width: double.infinity,
               height: double.infinity,
             ),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(splash_url),
-                fit: BoxFit.cover,
-              ),
-            )),
+            child: CachedNetworkImage(
+              imageUrl: splash_url,
+              fit: BoxFit.cover,
+            ),
+            decoration: BoxDecoration()),
       );
     } else {
       return Container(
