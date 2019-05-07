@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_app/manager/api.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -47,12 +48,10 @@ class SplashState extends State<SplashPage> {
     });
   }
 
-  _getAdData() async {
-    String apiUrl = "http://34.92.69.146:5000/api/ad/";
-    var response = await http.get(apiUrl);
-    if (response.statusCode == 200) {
-      List datalist = jsonDecode(response.body);
-      for (var i in datalist) {
+  ///广告数据
+  _getAdData() {
+    ApiForAd().request().then((str) async {
+      for (var i in str) {
         splash_url = i['splash_url'];
         splash_goto = i['splash_goto'];
         showCard_url = i['showCard_url'];
@@ -68,9 +67,9 @@ class SplashState extends State<SplashPage> {
       sharedPreferences.setString("showCard_goto", showCard_goto);
       sharedPreferences.setString("list_url", list_url);
       sharedPreferences.setString("list_goto", list_goto);
-    }
-    print('LC ############# $splash_url');
-    print('LC ############# $splash_goto');
+      print('LC ############# $splash_url');
+      print('LC ############# $splash_goto');
+    });
   }
 
   _getContent() {

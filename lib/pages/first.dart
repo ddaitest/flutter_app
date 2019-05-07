@@ -207,10 +207,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
             ItemView2(data[index], index, 0),
         separatorBuilder: (BuildContext context, int index) {
           if (index == 1) {
-            if (list_url != null ||
-                list_url.isNotEmpty ||
-                list_goto != null ||
-                list_goto.isNotEmpty) {
+            if (list_url != null || list_goto != null) {
               return Card(
                 margin: EdgeInsets.all(8),
                 child: Container(
@@ -229,6 +226,8 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
                   ),
                 ),
               );
+            } else {
+              return Container();
             }
           } else {
             return Container();
