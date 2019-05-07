@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_app/log/log.dart';
 import 'package:flutter_app/manager/main_model.dart';
@@ -6,7 +7,10 @@ import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/common/ItemView2.dart';
 import 'package:flutter_app/pages/search.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FirstTab extends StatefulWidget {
   @override
@@ -22,30 +26,65 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   MainModel model;
+  String showCard_url;
+  String showCard_goto;
+  String list_url;
+  String list_goto;
+  bool mustUpdate;
+  bool showUpdate;
+  String updateURL;
+  String updateMessage;
+  bool canClose;
 
   @override
   Widget build(BuildContext context) {
     model = MainModel.of(context);
     print("WARN. build  model=${model.hashCode}; context=${context.hashCode}");
 //    model.queryVehicleList(0);
-    return new Scaffold(
-        key: _scaffoldKey,
-        floatingActionButton: FloatingActionButton(
-          onPressed: null,
-          child: Icon(Icons.add),
-        ),
-        body: getBodyView(context));
+    return new Scaffold(key: _scaffoldKey, body: getBodyView(context));
+  }
+
+  initValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      showCard_url = prefs.getString("showCard_url") ?? null;
+      showCard_goto = prefs.getString("showCard_goto") ?? null;
+      list_url = prefs.getString("list_url") ?? null;
+      list_goto = prefs.getString("list_goto") ?? null;
+    });
+    _getUpgradeData();
   }
 
   @override
   void initState() {
     super.initState();
+    initValue();
     Future.delayed(Duration.zero, () {
       var x = MainModel.of(context);
       x.queryVehicleList(0);
-      print("WARN. initState  model=${model.hashCode}; context=${context.hashCode}");
+      print(
+          "WARN. initState  model=${model.hashCode}; context=${context.hashCode}");
 //      MainModel.of(context).queryVehicleList(0);
     });
+  }
+
+  _getUpgradeData() async {
+    String apiUrl = "http://34.92.69.146:5000/api/update/";
+    var response = await http.get(apiUrl);
+    if (response.statusCode == 200) {
+      List datalist = jsonDecode(response.body);
+      for (var i in datalist) {
+        showUpdate = i['show_update'];
+        mustUpdate = i['must_update'];
+        updateURL = i['update_url'];
+        updateMessage = i['update_message'];
+      }
+    }
+    if (showUpdate == true && showUpdate != null) {
+      upgradeCard();
+    } else {
+      showDialogCard();
+    }
   }
 
   getBodyView(BuildContext context) {
@@ -162,42 +201,128 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   Widget _list() {
     var data = model.getVehicleList();
     return new ListView.separated(
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: data.length,
-      itemBuilder: (BuildContext context, int index) =>
-          ItemView2(data[index], index, 0),
-      separatorBuilder: (context, index) =>
-          Container(), //TODO wait to insert AD.
-    ).build(context);
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: data.length,
+        itemBuilder: (BuildContext context, int index) =>
+            ItemView2(data[index], index, 0),
+        separatorBuilder: (BuildContext context, int index) {
+          if (index == 1) {
+            if (list_url != null ||
+                list_url.isNotEmpty ||
+                list_goto != null ||
+                list_goto.isNotEmpty) {
+              return Card(
+                margin: EdgeInsets.all(8),
+                child: Container(
+                  padding: EdgeInsets.all(1),
+                  child: Card(
+                    child: GestureDetector(
+                        onTap: () {
+                          launch(list_goto);
+                        },
+                        child: Image(
+                          image: CachedNetworkImageProvider(list_url),
+                          fit: BoxFit.fitWidth,
+                          width: 500,
+                          height: 130,
+                        )),
+                  ),
+                ),
+              );
+            }
+          } else {
+            return Container();
+          }
+        }).build(context);
   }
 
   @override
   bool get wantKeepAlive => true;
 
-//  Future<void> showDialogCard() async {
-//    return showDialog<void>(
-//      context: context,
-//      barrierDismissible: true, // user must tap button!
-//      builder: (BuildContext context) {
-//        return AlertDialog(
-//          content: SingleChildScrollView(
-//            child: Image.asset(
-//              'images/DialogAd.png',
-//              fit: BoxFit.cover,
-//              width: 300,
-//              height: 500,
-//            ),
-//          ),
-////          actions: <Widget>[
-////            FlatButton(
-////              child: Text('继续'),
-////              onPressed: () {
-////                Navigator.of(context).pop();
-////              },
-////            ),
-////          ],
-//        );
-//      },
-//    );
-//  }
+  Future<void> showDialogCard() async {
+    if (showCard_url != null && showCard_goto != null) {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: true, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+              backgroundColor: Colors.transparent,
+              content: GestureDetector(
+                onTap: () {
+                  launch(showCard_goto);
+                  Navigator.of(context).pop();
+                },
+                child: CachedNetworkImage(
+                  imageUrl: showCard_url,
+                  fit: BoxFit.cover,
+                  width: 500,
+                  height: 300,
+                ),
+              ));
+        },
+      );
+    }
+  }
+
+  _canCloseUpdateCard() {
+    if (mustUpdate == true) {
+      canClose = false;
+    } else {
+      canClose = true;
+    }
+    return canClose;
+  }
+
+  Future<void> upgradeCard() async {
+    if (updateURL != null && updateMessage != null) {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: _canCloseUpdateCard(), // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+              backgroundColor: Colors.transparent,
+              content: Container(
+                height: 400,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: ExactAssetImage('images/Upgrade_Card.png'),
+                      fit: BoxFit.cover),
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.bottomLeft,
+                      margin: EdgeInsets.only(left: 30.0, top: 180.0),
+                      child: Text(
+                        updateMessage,
+                        textAlign: TextAlign.left,
+                        softWrap: true,
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.fromLTRB(15, 42, 15, 40),
+                      child: MaterialButton(
+                        minWidth: 250,
+                        height: 50,
+                        color: Colors.blue,
+                        onPressed: () {
+                          launch(updateURL);
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                        ),
+                        child: Text(
+                          '立即更新',
+                          style: TextStyle(fontSize: 17, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ));
+        },
+      );
+    }
+  }
 }

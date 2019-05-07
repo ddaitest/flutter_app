@@ -1,36 +1,45 @@
 import 'dart:async';
 import 'package:flutter_app/common/common.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:common_utils/common_utils.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SplashPage extends StatefulWidget {
   @override
   SplashState createState() => SplashState();
 }
 
+final TextStyle splashFont = const TextStyle(
+    fontSize: 27.0,
+    height: 1.5,
+    fontWeight: FontWeight.w500,
+    color: Colors.white);
+final TextStyle splashFontNow = const TextStyle(
+    fontSize: 20.0, fontWeight: FontWeight.w500, color: Colors.black);
+
 // 闪屏展示页面，首次安装时展示可滑动页面，第二次展示固定图片
 class SplashState extends State<SplashPage> {
   bool fristShowWelcome = true;
-  bool mustUpdate = false;
-  bool showUpdate = true;
-  String adShowUrl = 'https://img.zcool.cn/community/012de8571049406ac7251f05224c19.png@1280w_1l_2o_100sh.png';
-  String updateURL = '';
-  String updateMessage ='';
+  String splash_url;
+  String splash_goto;
+  String showCard_url;
+  String showCard_goto;
+  String list_url;
+  String list_goto;
 
   initValue() async {
+    _getAdData();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     setState(() {
       fristShowWelcome = prefs.getBool("welcome") ?? true;
-      showUpdate = prefs.getBool("update") ?? false;
-      mustUpdate = prefs.getBool("mustUpdate") ?? false;
-      updateURL = prefs.getString("updateURL") ?? "http://www.baidu.com";
-      updateMessage = prefs.getString("updateMessage") ?? "11111";
-
-      if (showUpdate == false && fristShowWelcome == false) {
+      splash_url = prefs.getString("splash_url") ?? null;
+      splash_goto = prefs.getString("splash_goto") ?? null;
+      if (fristShowWelcome == false) {
         Timer(const Duration(seconds: 3), () {
           _goHomepage();
         });
@@ -38,10 +47,34 @@ class SplashState extends State<SplashPage> {
     });
   }
 
+  _getAdData() async {
+    String apiUrl = "http://34.92.69.146:5000/api/ad/";
+    var response = await http.get(apiUrl);
+    if (response.statusCode == 200) {
+      List datalist = jsonDecode(response.body);
+      for (var i in datalist) {
+        splash_url = i['splash_url'];
+        splash_goto = i['splash_goto'];
+        showCard_url = i['showCard_url'];
+        showCard_goto = i['showCard_goto'];
+        list_url = i['list_url'];
+        list_goto = i['list_goto'];
+      }
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      sharedPreferences.setString("splash_url", splash_url);
+      sharedPreferences.setString("splash_goto", splash_goto);
+      sharedPreferences.setString("showCard_url", showCard_url);
+      sharedPreferences.setString("showCard_goto", showCard_goto);
+      sharedPreferences.setString("list_url", list_url);
+      sharedPreferences.setString("list_goto", list_goto);
+    }
+    print('LC ############# $splash_url');
+    print('LC ############# $splash_goto');
+  }
+
   _getContent() {
-    if (showUpdate == true) {
-      return _getUpgrade();
-    } else if (fristShowWelcome == true) {
+    if (fristShowWelcome == true) {
       return _getWelcome();
     } else {
       return _getSplash();
@@ -52,10 +85,6 @@ class SplashState extends State<SplashPage> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setBool("welcome", false);
     _goHomepage();
-  }
-
-  clickUpgrade() {
-    launch(updateURL);
   }
 
   @override
@@ -69,61 +98,50 @@ class SplashState extends State<SplashPage> {
     return new Scaffold(
       body: Container(
         color: Colors.blue,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: _getContent(),
-          ),
-        ),
+        child: _getContent(),
       ),
     );
   }
 
   _getWelcome() {
-    return <Widget>[
-      Image.asset(
-        'images/Splash_first.png',
-        color: Colors.white,
-        width: 150.0,
-        height: 150.0,
+    return Container(
+//      color: Colors.blue,
+      constraints: BoxConstraints.expand(
+        width: double.infinity,
+        height: double.infinity,
       ),
-      Text(
-        '无佣金，更快捷',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 34.0,
-        ),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: ExactAssetImage('images/welcome.png'), fit: BoxFit.cover),
       ),
-      Padding(
-        padding: const EdgeInsets.only(top: 70.0),
-        child: new Text(
-          '最后一公里不再难',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.bottomCenter,
+            child: Text("在你需要的每个地方\n载着你去往每个地方\n无佣金，乘客少花钱\n不抽成，车主多挣钱",
+                style: splashFont),
           ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(top: 100.0),
-        child: new MaterialButton(
-          onPressed: clickWelcome,
-          child: new Text(
-            '马上体验',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 24.0,
+          Container(
+            alignment: Alignment.center,
+            child: MaterialButton(
+              color: Colors.white,
+              onPressed: clickWelcome,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+              ),
+              padding:
+                  EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15),
+              child: Text(
+                '立即启程',
+                style: TextStyle(fontSize: 20, color: Colors.black),
+              ),
             ),
           ),
-          color: Colors.white,
-          splashColor: Colors.blue,
-        ),
+        ],
       ),
-    ];
+    );
   }
-
 
   _goHomepage() {
     Navigator.pushReplacement(
@@ -133,88 +151,34 @@ class SplashState extends State<SplashPage> {
   }
 
   _getSplash() {
-    if (adShowUrl == '') {
-      return <Widget>[
-        Image.asset(
-          'images/Splash_first.png',
-          color: Colors.white,
-          width: 150.0,
-          height: 150.0,
-        ),
-      ];
-    } else {
-      return <Widget>[
-        Image.network(
-          adShowUrl,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          fit: BoxFit.fill,
-        ),
-      ];
-    }
-  }
-
-  _getUpgrade() {
-    if (mustUpdate == true) {
-      return <Widget>[
-        Text(
-          "这是普通升级",
-          style: fontCall,
-        ),
-        Text(
-          updateMessage,
-          style: fontCall,
-        ),
-        RaisedButton(
-          onPressed: clickUpgrade,
-          child: Text("立刻更新"),
-        )
-      ];
-    } else {
-      return <Widget>[
-        Text(
-          "这是强制升级",
-          style: fontCall,
-        ),
-        Text(
-          updateMessage,
-          style: TextStyle(fontSize: 20, color: Colors.white),
-        ),
-        Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top:30.0),
-              child: FlatButton(
-                color: Colors.white,
-                shape: BeveledRectangleBorder(
-                  side: BorderSide(
-                    color: Colors.white,
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                onPressed: clickUpgrade,
-                child: Text("立刻更新"),
-              ),
+    if (splash_url != null) {
+      return GestureDetector(
+        onTap: () {
+          launch(splash_goto);
+        },
+        child: Container(
+            constraints: BoxConstraints.expand(
+              width: double.infinity,
+              height: double.infinity,
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 5.0),
-              child: FlatButton(
-                color: Colors.white,
-                shape: BeveledRectangleBorder(
-                  side: BorderSide(
-                    color: Colors.white,
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                onPressed: _goHomepage,
-                child: Text("跳过"),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: CachedNetworkImageProvider(splash_url),
+                fit: BoxFit.cover,
               ),
-            )
-          ],
-        )
-      ];
+            )),
+      );
+    } else {
+      return Container(
+        constraints: BoxConstraints.expand(
+          width: double.infinity,
+          height: double.infinity,
+        ),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: ExactAssetImage('images/welcome.png'), fit: BoxFit.cover),
+        ),
+      );
     }
   }
 }

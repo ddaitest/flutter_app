@@ -21,7 +21,6 @@ class ThirdTabState extends State<ThirdTab> {
   void initState() {
     super.initState();
     _getVersion();
-
   }
 
   @override
@@ -29,13 +28,13 @@ class ThirdTabState extends State<ThirdTab> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(top:100.0),
+          padding: EdgeInsets.only(top: 100.0),
           child: Image.asset(
             'images/icon.png',
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top:0.0),
+          padding: EdgeInsets.only(top: 0.0),
           child: Text(
             localVersionName,
             style: TextStyle(
@@ -47,7 +46,7 @@ class ThirdTabState extends State<ThirdTab> {
         Padding(
           padding: const EdgeInsets.only(top: 100.0),
           child: FlatButton(
-            onPressed: (){
+            onPressed: () {
               _launchcaller('tel:' + telphoneNum);
             },
             child: Column(
@@ -59,24 +58,10 @@ class ThirdTabState extends State<ThirdTab> {
               ],
             ),
           ),
-              ),
-        Padding(
-            padding: const EdgeInsets.only(top: 40.0),
-            child: FlatButton(
-              onPressed: _aboutURL,
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    '公司网址：' + website,
-                    style: TextStyle(fontSize: 20, color: Colors.black),
-                  ),
-                ],
-              ),
-            ),
-          )
+        ),
       ],
     );
- }
+  }
 
   _getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -99,6 +84,7 @@ class ThirdTabState extends State<ThirdTab> {
   _aboutURL() async {
     launch('https://$website');
   }
+
 //
 //_updateURL() async {
 //  launch('http:///www.sina.com.cn');
