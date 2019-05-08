@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/manager/api.dart';
 import 'dart:convert';
-import 'package:flutter_app/manager/manager.dart';
+import 'package:flutter_app/manager/beans.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:dio/dio.dart';
@@ -25,7 +25,6 @@ class MainModel extends Model {
 
   ///更新筛选条件
   updateSearchCondition(bool forFindVehicle, SearchCondition newCondition) {
-//        _findVehicle = newCondition;
     if (forFindVehicle) {
       //如果条件改变，根据新的条件，刷新数据
       if (_findVehicle != newCondition) {

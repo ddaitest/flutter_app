@@ -21,4 +21,12 @@ class Event {
   }
 }
 
+class BannerInfo {
+  BannerInfo();
 
+  String id = "";
+
+  String image = "";
+  String action = "";
+
+}

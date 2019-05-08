@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/common/utils.dart';
 import 'package:flutter_app/manager/main_model.dart';
-import 'package:flutter_app/manager/manager.dart';
+import 'package:flutter_app/manager/beans.dart';
 import 'package:intl/intl.dart';
 
 final TextStyle fontTime = const TextStyle(

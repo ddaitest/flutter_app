@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/common/utils.dart';
-import 'package:flutter_app/manager/manager.dart';
+import 'package:flutter_app/manager/beans.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_app/common/common.dart';
