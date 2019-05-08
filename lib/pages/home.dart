@@ -66,7 +66,7 @@ class MyHomeState extends State<HomePage>
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SearchPage()),
+                  MaterialPageRoute(builder: (context) => SearchPage(findVehicle: page == 0)),
                 ).then((map) {
                   print("callback = $map");
                 });
@@ -89,9 +89,6 @@ class MyHomeState extends State<HomePage>
               ),
             ),
             SizedBox(width: 10),
-//          Padding(
-//            padding: const EdgeInsets.only(left: 30.0, right: 20.0),
-//            child:
 //          ),
           ],
         ),
@@ -114,16 +111,9 @@ class MyHomeState extends State<HomePage>
           // set the tab bar as the child of bottom navigation bar
           child: new TabBar(
             tabs: <Tab>[
-              new Tab(
-                // set icon to the tab
-                icon: new Icon(Icons.directions_car),
-              ),
-              new Tab(
-                icon: new Icon(Icons.record_voice_over),
-              ),
-              new Tab(
-                icon: new Icon(Icons.build),
-              ),
+              Tab(icon: Icon(Icons.directions_car)),
+              Tab(icon: Icon(Icons.record_voice_over)),
+              Tab(icon: Icon(Icons.build)),
             ],
             // setup the controller
             controller: controller,
@@ -133,7 +123,7 @@ class MyHomeState extends State<HomePage>
     );
   }
 
-  Future<void> showDialogCard() async {
+  showDialogCard() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -161,7 +151,7 @@ class MyHomeState extends State<HomePage>
   }
 
   //主界面back弹窗
-  Future<bool> _onWillPop() {
+  _onWillPop() {
     return showDialog(
           context: context,
           builder: (context) => AlertDialog(
