@@ -146,7 +146,8 @@ class MyCustomFormState extends State<MyCustomForm> {
           SizedBox(
             height: 16,
           ),
-          RaisedButton(
+          MaterialButton(
+            color: Colors.blue,
             onPressed: () {
               // Validate will return true if the form is valid, or false if
               // the form is invalid.
@@ -154,7 +155,10 @@ class MyCustomFormState extends State<MyCustomForm> {
                 _search();
               }
             },
-            child: Text('搜索'),
+            child: Text(
+              '搜索',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),

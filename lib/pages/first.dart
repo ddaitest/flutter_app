@@ -28,15 +28,8 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   MainModel model;
-  String showCard_url;
-  String showCard_goto;
-  String list_url;
-  String list_goto;
-  bool mustUpdate;
-  bool showUpdate;
-  String updateURL;
-  String updateMessage;
-  bool canClose;
+  String listUrl;
+  String listGoto;
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +40,9 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   initValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      showCard_url = prefs.getString("showCard_url") ?? null;
-      showCard_goto = prefs.getString("showCard_goto") ?? null;
-      list_url = prefs.getString("list_url") ?? null;
-      list_goto = prefs.getString("list_goto") ?? null;
+      listUrl = prefs.getString("list_url") ?? null;
+      listGoto = prefs.getString("list_goto") ?? null;
     });
-    _getUpgradeData();
   }
 
   @override
@@ -66,25 +56,6 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
       //加载 banner 数据
       x.queryBanner(true);
     });
-  }
-
-  _getUpgradeData() async {
-    String apiUrl = "http://34.92.69.146:5000/api/update/";
-    var response = await http.get(apiUrl);
-    if (response.statusCode == 200) {
-      List datalist = jsonDecode(response.body);
-      for (var i in datalist) {
-        showUpdate = i['show_update'];
-        mustUpdate = i['must_update'];
-        updateURL = i['update_url'];
-        updateMessage = i['update_message'];
-      }
-    }
-    if (showUpdate == true && showUpdate != null) {
-      upgradeCard();
-    } else {
-      showDialogCard();
-    }
   }
 
   getBodyView(BuildContext context) {
@@ -218,7 +189,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
             ItemView2(data[index], index, 0),
         separatorBuilder: (BuildContext context, int index) {
           if (index == 1) {
-            if (list_url != null || list_goto != null) {
+            if (listUrl != null || listGoto != null) {
               return Card(
                 margin: EdgeInsets.all(8),
                 child: Container(
@@ -226,10 +197,10 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
                   child: Card(
                     child: GestureDetector(
                         onTap: () {
-                          launch(list_goto);
+                          launch(listGoto);
                         },
                         child: Image(
-                          image: CachedNetworkImageProvider(list_url),
+                          image: CachedNetworkImageProvider(listUrl),
                           fit: BoxFit.fitWidth,
                           width: 500,
                           height: 130,
@@ -248,91 +219,4 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
 
   @override
   bool get wantKeepAlive => true;
-
-  Future<void> showDialogCard() async {
-    if (showCard_url != null && showCard_goto != null) {
-      return showDialog<void>(
-        context: context,
-        barrierDismissible: true, // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog(
-              backgroundColor: Colors.transparent,
-              content: GestureDetector(
-                onTap: () {
-                  launch(showCard_goto);
-                  Navigator.of(context).pop();
-                },
-                child: CachedNetworkImage(
-                  imageUrl: showCard_url,
-                  fit: BoxFit.cover,
-                  width: 500,
-                  height: 300,
-                ),
-              ));
-        },
-      );
-    }
-  }
-
-  _canCloseUpdateCard() {
-    if (mustUpdate == true) {
-      canClose = false;
-    } else {
-      canClose = true;
-    }
-    return canClose;
-  }
-
-  Future<void> upgradeCard() async {
-    if (updateURL != null && updateMessage != null) {
-      return showDialog<void>(
-        context: context,
-        barrierDismissible: _canCloseUpdateCard(), // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog(
-              backgroundColor: Colors.transparent,
-              content: Container(
-                height: 400,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: ExactAssetImage('images/Upgrade_Card.png'),
-                      fit: BoxFit.cover),
-                ),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.bottomLeft,
-                      margin: EdgeInsets.only(left: 30.0, top: 180.0),
-                      child: Text(
-                        updateMessage,
-                        textAlign: TextAlign.left,
-                        softWrap: true,
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.fromLTRB(15, 42, 15, 40),
-                      child: MaterialButton(
-                        minWidth: 250,
-                        height: 50,
-                        color: Colors.blue,
-                        onPressed: () {
-                          launch(updateURL);
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                        ),
-                        child: Text(
-                          '立即更新',
-                          style: TextStyle(fontSize: 17, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ));
-        },
-      );
-    }
-  }
 }

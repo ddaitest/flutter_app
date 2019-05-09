@@ -9,6 +9,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_app/manager/api.dart';
+import 'package:flutter_app/manager/main_model.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -26,49 +27,22 @@ final TextStyle splashFontNow = const TextStyle(
 // 闪屏展示页面，首次安装时展示可滑动页面，第二次展示固定图片
 class SplashState extends State<SplashPage> {
   bool fristShowWelcome = true;
-  String splash_url;
-  String splash_goto;
-  String showCard_url;
-  String showCard_goto;
-  String list_url;
-  String list_goto;
+  String splashUrl;
+  String splashGoto;
 
   initValue() async {
-    _getAdData();
+    MainModel().getAdData();
+    MainModel().getUpdateData();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       fristShowWelcome = prefs.getBool("welcome") ?? true;
-      splash_url = prefs.getString("splash_url") ?? null;
-      splash_goto = prefs.getString("splash_goto") ?? null;
+      splashUrl = prefs.getString("splash_url") ?? null;
+      splashGoto = prefs.getString("splash_goto") ?? null;
       if (fristShowWelcome == false) {
         Timer(const Duration(seconds: 3), () {
           _goHomepage();
         });
       }
-    });
-  }
-
-  ///广告数据
-  _getAdData() {
-    ApiForAd().request().then((str) async {
-      for (var i in str) {
-        splash_url = i['splash_url'];
-        splash_goto = i['splash_goto'];
-        showCard_url = i['showCard_url'];
-        showCard_goto = i['showCard_goto'];
-        list_url = i['list_url'];
-        list_goto = i['list_goto'];
-      }
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      sharedPreferences.setString("splash_url", splash_url);
-      sharedPreferences.setString("splash_goto", splash_goto);
-      sharedPreferences.setString("showCard_url", showCard_url);
-      sharedPreferences.setString("showCard_goto", showCard_goto);
-      sharedPreferences.setString("list_url", list_url);
-      sharedPreferences.setString("list_goto", list_goto);
-      print('LC ############# $splash_url');
-      print('LC ############# $splash_goto');
     });
   }
 
@@ -150,10 +124,10 @@ class SplashState extends State<SplashPage> {
   }
 
   _getSplash() {
-    if (splash_url != null) {
+    if (splashUrl != null) {
       return GestureDetector(
         onTap: () {
-          launch(splash_goto);
+          launch(splashGoto);
         },
         child: Container(
             constraints: BoxConstraints.expand(
@@ -161,7 +135,7 @@ class SplashState extends State<SplashPage> {
               height: double.infinity,
             ),
             child: CachedNetworkImage(
-              imageUrl: splash_url,
+              imageUrl: splashUrl,
               fit: BoxFit.cover,
             ),
             decoration: BoxDecoration()),

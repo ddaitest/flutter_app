@@ -22,6 +22,7 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
+  MainModel mainModel = MainModel();
   @override
   void initState() {
     super.initState();
@@ -33,7 +34,7 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return new ScopedModel<MainModel>(
-        model: MainModel(),
+        model: mainModel,
         child: new MaterialApp(
           debugShowCheckedModeBanner: false,
           home: new SplashPage(),
