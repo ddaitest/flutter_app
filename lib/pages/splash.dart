@@ -27,16 +27,17 @@ final TextStyle splashFontNow = const TextStyle(
 // 闪屏展示页面，首次安装时展示可滑动页面，第二次展示固定图片
 class SplashState extends State<SplashPage> {
   bool fristShowWelcome = true;
-  String splash_url;
-  String splash_goto;
+  String splashUrl;
+  String splashGoto;
 
   initValue() async {
     MainModel().getAdData();
+    MainModel().getUpdateData();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       fristShowWelcome = prefs.getBool("welcome") ?? true;
-      splash_url = prefs.getString("splash_url") ?? null;
-      splash_goto = prefs.getString("splash_goto") ?? null;
+      splashUrl = prefs.getString("splash_url") ?? null;
+      splashGoto = prefs.getString("splash_goto") ?? null;
       if (fristShowWelcome == false) {
         Timer(const Duration(seconds: 3), () {
           _goHomepage();
@@ -123,10 +124,10 @@ class SplashState extends State<SplashPage> {
   }
 
   _getSplash() {
-    if (splash_url != null) {
+    if (splashUrl != null) {
       return GestureDetector(
         onTap: () {
-          launch(splash_goto);
+          launch(splashGoto);
         },
         child: Container(
             constraints: BoxConstraints.expand(
@@ -134,7 +135,7 @@ class SplashState extends State<SplashPage> {
               height: double.infinity,
             ),
             child: CachedNetworkImage(
-              imageUrl: splash_url,
+              imageUrl: splashUrl,
               fit: BoxFit.cover,
             ),
             decoration: BoxDecoration()),

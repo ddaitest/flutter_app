@@ -1,3 +1,6 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_app/manager/api.dart';
+
 class Event {
   Event({this.time, this.start, this.end, this.phone, this.remark});
 
@@ -30,6 +33,7 @@ class BannerInfo {
   String action = "";
 }
 
+///广告数据映射
 class AdInfo {
   AdInfo(
       {this.splashUrl,
@@ -54,6 +58,26 @@ class AdInfo {
       showCardGoto: json['showCard_goto'],
       listUrl: json['list_url'],
       listGoto: json['list_goto'],
+    );
+  }
+}
+
+///升级数据映射
+class UpdateInfo {
+  UpdateInfo(
+      {this.updateMessage, this.updateUrl, this.mustUpdate, this.showUpdate});
+
+  String updateMessage;
+  String updateUrl;
+  bool mustUpdate;
+  bool showUpdate;
+
+  factory UpdateInfo.fromJson(Map<String, dynamic> json) {
+    return UpdateInfo(
+      updateMessage: json['update_message'],
+      updateUrl: json['update_url'],
+      mustUpdate: json['must_update'],
+      showUpdate: json['show_update'],
     );
   }
 }

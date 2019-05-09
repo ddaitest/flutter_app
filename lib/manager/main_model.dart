@@ -108,6 +108,18 @@ class MainModel extends Model {
     sharedPreferences.setString("list_url", data.listUrl);
     sharedPreferences.setString("list_goto", data.listGoto);
   }
+
+  ///升级数据
+  getUpdateData() async {
+    Response response = await ApiForUpdate.queryUpdateData();
+    final parsed = response.data;
+    final data = UpdateInfo.fromJson(parsed[0]);
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString("update_message", data.updateMessage);
+    sharedPreferences.setString("update_url", data.updateUrl);
+    sharedPreferences.setBool("must_update", data.mustUpdate);
+    sharedPreferences.setBool("show_update", data.showUpdate);
+  }
 }
 
 ///搜索条件
