@@ -22,11 +22,17 @@ class Event {
 }
 
 class BannerInfo {
-  BannerInfo();
+  BannerInfo({this.id, this.image, this.action});
 
   String id = "";
-
   String image = "";
   String action = "";
 
+  factory BannerInfo.fromJson(Map<String, dynamic> json) {
+    return BannerInfo(
+      id: json['id'],
+      image: json['image'],
+      action: json['action'],
+    );
+  }
 }

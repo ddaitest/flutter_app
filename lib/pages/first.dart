@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_app/common/utils.dart';
 import 'package:flutter_app/log/log.dart';
+import 'package:flutter_app/manager/beans.dart';
 import 'package:flutter_app/manager/main_model.dart';
 import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/common/ItemView2.dart';
@@ -39,8 +41,6 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     model = MainModel.of(context);
-    print("WARN. build  model=${model.hashCode}; context=${context.hashCode}");
-//    model.queryVehicleList(0);
     return new Scaffold(key: _scaffoldKey, body: getBodyView(context));
   }
 
@@ -61,10 +61,10 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
     initValue();
     Future.delayed(Duration.zero, () {
       var x = MainModel.of(context);
+      //加载 list 数据
       x.queryVehicleList(0);
-      print(
-          "WARN. initState  model=${model.hashCode}; context=${context.hashCode}");
-//      MainModel.of(context).queryVehicleList(0);
+      //加载 banner 数据
+      x.queryBanner(true);
     });
   }
 
@@ -112,8 +112,9 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
       ));
     }
     //添加banner
-    if (model.getBannerData() > 0) {
-      views.add(getBannerView());
+    var info = model.getBannerInfoList();
+    if (info > 0) {
+      views.add(getBannerView(info));
     }
     //添加列表
     views.add(Expanded(child: getListView()));
@@ -162,23 +163,33 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   }
 
   /// View: Banner
-  getBannerView() {
+  getBannerView(List<BannerInfo> infos) {
     return Container(
       height: 120,
       child: new Swiper(
         itemBuilder: (BuildContext context, int index) {
           return Image(
+//            image: new CachedNetworkImageProvider(
+//                "https://desk-fd.zol-img.com.cn/t_s720x360c5/g5/M00/03/02/ChMkJ1v9A1mIN_iKABERj1MSlcQAAtatAEvvFEAERGn385.jpg"),
+//            fit: BoxFit.fitWidth,
             image: new CachedNetworkImageProvider(
-                "https://desk-fd.zol-img.com.cn/t_s720x360c5/g5/M00/03/02/ChMkJ1v9A1mIN_iKABERj1MSlcQAAtatAEvvFEAERGn385.jpg"),
+                infos[index].image),
             fit: BoxFit.fitWidth,
           );
         },
         itemHeight: 120,
-        itemCount: 3,
+        itemCount: infos.length,
         viewportFraction: 0.8,
         scale: 0.9,
         pagination: new SwiperPagination(),
         control: new SwiperControl(),
+        onTap: (index){
+          try{
+          launchcaller(infos[index].action);
+          }catch(id){
+
+          }
+        },
       ),
     );
   }

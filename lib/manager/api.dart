@@ -54,6 +54,12 @@ class API {
       "time": time
     });
   }
+
+  static queryBanners(bool forFindVehicle) {
+    return dio.get("api/banner/", queryParameters: {
+      "page": forFindVehicle?"0":"1",
+    });
+  }
 }
 
 ///广告相关api请求

@@ -48,9 +48,14 @@ class MainModel extends Model {
   ///车找人的数据
   List<Event> _passengerList = new List();
 
+  ///车找人的数据
+  List<BannerInfo> _bannerList = new List();
+
   getVehicleList() => _vehicleList;
 
   getPassengerList() => _passengerList;
+
+  getBannerInfoList() => _bannerList;
 
   /// 请求 Vehicle List, num after 表示从哪个timestamp 开始load more.
   queryVehicleList(num after) async {
@@ -87,12 +92,16 @@ class MainModel extends Model {
   }
 
   //Search end.
-  ///Banner
-  num getBannerData() {
-    return 1;
+  queryBanner(bool forFindVehicle) async {
+//    var condition = _findVehicle ?? SearchCondition();
+    Response response = await API.queryBanners(forFindVehicle);
+    print("DDAI= end=${response.data}");
+    final parsed = json.decode(response.data).cast<Map<String, dynamic>>();
+    final newData = parsed.map<BannerInfo>((json) => BannerInfo.fromJson(json)).toList();
+    _bannerList.clear();
+    _bannerList.addAll(newData);
+    notifyListeners();
   }
-
-  queryBanner() {}
 }
 
 ///搜索条件
