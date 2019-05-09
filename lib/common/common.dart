@@ -26,7 +26,7 @@ String getDesc(SearchCondition condition) {
   if (condition.pickup != null && condition.pickup.isNotEmpty) {
     result = result + " 从:${condition.pickup} ";
   }
-  if (condition.dropoff != null && condition.dropoff.isNotEmpty ) {
+  if (condition.dropoff != null && condition.dropoff.isNotEmpty) {
     result = result + " 到:${condition.dropoff}";
   }
   return result;
@@ -34,9 +34,9 @@ String getDesc(SearchCondition condition) {
 
 getIcon(int type) {
   if (type == 0) {
-    return Icons.departure_board;
+    return Icons.directions_car;
   } else {
-    return Icons.group_add;
+    return Icons.record_voice_over;
   }
 }
 

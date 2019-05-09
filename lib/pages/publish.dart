@@ -194,7 +194,8 @@ class MyCustomFormState extends State<MyCustomForm> {
           SizedBox(
             height: 16,
           ),
-          RaisedButton(
+          MaterialButton(
+            color: Colors.blue,
             onPressed: () {
               // Validate will return true if the form is valid, or false if
               // the form is invalid.
@@ -206,7 +207,13 @@ class MyCustomFormState extends State<MyCustomForm> {
                 _doPublish();
               }
             },
-            child: Text('发布'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+            ),
+            child: Text(
+              '发布',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
