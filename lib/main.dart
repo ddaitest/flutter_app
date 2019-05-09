@@ -5,7 +5,7 @@ import 'package:flutter_app/pages/home.dart';
 import 'package:flutter_app/pages/publish.dart';
 import 'package:flutter_app/pages/search.dart';
 import 'package:flutter_app/pages/splash.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+//import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_jpush/flutter_jpush.dart';

@@ -83,8 +83,8 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
       ));
     }
     //添加banner
-    var info = model.getBannerInfoList();
-    if (info > 0) {
+    List<BannerInfo> info = model.getBannerInfoList();
+    if (info !=null && info.length > 0) {
       views.add(getBannerView(info));
     }
     //添加列表
