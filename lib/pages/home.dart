@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/first.dart';
 import 'package:flutter_app/pages/search.dart';
@@ -44,11 +45,15 @@ class MyHomeState extends State<HomePage>
       showCardUrl = prefs.getString("showCard_url") ?? null;
       showCardGoto = prefs.getString("showCard_goto") ?? null;
     });
-    if (showUpdate == true && showUpdate != null) {
-      upgradeCard();
-    } else {
-      showAdDialogCard();
-    }
+
+    ///弹窗延迟3s弹出
+    Timer(const Duration(seconds: 3), () {
+      if (showUpdate == true && showUpdate != null) {
+        upgradeCard();
+      } else {
+        showAdDialogCard();
+      }
+    });
   }
 
   ///判断升级弹窗是否可关闭
