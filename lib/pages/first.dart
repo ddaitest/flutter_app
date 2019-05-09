@@ -30,6 +30,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   MainModel model;
   String listUrl;
   String listGoto;
+  int cardIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +43,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
     setState(() {
       listUrl = prefs.getString("list_url") ?? null;
       listGoto = prefs.getString("list_goto") ?? null;
+      cardIndex = prefs.getInt("card_index") ?? null;
     });
   }
 
@@ -84,7 +86,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
     }
     //添加banner
     List<BannerInfo> info = model.getBannerInfoList();
-    if (info !=null && info.length > 0) {
+    if (info != null && info.length > 0) {
       views.add(getBannerView(info));
     }
     //添加列表
@@ -143,8 +145,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
 //            image: new CachedNetworkImageProvider(
 //                "https://desk-fd.zol-img.com.cn/t_s720x360c5/g5/M00/03/02/ChMkJ1v9A1mIN_iKABERj1MSlcQAAtatAEvvFEAERGn385.jpg"),
 //            fit: BoxFit.fitWidth,
-            image: new CachedNetworkImageProvider(
-                infos[index].image),
+            image: new CachedNetworkImageProvider(infos[index].image),
             fit: BoxFit.fitWidth,
           );
         },
@@ -154,12 +155,10 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
         scale: 0.9,
         pagination: new SwiperPagination(),
         control: new SwiperControl(),
-        onTap: (index){
-          try{
-          launchcaller(infos[index].action);
-          }catch(id){
-
-          }
+        onTap: (index) {
+          try {
+            launchcaller(infos[index].action);
+          } catch (id) {}
         },
       ),
     );
@@ -188,26 +187,30 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
         itemBuilder: (BuildContext context, int index) =>
             ItemView2(data[index], index, 0),
         separatorBuilder: (BuildContext context, int index) {
-          if (index == 1) {
-            if (listUrl != null || listGoto != null) {
-              return Card(
-                margin: EdgeInsets.all(8),
-                child: Container(
-                  padding: EdgeInsets.all(1),
-                  child: Card(
-                    child: GestureDetector(
-                        onTap: () {
-                          launch(listGoto);
-                        },
-                        child: Image(
-                          image: CachedNetworkImageProvider(listUrl),
-                          fit: BoxFit.fitWidth,
-                          width: 500,
-                          height: 130,
-                        )),
+          if (index != null) {
+            if (index == cardIndex) {
+              if (listUrl != null || listGoto != null) {
+                return Card(
+                  margin: EdgeInsets.all(8),
+                  child: Container(
+                    padding: EdgeInsets.all(1),
+                    child: Card(
+                      child: GestureDetector(
+                          onTap: () {
+                            launch(listGoto);
+                          },
+                          child: Image(
+                            image: CachedNetworkImageProvider(listUrl),
+                            fit: BoxFit.fitWidth,
+                            width: 500,
+                            height: 130,
+                          )),
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {
+                return Container();
+              }
             } else {
               return Container();
             }
