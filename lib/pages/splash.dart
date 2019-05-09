@@ -9,6 +9,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_app/manager/api.dart';
+import 'package:flutter_app/manager/main_model.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -28,13 +29,9 @@ class SplashState extends State<SplashPage> {
   bool fristShowWelcome = true;
   String splash_url;
   String splash_goto;
-  String showCard_url;
-  String showCard_goto;
-  String list_url;
-  String list_goto;
 
   initValue() async {
-    _getAdData();
+    MainModel().getAdData();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       fristShowWelcome = prefs.getBool("welcome") ?? true;
@@ -45,30 +42,6 @@ class SplashState extends State<SplashPage> {
           _goHomepage();
         });
       }
-    });
-  }
-
-  ///广告数据
-  _getAdData() {
-    ApiForAd().request().then((str) async {
-      for (var i in str) {
-        splash_url = i['splash_url'];
-        splash_goto = i['splash_goto'];
-        showCard_url = i['showCard_url'];
-        showCard_goto = i['showCard_goto'];
-        list_url = i['list_url'];
-        list_goto = i['list_goto'];
-      }
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      sharedPreferences.setString("splash_url", splash_url);
-      sharedPreferences.setString("splash_goto", splash_goto);
-      sharedPreferences.setString("showCard_url", showCard_url);
-      sharedPreferences.setString("showCard_goto", showCard_goto);
-      sharedPreferences.setString("list_url", list_url);
-      sharedPreferences.setString("list_goto", list_goto);
-      print('LC ############# $splash_url');
-      print('LC ############# $splash_goto');
     });
   }
 

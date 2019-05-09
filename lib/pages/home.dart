@@ -66,7 +66,8 @@ class MyHomeState extends State<HomePage>
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SearchPage(findVehicle: page == 0)),
+                  MaterialPageRoute(
+                      builder: (context) => SearchPage(findVehicle: page == 0)),
                 ).then((map) {
                   print("callback = $map");
                 });
@@ -150,8 +151,8 @@ class MyHomeState extends State<HomePage>
     );
   }
 
-  //主界面back弹窗
-  _onWillPop() {
+  ///主界面back弹窗
+  Future<bool> _onWillPop() {
     return showDialog(
           context: context,
           builder: (context) => AlertDialog(

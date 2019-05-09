@@ -63,6 +63,36 @@ class ApiForAd {
     responseType: ResponseType.json,
   ));
 
+  static InterceptorsWrapper _interceptorsWrapper = InterceptorsWrapper(
+    onRequest: (RequestOptions options) {
+      return options;
+    },
+    onResponse: (Response response) {
+      return response; // continue
+    },
+    onError: (DioError e) {
+      return e; //continue
+    },
+  );
+
+  static init() {
+    if (!dio.interceptors.contains(_interceptorsWrapper)) {
+      dio.interceptors.add(_interceptorsWrapper);
+    }
+  }
+
+  static queryAdData() {
+    return dio.get("api/ad/");
+  }
+}
+
+///升级相关api请求
+class ApiForUpdate {
+  static Dio dio = Dio(BaseOptions(
+    baseUrl: "http://34.92.69.146:5000/",
+    responseType: ResponseType.json,
+  ));
+
 //  static InterceptorsWrapper _interceptorsWrapper = InterceptorsWrapper(
 //    onRequest: (RequestOptions options) {
 //      print(">> ${options.hashCode} ${options.uri.toString()}");
@@ -78,7 +108,7 @@ class ApiForAd {
 //    },
 //  );
   Future<List> request() async {
-    Response response = await dio.get("api/ad/");
+    Response response = await dio.get("api/update/");
     return response.data;
   }
 }

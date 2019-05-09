@@ -5,6 +5,7 @@ import 'package:flutter_app/manager/beans.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainModel extends Model {
   /// Wraps [ScopedModel.of] for this [Model].
@@ -93,6 +94,20 @@ class MainModel extends Model {
   }
 
   queryBanner() {}
+
+  ///广告数据
+  getAdData() async {
+    Response response = await ApiForAd.queryAdData();
+    final parsed = response.data;
+    final data = AdInfo.fromJson(parsed[0]);
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString("splash_url", data.splashUrl);
+    sharedPreferences.setString("splash_goto", data.splashGoto);
+    sharedPreferences.setString("showCard_url", data.showCardUrl);
+    sharedPreferences.setString("showCard_goto", data.showCardGoto);
+    sharedPreferences.setString("list_url", data.listUrl);
+    sharedPreferences.setString("list_goto", data.listGoto);
+  }
 }
 
 ///搜索条件
