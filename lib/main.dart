@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/manager/api.dart';
 import 'package:flutter_app/manager/main_model.dart';
 import 'dart:async';
 import 'package:flutter_app/pages/home.dart';
@@ -30,6 +31,7 @@ class MyAppState extends State<MyApp> {
     _umeng();
     UMengAnalytics.beginPageView("StartUp");
     _startupJpush();
+    API.init();
   }
 
   @override
