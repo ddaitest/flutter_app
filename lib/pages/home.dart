@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_app/manager/main_model.dart';
+import 'package:flutter_app/pages/webview.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -181,7 +182,13 @@ class MyHomeState extends State<HomePage>
               backgroundColor: Colors.transparent,
               content: GestureDetector(
                 onTap: () {
-                  launch(showCardGoto);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            WebViewPage('TEST', showCardGoto)),
+                  );
+
                   Navigator.of(context).pop();
                 },
                 child: CachedNetworkImage(
