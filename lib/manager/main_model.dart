@@ -98,7 +98,8 @@ class MainModel extends Model {
     Response response = await API.queryBanners(forFindVehicle);
     print("DDAI= end=${response.data}");
     final parsed = json.decode(response.data).cast<Map<String, dynamic>>();
-    final newData = parsed.map<BannerInfo>((json) => BannerInfo.fromJson(json)).toList();
+    final newData =
+        parsed.map<BannerInfo>((json) => BannerInfo.fromJson(json)).toList();
     _bannerList.clear();
     _bannerList.addAll(newData);
     notifyListeners();
@@ -114,6 +115,7 @@ class MainModel extends Model {
     sharedPreferences.setString("splash_goto", data.splashGoto);
     sharedPreferences.setString("showCard_url", data.showCardUrl);
     sharedPreferences.setString("showCard_goto", data.showCardGoto);
+    sharedPreferences.setInt("card_index", data.cardIndex);
     sharedPreferences.setString("list_url", data.listUrl);
     sharedPreferences.setString("list_goto", data.listGoto);
   }

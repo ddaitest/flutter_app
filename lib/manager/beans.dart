@@ -39,13 +39,15 @@ class BannerInfo {
 
 ///广告数据映射
 class AdInfo {
-  AdInfo(
-      {this.splashUrl,
-      this.splashGoto,
-      this.showCardUrl,
-      this.showCardGoto,
-      this.listUrl,
-      this.listGoto});
+  AdInfo({
+    this.splashUrl,
+    this.splashGoto,
+    this.showCardUrl,
+    this.showCardGoto,
+    this.listUrl,
+    this.listGoto,
+    this.cardIndex,
+  });
 
   String splashUrl = "";
   String splashGoto = "";
@@ -53,6 +55,7 @@ class AdInfo {
   String showCardGoto = "";
   String listUrl = "";
   String listGoto = "";
+  int cardIndex = 1;
 
   factory AdInfo.fromJson(Map<String, dynamic> json) {
     return AdInfo(
@@ -60,6 +63,7 @@ class AdInfo {
       splashGoto: json['splash_goto'],
       showCardUrl: json['showCard_url'],
       showCardGoto: json['showCard_goto'],
+      cardIndex: json['card_index'],
       listUrl: json['list_url'],
       listGoto: json['list_goto'],
     );

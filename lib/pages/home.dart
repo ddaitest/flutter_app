@@ -47,7 +47,7 @@ class MyHomeState extends State<HomePage>
     });
 
     ///弹窗延迟3s弹出
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 1), () {
       if (showUpdate == true && showUpdate != null) {
         upgradeCard();
       } else {
