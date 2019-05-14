@@ -70,17 +70,13 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
       views.add(getSearchView(
         searchCondition,
         () {
-          print("11111");
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => SearchPage(findVehicle: true)),
-          ).then((map) {
-            print("callback = $map");
-          });
+          );
         },
         () {
-          print("22222");
           model.updateSearchCondition(true, null);
         },
       ));
@@ -173,57 +169,69 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
       return RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: () => new Future(() => model.queryVehicleList(0)),
-        child: _list(),
+//        child: _list(),
+        child: _listWrapper(),
       );
     } else {
       return Center(child: CircularProgressIndicator());
     }
   }
 
+  getListView2(){
+
+  }
+
+  _listWrapper(){
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo){
+        if (scrollInfo.metrics.pixels ==
+            scrollInfo.metrics.maxScrollExtent) {
+          print("ERROR. onNotification scroll");
+        }
+      },
+      child: _list(),
+    );
+  }
+
   Widget _list() {
     var data = model.getVehicleList();
     return new ListView.separated(
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: data.length,
-        itemBuilder: (BuildContext context, int index) =>
-            ItemView2(data[index], index, 0),
-        separatorBuilder: (BuildContext context, int index) {
-          if (index != null) {
-            if (index == cardIndex) {
-              if (listUrl != null || listGoto != null) {
-                return Card(
-                  margin: EdgeInsets.all(8),
-                  child: Container(
-                    padding: EdgeInsets.all(1),
-                    child: Card(
-                      child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      WebViewPage('TEST', listGoto)),
-                            );
-                          },
-                          child: Image(
-                            image: CachedNetworkImageProvider(listUrl),
-                            fit: BoxFit.fitWidth,
-                            width: 500,
-                            height: 130,
-                          )),
-                    ),
-                  ),
-                );
-              } else {
-                return Container();
-              }
-            } else {
-              return Container();
-            }
-          } else {
-            return Container();
-          }
-        }).build(context);
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: data.length,
+      itemBuilder: (BuildContext context, int index) =>
+          ItemView2(data[index], index, 0),
+      separatorBuilder: (BuildContext context, int index) {
+        if (index != null && listUrl != null && index == cardIndex) {
+          return _getListADItem();
+        } else {
+          return Container();
+        }
+      },
+    ).build(context);
+  }
+
+  _getListADItem() {
+    return GestureDetector(
+      child: Card(
+        margin: EdgeInsets.all(8),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(2),
+          child: Image(
+            image: CachedNetworkImageProvider(listUrl),
+            fit: BoxFit.fitWidth,
+            width: 500,
+            height: 130,
+          ),
+        ),
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => WebViewPage('TEST', listGoto)),
+        );
+      },
+    );
   }
 
   @override
