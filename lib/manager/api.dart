@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:flutter_app/common/common.dart';
 
 class API {
   static Dio dio = Dio(BaseOptions(
+//      baseUrl: "http://localhost:8082/",
     baseUrl: "http://39.96.16.125:8082/",
-    connectTimeout: 5000,
-    receiveTimeout: 3000,
-//    responseType: ResponseType.plain
-  ));
+      connectTimeout: 5000,
+      receiveTimeout: 3000,
+      responseType: ResponseType.plain));
 
   static InterceptorsWrapper _interceptorsWrapper = InterceptorsWrapper(
     onRequest: (RequestOptions options) {
@@ -30,31 +31,33 @@ class API {
     }
   }
 
-  static refreshList({Map<String, dynamic> queryParameters}) {
-    return dio.get("api/event/", queryParameters: queryParameters);
+//  static refreshList({Map<String, dynamic> queryParameters}) {
+//    return dio.get("api/event/", queryParameters: queryParameters);
+//  }
+
+  static queryEvents(num pageType,
+      {num after, String pickup, String dropOff, num time}) {
+    var params = Map<String, dynamic>();
+    params['page_type'] = pageType;
+
+    if (after != null && after > 1) {
+      params['after'] = after;
+    }
+    if (pickup != null) {
+      params['pickup'] = pickup;
+    }
+    if (dropOff != null) {
+      params['drop_off'] = dropOff;
+    }
+    if (time != null && time > 1) {
+      params['time'] = time;
+    }
+    return dio.get("api/event/", queryParameters: params);
   }
 
-  static queryVehicles({num after, String pickup, String dropOff, num time}) {
-    return dio.get("api/event/", queryParameters: {
-      "after": after,
-      "pickup": pickup,
-      "drop_off": dropOff,
-      "time": time
-    });
-  }
-
-  static queryPassengers({num after, String pickup, String dropOff, num time}) {
-    return dio.get("api/event/", queryParameters: {
-      "after": after,
-      "pickup": pickup,
-      "drop_off": dropOff,
-      "time": time
-    });
-  }
-
-  static queryBanners(bool forFindVehicle) {
+  static queryBanners(num pageType) {
     return dio.get("api/banner/", queryParameters: {
-      "page": forFindVehicle?"0":"1",
+      "page_type": pageType,
     });
   }
 }

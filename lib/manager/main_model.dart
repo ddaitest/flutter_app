@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/manager/api.dart';
 import 'dart:convert';
 import 'package:flutter_app/manager/beans.dart';
@@ -61,48 +62,64 @@ class MainModel extends Model {
   /// 请求 Vehicle List, num after 表示从哪个timestamp 开始load more.
   queryVehicleList(num after) async {
     var condition = _findVehicle ?? SearchCondition();
-    Response response = await API.queryVehicles(
+    Response response = await API.queryEvents(
+      FindType.FindVehicle.index,
       after: after,
       pickup: condition.pickup,
       dropOff: condition.dropoff,
       time: condition.time,
     );
-    final parsed = response.data.cast<Map<String, dynamic>>();
-    final newData = parsed.map<Event>((json) => Event.fromJson(json)).toList();
-    _vehicleList.clear();
-    _vehicleList.addAll(newData);
-    print("====== notifyListeners ${newData.length}");
-    notifyListeners();
+    final parsed = json.decode(response.data);
+    var resultCode = parsed["code"] ?? 0;
+    var resultData = parsed["data"];
+    if (resultCode == 200 && resultData != null) {
+      final newData =
+          resultData.map<Event>((json) => Event.fromJson(json)).toList();
+      _vehicleList.clear();
+      _vehicleList.addAll(newData);
+      notifyListeners();
+    }
   }
 
   /// 请求 Passenger List, num after 表示从哪个timestamp 开始load more.
   queryPassengerList(num after) async {
     var condition = _findVehicle ?? SearchCondition();
-    Response response = await API.queryPassengers(
+    Response response = await API.queryEvents(
+      FindType.FindPassenger.index,
       after: after,
       pickup: condition.pickup,
       dropOff: condition.dropoff,
       time: condition.time,
     );
-    print("DDAI= end=${response.data}");
-    final parsed = json.decode(response.data).cast<Map<String, dynamic>>();
-    final newData = parsed.map<Event>((json) => Event.fromJson(json)).toList();
-    _passengerList.clear();
-    _passengerList.addAll(newData);
-    notifyListeners();
+//    final parsed = json.decode(response.data).cast<Map<String, dynamic>>();
+    final parsed = json.decode(response.data);
+    var resultCode = parsed["code"] ?? 0;
+    var resultData = parsed["data"];
+    if (resultCode == 200 && resultData != null) {
+      final newData =
+          resultData.map<Event>((json) => Event.fromJson(json)).toList();
+      _passengerList.clear();
+      _passengerList.addAll(newData);
+      notifyListeners();
+    }
   }
 
   //Search end.
   queryBanner(bool forFindVehicle) async {
 //    var condition = _findVehicle ?? SearchCondition();
-    Response response = await API.queryBanners(forFindVehicle);
-    print("DDAI= end=${response.data}");
-    final parsed = json.decode(response.data).cast<Map<String, dynamic>>();
-    final newData =
-        parsed.map<BannerInfo>((json) => BannerInfo.fromJson(json)).toList();
-    _bannerList.clear();
-    _bannerList.addAll(newData);
-    notifyListeners();
+    Response response = await API.queryBanners(0);
+    print(response.data);
+    final parsed = json.decode(response.data);
+    var resultCode = parsed['code'] ?? 0;
+    var resultData = parsed['data'];
+    if (resultCode == 200 && resultData != null) {
+      final newData = resultData
+          .map<BannerInfo>((json) => BannerInfo.fromJson(json))
+          .toList();
+      _bannerList.clear();
+      _bannerList.addAll(newData);
+      notifyListeners();
+    }
   }
 
   ///广告数据

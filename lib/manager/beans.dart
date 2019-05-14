@@ -30,7 +30,7 @@ class BannerInfo {
 
   factory BannerInfo.fromJson(Map<String, dynamic> json) {
     return BannerInfo(
-      id: json['id'],
+      id: json['id'].toString(),
       image: json['image'],
       action: json['action'],
     );

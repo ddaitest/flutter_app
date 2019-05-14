@@ -15,6 +15,8 @@ final TextStyle fontCall =
 final dateFormat = DateFormat("M月d日");
 final timeFormat = DateFormat("HH:mm");
 
+enum FindType { FindPassenger, FindVehicle }
+
 ///根据筛选条件，生成描述语句
 String getDesc(SearchCondition condition) {
   String result = "筛选条件: ";
