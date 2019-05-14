@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_app/pages/webview.dart';
 
 class FirstTab extends StatefulWidget {
   @override
@@ -197,7 +198,12 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
                     child: Card(
                       child: GestureDetector(
                           onTap: () {
-                            launch(listGoto);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      WebViewPage('TEST', listGoto)),
+                            );
                           },
                           child: Image(
                             image: CachedNetworkImageProvider(listUrl),
