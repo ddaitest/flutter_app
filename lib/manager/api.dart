@@ -4,8 +4,8 @@ import 'package:flutter_app/common/common.dart';
 
 class API {
   static Dio dio = Dio(BaseOptions(
-      baseUrl: "http://localhost:8082/",
-//      baseUrl: "http://39.96.16.125:8082/",
+//      baseUrl: "http://localhost:8082/",
+      baseUrl: "http://39.96.16.125:8082/",
       connectTimeout: 5000,
       receiveTimeout: 3000,
       responseType: ResponseType.plain));
