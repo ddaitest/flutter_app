@@ -51,13 +51,13 @@ class MainModel extends Model {
       //如果条件改变，根据新的条件，刷新数据
       if (_findVehicle != newCondition) {
         _findVehicle = newCondition;
-        queryVehicleList(true);
+        queryVehicleList(true,done: (){});
       }
     } else {
       //如果条件改变，根据新的条件，刷新数据
       if (_findPassenger != newCondition) {
         _findPassenger = newCondition;
-        queryPassengerList(true);
+        queryPassengerList(true,done: (){});
       }
     }
     notifyListeners();
