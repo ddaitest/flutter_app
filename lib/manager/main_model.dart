@@ -81,6 +81,10 @@ class MainModel extends Model {
 
   /// 请求 Passenger List, num after 表示从哪个timestamp 开始load more.
   queryPassengerList(bool refresh, {Function done}) async {
+    if (!refresh && !_passengerHasMore) {
+      print("ERROR. NO MORE, NO REQUEST");
+      return;
+    }
     Response response;
     Event after = refresh ? null : _passengerList.last;
     if (_findPassenger == null) {
