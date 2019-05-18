@@ -114,7 +114,7 @@ class MyHomeState extends State<HomePage>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => SearchPage(findVehicle: page == 0)),
+                      builder: (context) => SearchPage(findVehicle: page == 1)),
                 ).then((map) {
                   print("callback = $map");
                 });

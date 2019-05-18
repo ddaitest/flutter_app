@@ -105,7 +105,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   @override
   Widget build(BuildContext context) {
     model = model ?? MainModel.of(context);
-    print("ERROR. build work");
     // Build a Form widget using the _formKey we created above
     return Form(
       key: _formKey,

@@ -78,7 +78,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   getBodyView(BuildContext context) {
     var views = <Widget>[];
     //添加搜索
-    var searchCondition = model.getSearchCondition(true);
+    var searchCondition = model.getSearchCondition(false);
     print("getBodyView searchCondition=$searchCondition");
     if (searchCondition != null) {
       views.add(getSearchView(
@@ -87,11 +87,11 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => SearchPage(findVehicle: true)),
+                builder: (context) => SearchPage(findVehicle: false)),
           );
         },
         () {
-          model.updateSearchCondition(true, null);
+          model.updateSearchCondition(false, null);
         },
       ));
     }
