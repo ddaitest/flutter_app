@@ -14,6 +14,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_app/pages/webview.dart';
+//import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class FirstTab extends StatefulWidget {
   @override
@@ -26,12 +27,16 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
 //  final List<Event> data = new List();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
+
   MainModel model;
   String listUrl;
   String listGoto;
   int cardIndex;
+
+//  bool enablePullUp = true;
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +56,23 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
+    refreshing = false;
+    loading = false;
     initValue();
+//    _refreshController = RefreshController();
     Future.delayed(Duration.zero, () {
       var x = MainModel.of(context);
       //加载 list 数据
-      x.queryVehicleList(0);
+//      x.queryPassengerList(true);
+      _onRefresh();
       //加载 banner 数据
       x.queryBanner(true);
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   getBodyView(BuildContext context) {
@@ -161,14 +175,16 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
     );
   }
 
+//  RefreshController _refreshController;
+
   /// View: 列表。
   getListView() {
-    var listData = model.getVehicleList();
-    print("====== listData = ${listData.length} @ ${model.hashCode}");
-    if (listData.length > 0) {
+    var status = model.getPassengerPageStatus();
+    print("====== page status = $status ");
+    if (status == PageDataStatus.READY) {
       return RefreshIndicator(
         key: _refreshIndicatorKey,
-        onRefresh: () => new Future(() => model.queryVehicleList(0)),
+        onRefresh: _onRefresh,
 //        child: _list(),
         child: _listWrapper(),
       );
@@ -177,16 +193,12 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
     }
   }
 
-  getListView2(){
-
-  }
-
-  _listWrapper(){
+  _listWrapper() {
     return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification scrollInfo){
-        if (scrollInfo.metrics.pixels ==
-            scrollInfo.metrics.maxScrollExtent) {
-          print("ERROR. onNotification scroll");
+      onNotification: (ScrollNotification scrollInfo) {
+        if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+
+          _onLoadMore();
         }
       },
       child: _list(),
@@ -194,12 +206,14 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _list() {
-    var data = model.getVehicleList();
+    var data = model.getPassengerList();
+    final enablePullUp = model.passengerHasMore();
     return new ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: data.length,
-      itemBuilder: (BuildContext context, int index) =>
-          ItemView2(data[index], index, 0),
+      itemCount: enablePullUp ? data.length + 1 : data.length,
+      itemBuilder: (BuildContext context, int index) => index == data.length
+          ? _getLoadMore()
+          : ItemView2(data[index], index, 0),
       separatorBuilder: (BuildContext context, int index) {
         if (index != null && listUrl != null && index == cardIndex) {
           return _getListADItem();
@@ -207,7 +221,62 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
           return Container();
         }
       },
-    ).build(context);
+    );
+  }
+
+  _getLoadMore() {
+    return Container(
+        color: Colors.greenAccent,
+        child: FlatButton(
+          child: Text("Load More"),
+          onPressed: _onLoadMore,
+        ));
+  }
+
+//  getListView() {
+//    var listData = model.getPassengerList();
+//    print("====== listData = ${listData.length} @ ${model.hashCode}");
+//
+//    if (listData.length > 0) {
+//      return SmartRefresher(
+//        controller: _refreshController,
+//        enablePullDown: true,
+//        header: WaterDropHeader(),
+//        onRefresh: _onRefresh,
+//        onLoading: _onLoadMore(),
+//        child: _list(),
+////        enablePullUp: true,
+//        enablePullUp: enablePullUp,
+//      );
+//    } else {
+//      return Center(child: CircularProgressIndicator());
+//    }
+//  }
+
+  bool refreshing = false;
+  bool loading = false;
+
+  Future _onRefresh() {
+    return Future(() {
+      if (!refreshing) {
+        refreshing = true;
+        print("ERROR. _onRefresh");
+        model.queryPassengerList(true, done: () {
+          refreshing = false;
+        });
+      }
+    });
+  }
+
+  _onLoadMore() {
+    print("INFO. _onLoadMore $loading");
+    if (!loading) {
+      loading = true;
+      print("ERROR. _onLoadMore");
+      model.queryPassengerList(false, done: () {
+        loading = false;
+      });
+    }
   }
 
   _getListADItem() {

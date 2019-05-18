@@ -1,6 +1,7 @@
 class Event {
-  Event({this.time, this.start, this.end, this.phone, this.remark});
+  Event({this.id, this.time, this.start, this.end, this.phone, this.remark});
 
+  num id;
   num time;
   String start = "";
   String end = "";
@@ -12,6 +13,7 @@ class Event {
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
+      id: json['id'],
       time: json['time'],
       start: json['start'],
       end: json['end'],

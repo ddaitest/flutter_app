@@ -8,6 +8,8 @@ import 'package:equatable/equatable.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+typedef DaiListener = int Function(bool hasMore);
+
 class MainModel extends Model {
   /// Wraps [ScopedModel.of] for this [Model].
   static MainModel of(BuildContext context) =>
@@ -25,19 +27,37 @@ class MainModel extends Model {
     return forFindVehicle ? _findVehicle : _findPassenger;
   }
 
+  final PAGE_SIZE = 5;
+
+  PageDataStatus _passengerStatus = PageDataStatus.LOADING;
+
+  PageDataStatus _vehicleStatus = PageDataStatus.LOADING;
+
+  getPassengerPageStatus() => _passengerStatus;
+
+  getVehiclePageStatus() => _vehicleStatus;
+
+  bool _passengerHasMore = true;
+
+  bool _vehicleHasMore = true;
+
+  passengerHasMore() => _passengerHasMore;
+
+  vehicleHasMore() => _vehicleHasMore;
+
   ///更新筛选条件
   updateSearchCondition(bool forFindVehicle, SearchCondition newCondition) {
     if (forFindVehicle) {
       //如果条件改变，根据新的条件，刷新数据
       if (_findVehicle != newCondition) {
         _findVehicle = newCondition;
-        queryVehicleList(0);
+        queryVehicleList(true);
       }
     } else {
       //如果条件改变，根据新的条件，刷新数据
       if (_findPassenger != newCondition) {
         _findPassenger = newCondition;
-        queryPassengerList(0);
+        queryPassengerList(true);
       }
     }
     notifyListeners();
@@ -59,50 +79,120 @@ class MainModel extends Model {
 
   getBannerInfoList() => _bannerList;
 
-  /// 请求 Vehicle List, num after 表示从哪个timestamp 开始load more.
-  queryVehicleList(num after) async {
-    var condition = _findVehicle ?? SearchCondition();
-    Response response = await API.queryEvents(
-      FindType.FindVehicle.index,
-      after: after,
-      pickup: condition.pickup,
-      dropOff: condition.dropoff,
-      time: condition.time,
-    );
-    final parsed = json.decode(response.data);
-    var resultCode = parsed["code"] ?? 0;
-    var resultData = parsed["data"];
-    if (resultCode == 200 && resultData != null) {
-      final newData =
-          resultData.map<Event>((json) => Event.fromJson(json)).toList();
-      _vehicleList.clear();
-      _vehicleList.addAll(newData);
-      notifyListeners();
+  /// 请求 Passenger List, num after 表示从哪个timestamp 开始load more.
+  queryPassengerList(bool refresh, {Function done}) async {
+    Response response;
+    Event after = refresh ? null : _passengerList.last;
+    if (_findPassenger == null) {
+      response = await API.queryEvents(
+        FindType.FindPassenger.index,
+        afterId: after?.id,
+        pageSize: PAGE_SIZE,
+      );
+    } else {
+      response = await API.searchEvents(
+        FindType.FindPassenger.index,
+        afterId: after?.id,
+        afterTime: after?.time,
+        pageSize: PAGE_SIZE,
+        time: _findPassenger.time,
+        dropOff: _findPassenger.dropoff,
+        pickup: _findPassenger.pickup,
+      );
     }
+    final parsed = json.decode(response.data);
+    final resultCode = parsed["code"] ?? 0;
+    final resultData = parsed["data"];
+    if (resultCode == 200 && resultData != null) {
+      final dataList = resultData["list"];
+      num hasMore = resultData["has_more"] ?? 0;
+      if (dataList != null) {
+        final newData =
+            dataList.map<Event>((json) => Event.fromJson(json)).toList();
+        if (refresh) {
+          //refresh
+          _passengerList.clear();
+        }
+        _passengerList.addAll(newData);
+      }
+      _passengerHasMore = (hasMore == 1);
+    }
+    _passengerStatus = _passengerList.length > 0
+        ? PageDataStatus.READY
+        : PageDataStatus.ERROR_EMPTY;
+    done();
+    notifyListeners();
   }
 
-  /// 请求 Passenger List, num after 表示从哪个timestamp 开始load more.
-  queryPassengerList(num after) async {
-    var condition = _findVehicle ?? SearchCondition();
-    Response response = await API.queryEvents(
-      FindType.FindPassenger.index,
-      after: after,
-      pickup: condition.pickup,
-      dropOff: condition.dropoff,
-      time: condition.time,
-    );
-//    final parsed = json.decode(response.data).cast<Map<String, dynamic>>();
-    final parsed = json.decode(response.data);
-    var resultCode = parsed["code"] ?? 0;
-    var resultData = parsed["data"];
-    if (resultCode == 200 && resultData != null) {
-      final newData =
-          resultData.map<Event>((json) => Event.fromJson(json)).toList();
-      _passengerList.clear();
-      _passengerList.addAll(newData);
-      notifyListeners();
+  queryVehicleList(bool refresh, {Function done}) async {
+    Response response;
+    Event after = refresh ? null : _vehicleList.last;
+    if (_findVehicle == null) {
+      response = await API.queryEvents(
+        FindType.FindVehicle.index,
+        afterId: after?.id,
+        pageSize: PAGE_SIZE,
+      );
+    } else {
+      response = await API.searchEvents(
+        FindType.FindVehicle.index,
+        afterId: after?.id,
+        afterTime: after?.time,
+        pageSize: PAGE_SIZE,
+        time: _findVehicle.time,
+        dropOff: _findVehicle.dropoff,
+        pickup: _findVehicle.pickup,
+      );
     }
+    final parsed = json.decode(response.data);
+    final resultCode = parsed["code"] ?? 0;
+    final resultData = parsed["data"];
+    if (resultCode == 200 && resultData != null) {
+      final dataList = resultData["list"];
+      num hasMore = resultData["has_more"] ?? 0;
+      if (dataList != null) {
+        final newData =
+            dataList.map<Event>((json) => Event.fromJson(json)).toList();
+        if (after == null) {
+          //refresh
+          _vehicleList.clear();
+        }
+        _vehicleList.addAll(newData);
+      }
+      _vehicleHasMore = (hasMore == 1);
+    }
+    _vehicleStatus = _vehicleList.length > 0
+        ? PageDataStatus.READY
+        : PageDataStatus.ERROR_EMPTY;
+    done();
+    notifyListeners();
   }
+
+//  /// 请求 Vehicle List, num after 表示从哪个timestamp 开始load more.
+//  queryVehicleList2(num after, Function done) async {
+//    var condition = _findVehicle ?? SearchCondition();
+//    Response response = await API.queryEvents(
+//      FindType.FindVehicle.index,
+//      after: after,
+//      pickup: condition.pickup,
+//      dropOff: condition.dropoff,
+//      time: condition.time,
+//    );
+//    final parsed = json.decode(response.data);
+//    var resultCode = parsed["code"] ?? 0;
+//    var resultData = parsed["data"];
+//    if (resultCode == 200 && resultData != null) {
+//      final newData =
+//          resultData.map<Event>((json) => Event.fromJson(json)).toList();
+//
+//      if (after == 0) {
+//        _vehicleList.clear();
+//      }
+//      _vehicleList.addAll(newData);
+//      done();
+//      notifyListeners();
+//    }
+//  }
 
   //Search end.
   queryBanner(bool forFindVehicle) async {

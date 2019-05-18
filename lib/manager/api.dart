@@ -4,8 +4,8 @@ import 'package:flutter_app/common/common.dart';
 
 class API {
   static Dio dio = Dio(BaseOptions(
-//      baseUrl: "http://localhost:8082/",
-    baseUrl: "http://39.96.16.125:8082/",
+      baseUrl: "http://localhost:8082/",
+//      baseUrl: "http://39.96.16.125:8082/",
       connectTimeout: 5000,
       receiveTimeout: 3000,
       responseType: ResponseType.plain));
@@ -35,24 +35,49 @@ class API {
 //    return dio.get("api/event/", queryParameters: queryParameters);
 //  }
 
-  static queryEvents(num pageType,
-      {num after, String pickup, String dropOff, num time}) {
+  static queryEvents(num pageType, {num afterId, num pageSize}) {
     var params = Map<String, dynamic>();
     params['page_type'] = pageType;
 
-    if (after != null && after > 1) {
-      params['after'] = after;
+    if (afterId != null && afterId > 1) {
+      params['after_id'] = afterId;
+    }
+    if (pageSize != null) {
+      params['page_size'] = pageSize;
+    }
+    return dio.get("api/event/news", queryParameters: params);
+  }
+
+  static searchEvents(num pageType,
+      {num afterId,
+      num afterTime,
+      String pickup,
+      String dropOff,
+      num time,
+      num pageSize}) {
+    var params = Map<String, dynamic>();
+    params['page_type'] = pageType;
+
+    if (afterId != null && afterId > 1) {
+      params['after_id'] = afterId;
+    }
+
+    if (afterTime != null && afterTime > 1) {
+      params['after_time'] = afterTime;
     }
     if (pickup != null) {
-      params['pickup'] = pickup;
+      params['s_pickup'] = pickup;
     }
     if (dropOff != null) {
-      params['drop_off'] = dropOff;
+      params['s_drop_off'] = dropOff;
     }
     if (time != null && time > 1) {
-      params['time'] = time;
+      params['s_time'] = time;
     }
-    return dio.get("api/event/", queryParameters: params);
+    if (pageSize != null) {
+      params['page_size'] = pageSize;
+    }
+    return dio.get("api/event/search", queryParameters: params);
   }
 
   static queryBanners(num pageType) {

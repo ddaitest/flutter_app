@@ -17,6 +17,8 @@ final timeFormat = DateFormat("HH:mm");
 
 enum FindType { FindPassenger, FindVehicle }
 
+enum PageDataStatus { READY, LOADING, ERROR_EMPTY }
+
 ///根据筛选条件，生成描述语句
 String getDesc(SearchCondition condition) {
   String result = "筛选条件: ";
