@@ -85,6 +85,15 @@ class API {
       "page_type": pageType,
     });
   }
+
+  ///广告相关
+  static queryAD() {
+    return dio.get("api/ad/");
+  }
+  ///升级信息
+  static queryUpgrade() {
+    return dio.get("api/config/");
+  }
 }
 
 ///广告相关api请求

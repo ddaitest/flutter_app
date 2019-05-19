@@ -31,7 +31,7 @@ class SplashState extends State<SplashPage> {
   String splashGoto;
 
   initValue() async {
-    MainModel().getAdData();
+    MainModel().queryAdData();
     MainModel().getUpdateData();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {

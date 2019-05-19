@@ -3,6 +3,7 @@ import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/manager/api.dart';
 import 'dart:convert';
 import 'package:flutter_app/manager/beans.dart';
+import 'package:package_info/package_info.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:dio/dio.dart';
@@ -51,13 +52,13 @@ class MainModel extends Model {
       //如果条件改变，根据新的条件，刷新数据
       if (_findVehicle != newCondition) {
         _findVehicle = newCondition;
-        queryVehicleList(true,done: (){});
+        queryVehicleList(true, done: () {});
       }
     } else {
       //如果条件改变，根据新的条件，刷新数据
       if (_findPassenger != newCondition) {
         _findPassenger = newCondition;
-        queryPassengerList(true,done: (){});
+        queryPassengerList(true, done: () {});
       }
     }
     notifyListeners();
@@ -200,9 +201,7 @@ class MainModel extends Model {
 
   //Search end.
   queryBanner(bool forFindVehicle) async {
-//    var condition = _findVehicle ?? SearchCondition();
     Response response = await API.queryBanners(0);
-    print(response.data);
     final parsed = json.decode(response.data);
     var resultCode = parsed['code'] ?? 0;
     var resultData = parsed['data'];
@@ -217,19 +216,51 @@ class MainModel extends Model {
   }
 
   ///广告数据
-  getAdData() async {
-    Response response = await ApiForAd.queryAdData();
-    final parsed = response.data;
-    final data = AdInfo.fromJson(parsed[0]);
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setString("splash_url", data.splashUrl);
-    sharedPreferences.setString("splash_goto", data.splashGoto);
-    sharedPreferences.setString("showCard_url", data.showCardUrl);
-    sharedPreferences.setString("showCard_goto", data.showCardGoto);
-    sharedPreferences.setInt("card_index", data.cardIndex);
-    sharedPreferences.setString("list_url", data.listUrl);
-    sharedPreferences.setString("list_goto", data.listGoto);
+  queryAdData() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    print("ERROR. packageInfo.version ${packageInfo.version}");
+    print("ERROR. packageInfo.buildNumber ${packageInfo.buildNumber}");
+
+    Response response = await API.queryAD();
+    final parsed = json.decode(response.data);
+    var resultCode = parsed['code'] ?? 0;
+    var resultData = parsed['data'];
+    if (resultCode == 200 && resultData != null) {
+      final newData =
+          resultData.map<AdInfo>((json) => AdInfo.fromJson(json)).toList();
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      for (var ad in newData) {
+        switch (ad.type) {
+          case 0: //Splash
+            sharedPreferences.setString("splash_url", ad.image);
+            sharedPreferences.setString("splash_goto", ad.action);
+            break;
+          case 1: //Home
+            sharedPreferences.setString("showCard_url", ad.image);
+            sharedPreferences.setString("showCard_goto", ad.action);
+            break;
+          case 2: //List
+
+            break;
+        }
+      }
+    }
   }
+
+//  getAdData() async {
+//    Response response = await ApiForAd.queryAdData();
+//    final parsed = response.data;
+//    final data = AdInfo.fromJson(parsed[0]);
+//    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+//    sharedPreferences.setString("splash_url", data.splashUrl);
+//    sharedPreferences.setString("splash_goto", data.splashGoto);
+//    sharedPreferences.setString("showCard_url", data.showCardUrl);
+//    sharedPreferences.setString("showCard_goto", data.showCardGoto);
+//    sharedPreferences.setInt("card_index", data.cardIndex);
+//    sharedPreferences.setString("list_url", data.listUrl);
+//    sharedPreferences.setString("list_goto", data.listGoto);
+//  }
 
   ///升级数据
   getUpdateData() async {

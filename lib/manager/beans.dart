@@ -39,38 +39,57 @@ class BannerInfo {
   }
 }
 
-///广告数据映射
 class AdInfo {
-  AdInfo({
-    this.splashUrl,
-    this.splashGoto,
-    this.showCardUrl,
-    this.showCardGoto,
-    this.listUrl,
-    this.listGoto,
-    this.cardIndex,
-  });
+  AdInfo({this.id, this.image, this.action, this.type});
 
-  String splashUrl = "";
-  String splashGoto = "";
-  String showCardUrl = "";
-  String showCardGoto = "";
-  String listUrl = "";
-  String listGoto = "";
-  int cardIndex = 1;
+  num id;
+
+  String image = "";
+  String action = "";
+  num type;
 
   factory AdInfo.fromJson(Map<String, dynamic> json) {
     return AdInfo(
-      splashUrl: json['splash_url'],
-      splashGoto: json['splash_goto'],
-      showCardUrl: json['showCard_url'],
-      showCardGoto: json['showCard_goto'],
-      cardIndex: json['card_index'],
-      listUrl: json['list_url'],
-      listGoto: json['list_goto'],
+      id: json['id'],
+      image: json['image'],
+      action: json['action'],
+      type: json['type'],
     );
   }
 }
+
+///广告数据映射
+//class AdInfo {
+//  AdInfo({
+//    this.splashUrl,
+//    this.splashGoto,
+//    this.showCardUrl,
+//    this.showCardGoto,
+//    this.listUrl,
+//    this.listGoto,
+//    this.cardIndex,
+//  });
+//
+//  String splashUrl = "";
+//  String splashGoto = "";
+//  String showCardUrl = "";
+//  String showCardGoto = "";
+//  String listUrl = "";
+//  String listGoto = "";
+//  int cardIndex = 1;
+//
+//  factory AdInfo.fromJson(Map<String, dynamic> json) {
+//    return AdInfo(
+//      splashUrl: json['splash_url'],
+//      splashGoto: json['splash_goto'],
+//      showCardUrl: json['showCard_url'],
+//      showCardGoto: json['showCard_goto'],
+//      cardIndex: json['card_index'],
+//      listUrl: json['list_url'],
+//      listGoto: json['list_goto'],
+//    );
+//  }
+//}
 
 ///升级数据映射
 class UpdateInfo {
