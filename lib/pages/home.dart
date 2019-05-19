@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/utils.dart';
 import 'package:flutter_app/pages/first.dart';
 import 'package:flutter_app/pages/search.dart';
 import 'package:flutter_app/pages/second.dart';
@@ -126,10 +127,20 @@ class MyHomeState extends State<HomePage>
             ),
             IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PublishPage()),
-                );
+                var a = "1.0.1";
+                var b = "1.0.2";
+                var c = "1.10.1";
+                var d = "1.0.10";
+                var e = "1.0.123";
+
+                print("ERROR. TEST $a $b =  ${compareVersion(a, b)}");
+                print("ERROR. TEST $a $c =  ${compareVersion(a, c)}");
+                print("ERROR. TEST $c $d =  ${compareVersion(c, d)}");
+                print("ERROR. TEST $d $e =  ${compareVersion(d, e)}");
+//                Navigator.push(
+//                  context,
+//                  MaterialPageRoute(builder: (context) => PublishPage()),
+//                );
               },
               icon: const Icon(
                 Icons.add_circle_outline,
