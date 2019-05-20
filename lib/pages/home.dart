@@ -41,7 +41,7 @@ class MyHomeState extends State<HomePage>
   String localVersionCode;
   bool canClose;
 
-  initvalue() async {
+  initValue() async {
     var dialogDataMap = await getDialogData();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
@@ -79,7 +79,7 @@ class MyHomeState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    initvalue();
+    initValue();
     // Initialize the Tab Controller
     controller = new TabController(length: 3, vsync: this);
     controller.addListener(() {

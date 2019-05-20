@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_app/common/utils.dart';
 
 class ThirdTab extends StatefulWidget {
   @override
@@ -10,30 +11,34 @@ class ThirdTab extends StatefulWidget {
 
 class ThirdTabState extends State<ThirdTab> {
   String localVersionName = '';
-  String telphoneNum = '12345678';
-  String website = 'www.baidu.com';
+  String telphoneNum = '1234567';
+  String thirdMessage = '';
 
-//  String onlineVersionName = '1.0.0';
-//  int LocalVersionName;
-//  int OnlineVersionName;
+  initValue() async {
+    var dialogDataMap = await getDialogData();
+    setState(() {
+      thirdMessage = dialogDataMap["message"];
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _getVersion();
+    initValue();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Padding(
+        Container(
           padding: EdgeInsets.only(top: 100.0),
           child: Image.asset(
             'images/icon.png',
           ),
         ),
-        Padding(
+        Container(
           padding: EdgeInsets.only(top: 0.0),
           child: Text(
             localVersionName,
@@ -43,11 +48,21 @@ class ThirdTabState extends State<ThirdTab> {
             ),
           ),
         ),
-        Padding(
+        Container(
+          padding: EdgeInsets.only(top: 50.0),
+          child: Text(
+            thirdMessage,
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        Container(
           padding: const EdgeInsets.only(top: 100.0),
           child: FlatButton(
             onPressed: () {
-              _launchcaller('tel:' + telphoneNum);
+              launchcaller('tel:' + telphoneNum);
             },
             child: Column(
               children: <Widget>[
@@ -65,7 +80,7 @@ class ThirdTabState extends State<ThirdTab> {
 
   _getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    localVersionName = packageInfo.version ?? ' ';
+    localVersionName = packageInfo.version;
     return localVersionName;
   }
 
@@ -81,9 +96,9 @@ class ThirdTabState extends State<ThirdTab> {
 //  }
 //}
 
-  _aboutURL() async {
-    launch('https://$website');
-  }
+//  _aboutURL() async {
+//    launch('https://$website');
+//  }
 
 //
 //_updateURL() async {
@@ -97,11 +112,4 @@ class ThirdTabState extends State<ThirdTab> {
 //    gravity: ToastGravity.BOTTOM,
 //    timeInSecForIos: 1,
 //  );
-  void _launchcaller(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
 }
