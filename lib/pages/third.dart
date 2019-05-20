@@ -31,25 +31,30 @@ class ThirdTabState extends State<ThirdTab> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(top: 100.0),
-          child: Image.asset(
-            'images/icon.png',
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.only(top: 0.0),
-          child: Text(
-            localVersionName,
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.black,
+        Column(
+          children: <Widget>[
+            Container(
+//              padding: EdgeInsets.only(top: 100.0),
+              child: Image.asset(
+                'images/icon.png',
+              ),
             ),
-          ),
+            Container(
+              padding: EdgeInsets.only(top: 0.0),
+              child: Text(
+                localVersionName,
+                style: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
         ),
         Container(
-          padding: EdgeInsets.only(top: 50.0),
+//          padding: EdgeInsets.only(top: 50.0),
           child: Text(
             thirdMessage,
             style: TextStyle(
@@ -59,7 +64,7 @@ class ThirdTabState extends State<ThirdTab> {
           ),
         ),
         Container(
-          padding: const EdgeInsets.only(top: 100.0),
+//          padding: const EdgeInsets.only(top: 100.0),
           child: FlatButton(
             onPressed: () {
               launchcaller('tel:' + telphoneNum);
