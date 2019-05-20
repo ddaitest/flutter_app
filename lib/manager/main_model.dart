@@ -263,15 +263,23 @@ class MainModel extends Model {
 //  }
 
   ///升级数据
-  getUpdateData() async {
-    Response response = await ApiForUpdate.queryUpdateData();
-    final parsed = response.data;
-    final data = UpdateInfo.fromJson(parsed[0]);
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setString("update_message", data.updateMessage);
-    sharedPreferences.setString("update_url", data.updateUrl);
-    sharedPreferences.setBool("must_update", data.mustUpdate);
-    sharedPreferences.setBool("show_update", data.showUpdate);
+  queryUpdateData() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    Response response =
+        await API.queryUpgrade(packageInfo.version, packageInfo.buildNumber);
+    final parsed = json.decode(response.data);
+    final resultData = UpdateInfo.fromJson(parsed);
+    if (resultData.code == 200 && resultData != null) {
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      sharedPreferences.setBool("is_force", resultData.isForce);
+      sharedPreferences.setString("version", resultData.version);
+      sharedPreferences.setInt("build_name", resultData.buildName);
+      sharedPreferences.setString("message", resultData.message);
+      sharedPreferences.setString("ios_url", resultData.iosUrl);
+      sharedPreferences.setString("android_url", resultData.androidUrl);
+//    }
+    }
   }
 }
 

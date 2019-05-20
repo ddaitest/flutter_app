@@ -32,7 +32,7 @@ class SplashState extends State<SplashPage> {
 
   initValue() async {
     MainModel().queryAdData();
-    MainModel().getUpdateData();
+    MainModel().queryUpdateData();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       fristShowWelcome = prefs.getBool("welcome") ?? true;

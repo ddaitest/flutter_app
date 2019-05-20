@@ -13,6 +13,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_app/manager/main_model.dart';
 import 'package:flutter_app/pages/webview.dart';
+import 'package:package_info/package_info.dart';
+import 'dart:io';
 
 class HomePage extends StatefulWidget {
   @override
@@ -27,32 +29,38 @@ class MyHomeState extends State<HomePage>
   TabController controller;
   int page = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  String updateMessage;
-  String updateUrl;
+  bool isForce;
+  String version;
+  num buildName;
+  String message;
+  String iosUrl;
+  String androidUrl;
   String showCardUrl;
   String showCardGoto;
-  bool mustUpdate;
-  bool showUpdate;
+  String localVersionName;
+  String localVersionCode;
   bool canClose;
 
-  ///获取升级和弹窗广告数据
-  ///如果又升级弹窗出现则不弹广告弹窗，如没有升级则弹广告弹窗，根据must_update和show_update判断
-  _getDialogData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  initvalue() async {
+    var dialogDataMap = await getDialogData();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
-      updateMessage = prefs.getString("update_message") ?? null;
-      updateUrl = prefs.getString("update_url") ?? null;
-      mustUpdate = prefs.getBool("must_update") ?? false;
-      showUpdate = prefs.getBool("show_update") ?? false;
-      showCardUrl = prefs.getString("showCard_url") ?? null;
-      showCardGoto = prefs.getString("showCard_goto") ?? null;
+      isForce = dialogDataMap["isForce"];
+      version = dialogDataMap["version"];
+      buildName = dialogDataMap["buildName"];
+      message = dialogDataMap["message"];
+      iosUrl = dialogDataMap["iosUrl"];
+      androidUrl = dialogDataMap["androidUrl"];
+      showCardUrl = dialogDataMap["showCardUrl"];
+      showCardGoto = dialogDataMap["showCardGoto"];
     });
 
     ///弹窗延迟3s弹出
     Timer(const Duration(seconds: 1), () {
-      if (showUpdate == true && showUpdate != null) {
+      if (compareVersion(version, packageInfo.version) > 0 &&
+          compareVersion(buildName.toString(), packageInfo.buildNumber) > 0) {
         upgradeCard();
-      } else {
+      } else if (showCardUrl != null && showCardGoto != null) {
         showAdDialogCard();
       }
     });
@@ -60,7 +68,7 @@ class MyHomeState extends State<HomePage>
 
   ///判断升级弹窗是否可关闭
   _canCloseUpdateCard() {
-    if (mustUpdate == true) {
+    if (isForce == true) {
       canClose = false;
     } else {
       canClose = true;
@@ -71,7 +79,7 @@ class MyHomeState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    _getDialogData();
+    initvalue();
     // Initialize the Tab Controller
     controller = new TabController(length: 3, vsync: this);
     controller.addListener(() {
@@ -127,20 +135,10 @@ class MyHomeState extends State<HomePage>
             ),
             IconButton(
               onPressed: () {
-                var a = "1.0.1";
-                var b = "1.0.2";
-                var c = "1.10.1";
-                var d = "1.0.10";
-                var e = "1.0.123";
-
-                print("ERROR. TEST $a $b =  ${compareVersion(a, b)}");
-                print("ERROR. TEST $a $c =  ${compareVersion(a, c)}");
-                print("ERROR. TEST $c $d =  ${compareVersion(c, d)}");
-                print("ERROR. TEST $d $e =  ${compareVersion(d, e)}");
-//                Navigator.push(
-//                  context,
-//                  MaterialPageRoute(builder: (context) => PublishPage()),
-//                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PublishPage()),
+                );
               },
               icon: const Icon(
                 Icons.add_circle_outline,
@@ -182,6 +180,16 @@ class MyHomeState extends State<HomePage>
     );
   }
 
+  _comparePlatform() {
+    if (Platform.isAndroid) {
+      return androidUrl;
+    } else if (Platform.isIOS) {
+      return iosUrl;
+    } else {
+      return null;
+    }
+  }
+
   ///广告弹窗ui
   Future<void> showAdDialogCard() async {
     if (showCardUrl != null && showCardGoto != null) {
@@ -193,14 +201,7 @@ class MyHomeState extends State<HomePage>
               backgroundColor: Colors.transparent,
               content: GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            WebViewPage('TEST', showCardGoto)),
-                  );
-
-                  Navigator.of(context).pop();
+                  launchcaller(showCardGoto);
                 },
                 child: CachedNetworkImage(
                   imageUrl: showCardUrl,
@@ -216,7 +217,7 @@ class MyHomeState extends State<HomePage>
 
   ///升级弹窗ui
   Future<void> upgradeCard() async {
-    if (updateUrl != null && updateMessage != null) {
+    if (androidUrl != null && iosUrl != null && message != null) {
       return showDialog<void>(
         context: context,
         barrierDismissible: _canCloseUpdateCard(), // user must tap button!
@@ -236,7 +237,7 @@ class MyHomeState extends State<HomePage>
                       alignment: Alignment.bottomLeft,
                       margin: EdgeInsets.only(left: 30.0, top: 180.0),
                       child: Text(
-                        updateMessage,
+                        message,
                         textAlign: TextAlign.left,
                         softWrap: true,
                       ),
@@ -249,7 +250,7 @@ class MyHomeState extends State<HomePage>
                         height: 50,
                         color: Colors.blue,
                         onPressed: () {
-                          launch(updateUrl);
+                          launchcaller(_comparePlatform());
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5)),

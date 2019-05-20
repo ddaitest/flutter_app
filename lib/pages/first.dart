@@ -197,7 +197,6 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification scrollInfo) {
         if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-
           _onLoadMore();
         }
       },
@@ -294,11 +293,7 @@ class FirstState extends State<FirstTab> with AutomaticKeepAliveClientMixin {
         ),
       ),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => WebViewPage('TEST', listGoto)),
-        );
+        launch(listGoto);
       },
     );
   }

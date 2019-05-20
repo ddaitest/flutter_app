@@ -94,19 +94,30 @@ class AdInfo {
 ///升级数据映射
 class UpdateInfo {
   UpdateInfo(
-      {this.updateMessage, this.updateUrl, this.mustUpdate, this.showUpdate});
-
-  String updateMessage;
-  String updateUrl;
-  bool mustUpdate;
-  bool showUpdate;
+      {this.code,
+      this.isForce,
+      this.version,
+      this.buildName,
+      this.message,
+      this.iosUrl,
+      this.androidUrl});
+  num code;
+  bool isForce;
+  String version;
+  num buildName;
+  String message;
+  String iosUrl;
+  String androidUrl;
 
   factory UpdateInfo.fromJson(Map<String, dynamic> json) {
     return UpdateInfo(
-      updateMessage: json['update_message'],
-      updateUrl: json['update_url'],
-      mustUpdate: json['must_update'],
-      showUpdate: json['show_update'],
+      code: json["code"],
+      isForce: json["data"]['is_force'],
+      version: json["data"]['version'],
+      buildName: json["data"]['build_name'],
+      message: json["data"]['message'],
+      iosUrl: json["data"]['ios_url'],
+      androidUrl: json["data"]['android_url'],
     );
   }
 }

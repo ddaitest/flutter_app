@@ -90,9 +90,11 @@ class API {
   static queryAD() {
     return dio.get("api/ad/");
   }
+
   ///升级信息
-  static queryUpgrade() {
-    return dio.get("api/config/");
+  static queryUpgrade(String version, String buildNumber) {
+    return dio
+        .get("api/config/", queryParameters: {"v": version, "n": buildNumber});
   }
 }
 

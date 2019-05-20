@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info/package_info.dart';
 
 void launchcaller(String url) async {
   if (await canLaunch(url)) {
@@ -41,4 +43,20 @@ int compareVersion(String a, String b) {
     }
   }
   return x - y;
+}
+
+///获取升级和弹窗广告数据
+///如果有升级弹窗出现则不弹广告弹窗，如没有升级则弹广告弹窗，根据isForce判断
+getDialogData() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  Map dataMap = Map();
+  dataMap["isForce"] = prefs.getBool("is_force") ?? false;
+  dataMap["version"] = prefs.getString("version") ?? '';
+  dataMap["buildName"] = prefs.getInt("build_name") ?? 0;
+  dataMap["message"] = prefs.getString("message") ?? '';
+  dataMap["iosUrl"] = prefs.getString("ios_url") ?? '';
+  dataMap["androidUrl"] = prefs.getString("android_url") ?? '';
+  dataMap["showCardUrl"] = prefs.getString("showCard_url") ?? "";
+  dataMap["showCardGoto"] = prefs.getString("showCard_goto") ?? "";
+  return dataMap;
 }
