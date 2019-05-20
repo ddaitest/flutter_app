@@ -72,7 +72,7 @@ class ThirdTabState extends State<ThirdTab> {
             child: Column(
               children: <Widget>[
                 Text(
-                  '合作电话：' + telphoneNum,
+                  '联系电话：' + telphoneNum,
                   style: TextStyle(fontSize: 20, color: Colors.black),
                 ),
               ],
