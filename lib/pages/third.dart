@@ -31,7 +31,7 @@ class ThirdTabState extends State<ThirdTab> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         Column(
           children: <Widget>[
