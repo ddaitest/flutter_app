@@ -40,6 +40,7 @@ dependencies:
   flutter_umeng_analytics_fork: ^0.0.3
   flutter_webview_plugin: ^0.2.1+2
   package_info: ^0.4.0+3
+  page_view_indicator: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,8 @@ flutter:
     - images/splash_ad.png
     - images/DialogAd.png
     - images/welcome.png
+    - images/welcome2.jpg
+    - images/welcome3.jpeg
     - images/Upgrade_Card.png
   #  - images/a_dot_ham.jpeg
 

@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_app/manager/api.dart';
 import 'package:flutter_app/manager/main_model.dart';
+import 'package:page_view_indicator/page_view_indicator.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -29,8 +30,16 @@ class SplashState extends State<SplashPage> {
   bool fristShowWelcome = true;
   String splashUrl;
   String splashGoto;
+  static const length = 3;
+  final pageIndexNotifier = ValueNotifier<int>(0);
+
+//  List imagesList = List();
+  var imagesList = [];
 
   initValue() async {
+    imagesList.add(_getWelcome1());
+    imagesList.add(_getWelcome2());
+    imagesList.add(_getWelcome3());
     MainModel().queryAdData();
     MainModel().queryUpdateData();
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -48,9 +57,9 @@ class SplashState extends State<SplashPage> {
 
   _getContent() {
     if (fristShowWelcome == true) {
-      return _getWelcome();
+      return WelcomePage();
     } else {
-      return _getSplash();
+      return splashPage();
     }
   }
 
@@ -68,15 +77,77 @@ class SplashState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: Container(
-        color: Colors.blue,
-        child: _getContent(),
+    return Scaffold(body: _getContent());
+  }
+
+  WelcomePage() {
+    return Stack(
+      alignment: FractionalOffset.bottomCenter,
+      children: <Widget>[
+        PageView.builder(
+            onPageChanged: (index) => pageIndexNotifier.value = index,
+            itemCount: length,
+            itemBuilder: (context, index) {
+              return Container(
+                constraints: BoxConstraints.expand(
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+                child: imagesList[index],
+//      color: Colors.blue,
+              );
+            }),
+        PageViewIndicator(
+          pageIndexNotifier: pageIndexNotifier,
+          length: length,
+          normalBuilder: (animationController, index) => Circle(
+                size: 8.0,
+                color: Colors.black87,
+              ),
+          highlightedBuilder: (animationController, index) => ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: animationController,
+                  curve: Curves.ease,
+                ),
+                child: Circle(
+                  size: 8.0,
+                  color: Colors.white,
+                ),
+              ),
+        ),
+      ],
+    );
+  }
+
+  _getWelcome1() {
+    return Container(
+//      color: Colors.blue,
+      constraints: BoxConstraints.expand(
+        width: double.infinity,
+        height: double.infinity,
+      ),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: ExactAssetImage('images/welcome2.jpg'), fit: BoxFit.cover),
       ),
     );
   }
 
-  _getWelcome() {
+  _getWelcome2() {
+    return Container(
+//      color: Colors.blue,
+      constraints: BoxConstraints.expand(
+        width: double.infinity,
+        height: double.infinity,
+      ),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: ExactAssetImage('images/welcome3.jpeg'), fit: BoxFit.cover),
+      ),
+    );
+  }
+
+  _getWelcome3() {
     return Container(
 //      color: Colors.blue,
       constraints: BoxConstraints.expand(
@@ -123,7 +194,7 @@ class SplashState extends State<SplashPage> {
     );
   }
 
-  _getSplash() {
+  splashPage() {
     if (splashUrl != null) {
       return GestureDetector(
         onTap: () {
