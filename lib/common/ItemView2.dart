@@ -4,6 +4,7 @@ import 'package:flutter_app/manager/beans.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_app/common/common.dart';
+import 'package:flutter_app/pages/detail.dart';
 import 'dart:math' as math;
 
 const Color c1 = Color(0xFF222222);
@@ -32,36 +33,46 @@ class ItemView2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(8),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: event.remark != null && event.remark.isNotEmpty
-              ? <Widget>[
-                  _getHeader(),
-                  _getPadding(),
-                  _getPickup(),
-                  _getPadding(),
-                  _getDropoff(),
-                  _getPadding(),
-                  _getDateTime(),
-                  _getPadding(),
-                  _getRemark(),
-                ]
-              : <Widget>[
-                  _getHeader(),
-                  _getPadding(),
-                  _getPickup(),
-                  _getPadding(),
-                  _getDropoff(),
-                  _getPadding(),
-                  _getDateTime(),
-                ],
+    return GestureDetector(
+      child: Card(
+        margin: EdgeInsets.all(8),
+        child: Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: event.remark != null && event.remark.isNotEmpty
+                ? <Widget>[
+                    _getHeader(),
+                    _getPadding(),
+                    _getPickup(),
+                    _getPadding(),
+                    _getDropoff(),
+                    _getPadding(),
+                    _getDateTime(),
+                    _getPadding(),
+                    _getRemark(),
+                  ]
+                : <Widget>[
+                    _getHeader(),
+                    _getPadding(),
+                    _getPickup(),
+                    _getPadding(),
+                    _getDropoff(),
+                    _getPadding(),
+                    _getDateTime(),
+                  ],
+          ),
         ),
       ),
+//      onTap: () {
+//        Navigator.push(
+//          context,
+//          MaterialPageRoute(
+//              builder: (context) => DetailPage(event.phone, event.start,
+//                  event.end, event.remark, event.time)),
+//        );
+//      },
     );
   }
 
