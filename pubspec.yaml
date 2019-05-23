@@ -38,7 +38,7 @@ dependencies:
   dio: ^2.1.3
   flutter_jpush: ^0.0.4
   flutter_umeng_analytics_fork: ^0.0.3
-  flutter_webview_plugin: ^0.2.1+2
+  flutter_webview_plugin: ^0.3.5
   package_info: ^0.4.0+3
   page_view_indicator: ^2.0.0
 

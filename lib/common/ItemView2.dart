@@ -65,14 +65,14 @@ class ItemView2 extends StatelessWidget {
           ),
         ),
       ),
-//      onTap: () {
-//        Navigator.push(
-//          context,
-//          MaterialPageRoute(
-//              builder: (context) => DetailPage(event.phone, event.start,
-//                  event.end, event.remark, event.time)),
-//        );
-//      },
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DetailPage(event.phone, event.start,
+                  event.end, event.remark, event.time)),
+        );
+      },
     );
   }
 
