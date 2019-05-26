@@ -5,15 +5,12 @@ import 'package:flutter_app/common/ItemView2.dart';
 import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/common/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:video_player/video_player.dart';
 
 const Color c4 = Color(0xFF13D3CE);
 const Color c5 = Color(0xFFFF7200);
 final TextStyle mainTitleFont = const TextStyle(
   fontSize: 18,
-  fontWeight: FontWeight.w500,
-);
-final TextStyle subTitleFont = const TextStyle(
-  fontSize: 16,
 );
 
 class DetailPage extends StatefulWidget {
@@ -32,9 +29,10 @@ class DetailPage extends StatefulWidget {
 }
 
 class DetailState extends State<DetailPage> {
+  String adForDetailUrl =
+      'https://img.zcool.cn/community/012de8571049406ac7251f05224c19.png@1280w_1l_2o_100sh.png';
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -48,63 +46,21 @@ class DetailState extends State<DetailPage> {
           title: Text('拼车详情'),
         ),
         body: Center(
-          child: ListView(padding: EdgeInsets.all(16), children: <Widget>[
+          child: ListView(padding: EdgeInsets.all(10.0), children: <Widget>[
             _getContainer(
-              '路线',
-              Icons.location_city,
-              mainTitleFont,
+              _getRoadLine(),
+              Icons.location_on,
             ),
-            Container(
-                width: 360.0,
-                child: Card(
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.access_time,
-                    ),
-                    title: Text(
-                      '时间',
-                      style: mainTitleFont,
-                      softWrap: true,
-                    ),
-                    subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              date,
-                              style: subTitleFont,
-                            ),
-                            Text(
-                              time,
-                              style: subTitleFont,
-                            ),
-                          ],
-                        )),
-                  ),
-                )),
-            Container(
-                width: 360.0,
-                child: Card(
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.event_note,
-                    ),
-                    title: Text(
-                      '备注',
-                      style: mainTitleFont,
-                      softWrap: true,
-                    ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Text(
-                        widget.remark,
-                        style: subTitleFont,
-                      ),
-                    ),
-                  ),
-                )),
+            _getContainer(
+              Text('$date  $time', style: mainTitleFont),
+              Icons.access_time,
+            ),
+            _getContainer(
+              Text(widget.remark, style: mainTitleFont),
+              Icons.event_note,
+            ),
             Padding(
-              padding: const EdgeInsets.only(top: 50),
+              padding: const EdgeInsets.only(top: 25),
               child: MaterialButton(
                 height: 50,
                 color: Colors.blue,
@@ -120,67 +76,50 @@ class DetailState extends State<DetailPage> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 50),
-              child: GestureDetector(
-                child: Card(
-                  margin: EdgeInsets.all(8),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(2),
-                    child: Image(
-                      image: CachedNetworkImageProvider(
-                          "https://img.zcool.cn/community/012de8571049406ac7251f05224c19.png@1280w_1l_2o_100sh.png"),
-                      fit: BoxFit.cover,
-                      width: 500,
-                      height: 300,
-                    ),
-                  ),
-                ),
-//                onTap: () {
-//                  launch(listGoto);
-//                },
-              ),
-            )
+            _adJudge()
           ]),
         ));
   }
 
-  Widget _getContainer(String title, IconData leadIcon, mainTitleFont,
-      {IconData trailIcon}) {
+  _adJudge() {
+    if (adForDetailUrl != null) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 25),
+        child: GestureDetector(
+          child: Image(
+            image: CachedNetworkImageProvider(adForDetailUrl),
+            fit: BoxFit.fill,
+            width: 500,
+            height: 400,
+          ),
+//                onTap: () {
+//                  launch(listGoto);
+//                },
+        ),
+      );
+    }
+  }
+
+  Widget _getContainer(var title, IconData leadIcon, {IconData trailIcon}) {
     return Container(
-        width: 360.0,
+        padding: const EdgeInsets.all(5),
+        height: 80.0,
         child: Card(
           child: ListTile(
-            leading: Icon(leadIcon),
-            trailing: Icon(trailIcon),
-            title: Text(
-              title,
-              style: mainTitleFont,
-              softWrap: true,
-            ),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: Column(
-                children: <Widget>[
-                  _getInfoView(
-                      Icons.trip_origin, c4, widget.from, subTitleFont),
-                  _getInfoView(Icons.trip_origin, c5, widget.to, subTitleFont)
-                ],
-              ),
-            ),
-          ),
+              leading: Icon(leadIcon), trailing: Icon(trailIcon), title: title),
         ));
   }
 
-  _getSubtitle() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5),
-      child: Column(
-        children: <Widget>[
-          _getInfoView(Icons.trip_origin, c4, widget.from, subTitleFont),
-          _getInfoView(Icons.trip_origin, c5, widget.to, subTitleFont)
-        ],
-      ),
+  _getRoadLine() {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child:
+              _getInfoView(Icons.trip_origin, c4, widget.from, mainTitleFont),
+        ),
+        _getInfoView(Icons.trip_origin, c5, widget.to, mainTitleFont),
+      ],
     );
   }
 
@@ -207,7 +146,6 @@ class DetailState extends State<DetailPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 }
