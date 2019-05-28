@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/common/utils.dart';
 import 'package:flutter_app/pages/first.dart';
 import 'package:flutter_app/pages/search.dart';
-import 'package:flutter_app/pages/second.dart';
 import 'package:flutter_app/pages/third.dart';
 import 'package:flutter_app/router/routers.dart';
 import 'package:flutter_app/pages/publish.dart';
@@ -137,7 +136,8 @@ class MyHomeState extends State<HomePage>
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PublishPage()),
+                  MaterialPageRoute(
+                      builder: (context) => PublishPage(page == 1)),
                 );
               },
               icon: const Icon(

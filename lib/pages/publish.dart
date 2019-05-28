@@ -14,26 +14,39 @@ enum DialogDemoAction {
 }
 
 class PublishPage extends StatelessWidget {
+  final bool findVehicle;
+
+  PublishPage(this.findVehicle, {Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text("发布"),
         ),
-        body: MyCustomForm()
+        body: MyCustomForm(findVehicle)
 //        MyCustomForm(),
         );
   }
 }
 
 class MyCustomForm extends StatefulWidget {
+  final bool findVehicle;
+
+  MyCustomForm(this.findVehicle, {Key key}) : super(key: key);
+
   @override
   MyCustomFormState createState() {
-    return MyCustomFormState();
+    return MyCustomFormState(findVehicle);
   }
 }
 
 class MyCustomFormState extends State<MyCustomForm> {
+  ///false if vehicle.
+  final bool findVehicle;
+
+  MyCustomFormState(this.findVehicle);
+
   // Create a global key that will uniquely identify the Form widget and allow
   // us to validate the form
   //
@@ -77,7 +90,7 @@ class MyCustomFormState extends State<MyCustomForm> {
       'time': x.millisecondsSinceEpoch.toString(),
       'phone': myControllerPhone.text,
       'remark': myControllerRemark.text,
-      'type': '0',
+      'type': findVehicle ? '1' : '0',
       'publish_time': '0',
       'publish_id': '0',
     };

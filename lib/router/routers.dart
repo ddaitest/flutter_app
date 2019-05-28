@@ -17,8 +17,8 @@ class Routers {
         handler: Handler(handlerFunc: (context, params) => HomePage()));
     router.define(pageSearch,
         handler: Handler(handlerFunc: (context, params) => SearchPage()));
-    router.define(pagePublish,
-        handler: Handler(handlerFunc: (context, params) => PublishPage()));
+//    router.define(pagePublish,
+//        handler: Handler(handlerFunc: (context, params) => PublishPage()));
     Routers.router = router;
   }
 

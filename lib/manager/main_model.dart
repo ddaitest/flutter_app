@@ -34,17 +34,23 @@ class MainModel extends Model {
 
   PageDataStatus _vehicleStatus = PageDataStatus.LOADING;
 
-  getPassengerPageStatus() => _passengerStatus;
+//  getPassengerPageStatus() => _passengerStatus;
 
-  getVehiclePageStatus() => _vehicleStatus;
+//  getVehiclePageStatus() => _vehicleStatus;
+
+  getPageStatus(bool forFindVehicle) =>
+      forFindVehicle ? _vehicleStatus : _passengerStatus;
 
   bool _passengerHasMore = true;
 
   bool _vehicleHasMore = true;
 
-  passengerHasMore() => _passengerHasMore;
+//  passengerHasMore() => _passengerHasMore;
 
-  vehicleHasMore() => _vehicleHasMore;
+//  vehicleHasMore() => _vehicleHasMore;
+
+  getHasMore(bool forFindVehicle) =>
+      forFindVehicle ? _vehicleHasMore : _passengerHasMore;
 
   ///更新筛选条件
   updateSearchCondition(bool forFindVehicle, SearchCondition newCondition) {
@@ -74,11 +80,22 @@ class MainModel extends Model {
   ///车找人的数据
   List<BannerInfo> _bannerList = new List();
 
-  getVehicleList() => _vehicleList;
+//  getVehicleList() => _vehicleList;
 
-  getPassengerList() => _passengerList;
+//  getPassengerList() => _passengerList;
+
+  getListData(bool forFindVehicle) =>
+      forFindVehicle ? _vehicleList : _passengerList;
 
   getBannerInfoList() => _bannerList;
+
+  queryList(bool forFindVehicle, bool refresh, {Function done}) {
+    if (forFindVehicle) {
+      queryVehicleList(refresh, done: done);
+    } else {
+      queryPassengerList(refresh, done: done);
+    }
+  }
 
   /// 请求 Passenger List, num after 表示从哪个timestamp 开始load more.
   queryPassengerList(bool refresh, {Function done}) async {

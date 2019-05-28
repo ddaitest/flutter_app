@@ -41,10 +41,10 @@ class MyAppState extends State<MyApp> {
         child: new MaterialApp(
           debugShowCheckedModeBanner: false,
           home: new SplashPage(),
-          routes: <String, WidgetBuilder>{
-            '/publish': (BuildContext context) => PublishPage(),
-            '/search': (BuildContext context) => SearchPage(),
-          },
+//          routes: <String, WidgetBuilder>{
+//            '/publish': (BuildContext context) => PublishPage(),
+//            '/search': (BuildContext context) => SearchPage(),
+//          },
         ));
   }
 

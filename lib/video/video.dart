@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/first.dart';
-import 'package:flutter_app/pages/second.dart';
-import 'package:flutter_app/pages/third.dart';
 import 'package:flutter_app/video/videos.dart';
 
 class VideoPage extends StatefulWidget {
