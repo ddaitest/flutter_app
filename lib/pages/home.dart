@@ -96,7 +96,7 @@ class MyHomeState extends State<HomePage>
     } else if (page == 1) {
       return "人找车";
     } else {
-      return "关于拼车帮";
+      return "关于无忧车道";
     }
   }
 
