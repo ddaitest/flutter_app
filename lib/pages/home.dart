@@ -15,10 +15,12 @@ import 'package:flutter_app/pages/webview.dart';
 import 'package:package_info/package_info.dart';
 import 'dart:io';
 
+import '../test.dart';
+
 class HomePage extends StatefulWidget {
   @override
-//  HomeState createState() => HomeState();
-  MyHomeState createState() => MyHomeState();
+  TestState createState() => TestState();
+//  MyHomeState createState() => MyHomeState();
 }
 
 // SingleTickerProviderStateMixin is used for animation
@@ -298,3 +300,52 @@ class MyHomeState extends State<HomePage>
   @override
   bool get wantKeepAlive => true;
 }
+
+
+//class TestState extends State<HomePage> {
+//  final searchController = TextEditingController();
+//
+//  @override
+//  void initState() {
+//    searchController.addListener(() {
+//      print("ERROR. searchController changed.");
+//    });
+//    super.initState();
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    Color color = Theme.of(context).primaryColor;
+//    var model = MainModel.of(context);
+//    List<String> data = model.getSearchResult();
+//    return new Scaffold(
+//        appBar: AppBar(
+//          title: Text("Test"),
+//          actions: <Widget>[
+////          new IconButton(icon: const Icon(Icons.search), onPressed: search)
+//          ],
+//        ),
+//        body: Container(
+//          padding: EdgeInsets.all(16),
+//          child: Column(
+//            children: <Widget>[
+//              TextFormField(
+//                decoration: InputDecoration(
+//                  hintText: '请输入出发点',
+//                  icon: Icon(Icons.pin_drop),
+//                  labelText: '出发地',
+//                ),
+//                controller: searchController,
+//              ),
+//              Expanded(
+//                child: ListView.builder(
+//                  itemBuilder: (BuildContext context, int index) =>
+//                      ListTile(title: Text(data[index])),
+//                  itemCount: data.length,
+//                ),
+//              )
+//            ],
+//          ),
+//        ));
+//  }
+//}

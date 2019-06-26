@@ -1,3 +1,4 @@
+import 'package:amap_base/amap_base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/manager/api.dart';
 import 'package:flutter_app/manager/main_model.dart';
@@ -14,7 +15,15 @@ import 'dart:io';
 import 'package:flutter_umeng_analytics_fork/flutter_umeng_analytics_fork.dart';
 //import 'package:platform/platform.dart';
 
-void main() => runApp(MyApp());
+//void main() => runApp(MyApp());
+void main(){
+  initAmap();
+  runApp(new MyApp());
+}
+
+initAmap() async {
+  await AMap.init('30a97518348a9b6b8cc652b2dbabe3a2');
+}
 
 class MyApp extends StatefulWidget {
   @override

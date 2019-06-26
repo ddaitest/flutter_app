@@ -1,114 +1,86 @@
-
-
+import 'package:amap_base/amap_base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home.dart';
+import 'package:amap_base/src/search/model/poi_item.dart';
 
-class HomeState extends State<HomePage> {
+import 'manager/main_model.dart';
+
+/**
+ * hope_ios	30a97518348a9b6b8cc652b2dbabe3a2
+ * hope_android	926c883e181700a1d3f0f01c7ed8ea7b
+ *
+ * <meta-data
+    android:name="com.amap.api.v2.apikey"
+    android:value="926c883e181700a1d3f0f01c7ed8ea7b"/>
+
+ */
+class TestState extends State<HomePage> {
+  MainModel model;
+
+  @override
+  void initState() {
+    MainModel.initAmap();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Color color = Theme.of(context).primaryColor;
-    Widget buttonSection = Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildButtonColumn(color, Icons.call, 'CALL'),
-          _buildButtonColumn(color, Icons.near_me, 'ROUTE'),
-          _buildButtonColumn(color, Icons.share, 'SHARE'),
-        ],
-      ),
-    );
+    model = MainModel.of(context);
+    List<PoiItem> data = model.getSearchResult();
     return new Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-        actions: <Widget>[
+        appBar: AppBar(
+          title: Text("Test"),
+          actions: <Widget>[
 //          new IconButton(icon: const Icon(Icons.search), onPressed: search)
-        ],
-      ),
-      body: new ListView(
-        children: <Widget>[
-          Image.network(
-            'https://raw.githubusercontent.com/flutter/website/master/examples/layout/lakes/step5/images/lake.jpg',
-            width: 600,
-            height: 240,
-            fit: BoxFit.cover,
-          ),
-          titleSection,
-          buttonSection,
-          textSection,
-        ],
-      ),
-    );
-  }
-}
-
-Widget textSection = Container(
-  padding: const EdgeInsets.all(32.0),
-  child: Text(
-    'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
-        'Alps. Situated 1,578 meters above sea level, it is one of the '
-        'larger Alpine Lakes. A gondola ride from Kandersteg, followed by a '
-        'half-hour walk through pastures and pine forest, leads you to the '
-        'lake, which warms to 20 degrees Celsius in the summer. Activities '
-        'enjoyed here include rowing, and riding the summer toboggan run.',
-    softWrap: true,
-  ),
-);
-
-Widget titleSection = Container(
-  padding: const EdgeInsets.all(32.0),
-  child: Row(
-    children: [
-      Expanded(
-        /*1*/
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /*2*/
-            Container(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text(
-                'Oeschinen Lake Campground',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Text(
-              'Kandersteg, Switzerland',
-              style: TextStyle(
-                color: Colors.grey[500],
-              ),
-            ),
           ],
         ),
-      ),
-      /*3*/
-      Icon(
-        Icons.star,
-        color: Colors.red[500],
-      ),
-      Text('41'),
-    ],
-  ),
-);
+        body: Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
 
-Column _buildButtonColumn(Color color, IconData icon, String label) {
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Icon(icon, color: color),
-      Container(
-        margin: const EdgeInsets.only(top: 8.0),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 12.0,
-            fontWeight: FontWeight.w400,
-            color: color,
+                  RaisedButton(
+                    onPressed: () async {
+                      if (await Permissions().requestPermission()) {
+                        model.locate();
+                      } else {
+                        Scaffold.of(context)
+                            .showSnackBar(SnackBar(content: Text('权限不足')));
+                      }
+                    },
+                    child: Text("Locate()"),
+                  ),
+
+                  Expanded(child: Text(model.currentPOI)),
+                ],
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              ),
+              TextField(
+                  decoration: InputDecoration(
+                    hintText: '请输入出发点',
+                    icon: Icon(Icons.pin_drop),
+                    labelText: '出发地',
+                  ),
+                  onChanged: search),
+              Flexible(
+                child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) =>
+                      ListTile(title: Text(data[index].title)),
+                  itemCount: data.length,
+                ),
+              )
+            ],
           ),
-        ),
-      ),
-    ],
-  );
+        ));
+  }
+
+  search(String keyword) {
+    print("INFO. searchController changed. $keyword");
+    if (keyword.length > 0) {
+      model.searchPOI(keyword);
+    }
+  }
 }

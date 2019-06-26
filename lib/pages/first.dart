@@ -18,25 +18,3 @@ class FirstTab extends BasePage {
 class SecondTab extends BasePage {
   SecondTab() : super(true);
 }
-
-
-class TestTab extends StatefulWidget{
-  @override
-  State<StatefulWidget> createState() {
-    return TestState();
-  }
-
-}
-
-class TestState  extends State<TestTab>{
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      child: MaterialButton(onPressed: (){
-        print("");
-      }),
-    );
-  }
-
-}

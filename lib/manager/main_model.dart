@@ -1,3 +1,5 @@
+import 'package:amap_base/amap_base.dart';
+import 'package:amap_base/src/search/model/poi_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/manager/api.dart';
@@ -297,6 +299,51 @@ class MainModel extends Model {
       sharedPreferences.setString("android_url", resultData.androidUrl);
 //    }
     }
+  }
+
+  //amap
+
+  List _searchResult = List<PoiItem>();
+
+  String _currentPOI = "";
+
+  String get currentPOI => _currentPOI;
+
+  static AMapLocation _al = AMapLocation();
+
+  static initAmap() {
+    _al.init();
+  }
+
+  getSearchResult() => _searchResult;
+
+  locate() {
+    final options = LocationClientOptions(
+      isOnceLocation: true,
+      locatingWithReGeocode: true,
+    );
+    _al.getLocation(options).then((v) {
+      print("INFO. getLocation = ${v.latitude} , ${v.latitude}");
+      _currentPOI = "${v.latitude} , ${v.latitude}";
+      notifyListeners();
+    });
+  }
+
+  searchPOI(String keyword) {
+    PoiItem item;
+    AMapSearch()
+        .searchPoi(PoiSearchQuery(
+      query: keyword,
+    ))
+        .then((result) {
+      print("Result = ${result.pois.length}");
+      if (result.pois.length > 0) {
+        print("Result0 = ${result.pois[0].toString()}");
+      }
+      _searchResult.clear();
+      _searchResult.addAll(result.pois);
+      notifyListeners();
+    });
   }
 }
 

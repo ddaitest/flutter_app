@@ -21,6 +21,10 @@
         android:label="无忧车道"
         android:icon="@mipmap/ic_launcher">
 
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="926c883e181700a1d3f0f01c7ed8ea7b"/>
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
