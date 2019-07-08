@@ -13,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 class BasePage extends StatefulWidget {
   final bool pageType; //false if vehicle.
 
-  BasePage(this.pageType, {Key key}) :super(key: key);
+  BasePage(this.pageType, {Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -27,7 +27,7 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-  GlobalKey<RefreshIndicatorState>();
+      GlobalKey<RefreshIndicatorState>();
 
   MainModel model;
 
@@ -36,7 +36,6 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
 
   ///false if vehicle.
   bool pageType = false;
-
 
   _refreshList(Function done) {
     model.queryList(pageType, true, done: done);
@@ -102,23 +101,23 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
     if (searchCondition != null) {
       views.add(getSearchView(
         searchCondition,
-            () {
+        () {
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => SearchPage(findVehicle: pageType)),
           );
         },
-            () {
+        () {
           model.updateSearchCondition(pageType, null);
         },
       ));
     }
     //添加banner
-    List<BannerInfo> info = model.getBannerInfoList();
-    if (info != null && info.length > 0) {
-      views.add(getBannerView(info));
-    }
+//    List<BannerInfo> info = model.getBannerInfoList();
+//    if (info != null && info.length > 0) {
+//      views.add(getBannerView(info));
+//    }
     //添加列表
     views.add(Expanded(child: getListView()));
 
@@ -126,8 +125,8 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
   }
 
   /// View: 当前搜索信息。
-  getSearchView(SearchCondition condition, Function callSearch,
-      Function callClean) {
+  getSearchView(
+      SearchCondition condition, Function callSearch, Function callClean) {
     return Card(
       color: Colors.blue,
       child: Container(
@@ -214,29 +213,66 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
           _onLoadMore();
         }
       },
-      child: _list(),
+//      child: _list(),
+      child: _scrollView(),
+    );
+  }
+
+  Widget _scrollView() {
+    final views = <Widget>[];
+    //添加banner
+    List<BannerInfo> info = model.getBannerInfoList();
+    if (info != null && info.length > 0) {
+      views.add(
+        SliverPersistentHeader(
+          delegate: _SliverAppBarDelegate(getBannerView(info), 120, 120),
+          floating: false,
+          pinned: false,
+        ),
+      );
+    }
+    views.add(SliverPersistentHeader(
+      delegate: _SliverAppBarDelegate(
+          Container(
+            height: 120,
+            color: Colors.orange,
+            child: Text("HAHAHA"),
+          ),
+          120,
+          120),
+      floating: true,
+    ));
+    views.add(_list());
+    return CustomScrollView(
+      slivers: views,
     );
   }
 
   Widget _list() {
     var data = model.getListData(pageType);
     final enablePullUp = model.getHasMore(pageType);
-    return new ListView.separated(
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: enablePullUp ? data.length + 1 : data.length,
-      itemBuilder: (BuildContext context, int index) =>
-      index == data.length
+    return SliverList(
+        delegate: SliverChildBuilderDelegate(
+      (BuildContext context, int index) => index == data.length
           ? _getLoadMore()
           : ItemView2(data[index], index, 0),
-      separatorBuilder: (BuildContext context, int index) {
-          return Container();
-////        if (index != null && listUrl != null && index == cardIndex) {
-////          return _getListADItem();
-////        } else {
-////          return Container();
-////        }
-      },
-    );
+      childCount: enablePullUp ? data.length + 1 : data.length,
+    ));
+//    return new ListView.separated(
+//      physics: const AlwaysScrollableScrollPhysics(),
+//      itemCount: enablePullUp ? data.length + 1 : data.length,
+//      itemBuilder: (BuildContext context, int index) => index == data.length
+//          ? _getLoadMore()
+//          : ItemView2(data[index], index, 0),
+//      separatorBuilder: (BuildContext context, int index) {
+//        return Container();
+//////        if (index != null && listUrl != null && index == cardIndex) {
+//////          return _getListADItem();
+//////        } else {
+//////          return Container();
+//////        }
+//      },
+//    );
   }
 
   _getLoadMore() {
@@ -270,4 +306,31 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this.subView, this.minHeight, this.maxHeight);
+
+  final Widget subView;
+  final double minHeight;
+  final double maxHeight;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return new Container(
+      child: subView,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
+  }
 }
