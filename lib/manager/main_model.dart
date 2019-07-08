@@ -232,38 +232,7 @@ class MainModel extends Model {
     }
   }
 
-  ///广告数据
-  queryAdData() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    print("ERROR. packageInfo.version ${packageInfo.version}");
-    print("ERROR. packageInfo.buildNumber ${packageInfo.buildNumber}");
 
-    Response response = await API.queryAD();
-    final parsed = json.decode(response.data);
-    var resultCode = parsed['code'] ?? 0;
-    var resultData = parsed['data'];
-    if (resultCode == 200 && resultData != null) {
-      final newData =
-          resultData.map<AdInfo>((json) => AdInfo.fromJson(json)).toList();
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      for (var ad in newData) {
-        switch (ad.type) {
-          case 0: //Splash
-            sharedPreferences.setString("splash_url", ad.image);
-            sharedPreferences.setString("splash_goto", ad.action);
-            break;
-          case 1: //Home
-            sharedPreferences.setString("showCard_url", ad.image);
-            sharedPreferences.setString("showCard_goto", ad.action);
-            break;
-          case 2: //List
-
-            break;
-        }
-      }
-    }
-  }
 
 //  getAdData() async {
 //    Response response = await ApiForAd.queryAdData();
@@ -279,25 +248,7 @@ class MainModel extends Model {
 //    sharedPreferences.setString("list_goto", data.listGoto);
 //  }
 
-  ///升级数据
-  queryUpdateData() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    Response response =
-        await API.queryUpgrade(packageInfo.version, packageInfo.buildNumber);
-    final parsed = json.decode(response.data);
-    final resultData = UpdateInfo.fromJson(parsed);
-    if (resultData.code == 200 && resultData != null) {
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      sharedPreferences.setBool("is_force", resultData.isForce);
-      sharedPreferences.setString("version", resultData.version);
-      sharedPreferences.setInt("build_name", resultData.buildName);
-      sharedPreferences.setString("message", resultData.message);
-      sharedPreferences.setString("ios_url", resultData.iosUrl);
-      sharedPreferences.setString("android_url", resultData.androidUrl);
-//    }
-    }
-  }
+
 }
 
 ///搜索条件

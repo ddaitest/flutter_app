@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_app/common/common.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_app/manager/splash_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home.dart';
@@ -12,67 +13,27 @@ import 'package:flutter_app/manager/api.dart';
 import 'package:flutter_app/manager/main_model.dart';
 import 'package:page_view_indicator/page_view_indicator.dart';
 
+import '../test.dart';
+
 class SplashPage extends StatefulWidget {
   @override
   SplashState createState() => SplashState();
 }
 
-final TextStyle splashFont = const TextStyle(
-    fontSize: 27.0,
-    height: 1.5,
-    fontWeight: FontWeight.w500,
-    color: Colors.white);
-final TextStyle splashFontNow = const TextStyle(
-    fontSize: 20.0, fontWeight: FontWeight.w500, color: Colors.black);
-
 // 闪屏展示页面，首次安装时展示可滑动页面，第二次展示固定图片
 class SplashState extends State<SplashPage> {
-  bool fristShowWelcome = true;
-  String splashUrl;
-  String splashGoto;
   static const length = 3;
   final pageIndexNotifier = ValueNotifier<int>(0);
 
-//  List imagesList = List();
-  var imagesList = [];
-
-  initValue() async {
-    imagesList.add(_getWelcome1());
-    imagesList.add(_getWelcome2());
-    imagesList.add(_getWelcome3());
-    MainModel().queryAdData();
-    MainModel().queryUpdateData();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      fristShowWelcome = prefs.getBool("welcome") ?? true;
-      splashUrl = prefs.getString("splash_url") ?? null;
-      splashGoto = prefs.getString("splash_goto") ?? null;
-      if (fristShowWelcome == false) {
-        Timer(const Duration(seconds: 3), () {
-          _goHomepage();
-        });
-      }
-    });
-  }
-
-  _getContent() {
-    if (fristShowWelcome == true) {
-      return WelcomePage();
-    } else {
-      return splashPage();
-    }
-  }
-
-  clickWelcome() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setBool("welcome", false);
-    _goHomepage();
-  }
+  SplashModel model;
 
   @override
   void initState() {
     super.initState();
-    initValue();
+    if (model == null) {
+      model = SplashModel();
+    }
+    model.initValue();
   }
 
   @override
@@ -80,7 +41,23 @@ class SplashState extends State<SplashPage> {
     return Scaffold(body: _getContent());
   }
 
-  WelcomePage() {
+  _getContent() {
+    if (model.showWelcome == true) {
+      return _welcomePage();
+    } else {
+      return _splashPage(model.splashUrl, model.splashGoto);
+    }
+  }
+
+  _clickWelcome() async {
+//    model.clickWelcome();
+    _gotoHomePage();
+  }
+
+  _gotoHomePage() => Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (context) => HomePage()));
+
+  _welcomePage() {
     return Stack(
       alignment: FractionalOffset.bottomCenter,
       children: <Widget>[
@@ -93,8 +70,7 @@ class SplashState extends State<SplashPage> {
                   width: double.infinity,
                   height: double.infinity,
                 ),
-                child: imagesList[index],
-//      color: Colors.blue,
+                child: _getWelcomeView(index),
               );
             }),
         PageViewIndicator(
@@ -119,58 +95,50 @@ class SplashState extends State<SplashPage> {
     );
   }
 
-  _getWelcome1() {
+  _getWelcomeView(int index) {
+    final image = model.imagesList[index];
+    final tip = model.splashTip;
+    print("INFO. index=$index  image=$image  tip=$tip");
+    if (index == 2) {
+      return _getWelcome3(image, tip);
+    } else {
+      return _getWelcome1(image);
+    }
+  }
+
+  _getWelcome1(String path) {
     return Container(
-//      color: Colors.blue,
       constraints: BoxConstraints.expand(
         width: double.infinity,
         height: double.infinity,
       ),
       decoration: BoxDecoration(
-        image: DecorationImage(
-            image: ExactAssetImage('images/welcome2.jpg'), fit: BoxFit.cover),
+        image: DecorationImage(image: ExactAssetImage(path), fit: BoxFit.cover),
       ),
     );
   }
 
-  _getWelcome2() {
+  _getWelcome3(String path, String tip) {
     return Container(
-//      color: Colors.blue,
       constraints: BoxConstraints.expand(
         width: double.infinity,
         height: double.infinity,
       ),
       decoration: BoxDecoration(
-        image: DecorationImage(
-            image: ExactAssetImage('images/welcome3.jpeg'), fit: BoxFit.cover),
-      ),
-    );
-  }
-
-  _getWelcome3() {
-    return Container(
-//      color: Colors.blue,
-      constraints: BoxConstraints.expand(
-        width: double.infinity,
-        height: double.infinity,
-      ),
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: ExactAssetImage('images/welcome.png'), fit: BoxFit.cover),
+        image: DecorationImage(image: ExactAssetImage(path), fit: BoxFit.cover),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Container(
             alignment: Alignment.bottomCenter,
-            child: Text("在你需要的每个地方\n载着你去往每个地方\n无佣金，乘客少花钱\n不抽成，车主多挣钱",
-                style: splashFont),
+            child: Text(tip, style: splashFont),
           ),
           Container(
             alignment: Alignment.center,
             child: MaterialButton(
               color: Colors.white,
-              onPressed: clickWelcome,
+              onPressed: _clickWelcome,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5)),
               ),
@@ -187,18 +155,14 @@ class SplashState extends State<SplashPage> {
     );
   }
 
-  _goHomepage() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage()),
-    );
-  }
-
-  splashPage() {
-    if (splashUrl != null) {
+  _splashPage(String image, String action) {
+    Timer(const Duration(seconds: 3), () {
+      _gotoHomePage();
+    });
+    if (image != null) {
       return GestureDetector(
         onTap: () {
-          launch(splashGoto);
+          launch(action);
         },
         child: Container(
             constraints: BoxConstraints.expand(
@@ -206,7 +170,7 @@ class SplashState extends State<SplashPage> {
               height: double.infinity,
             ),
             child: CachedNetworkImage(
-              imageUrl: splashUrl,
+              imageUrl: image,
               fit: BoxFit.cover,
             ),
             decoration: BoxDecoration()),
@@ -225,3 +189,11 @@ class SplashState extends State<SplashPage> {
     }
   }
 }
+
+final TextStyle splashFont = const TextStyle(
+    fontSize: 27.0,
+    height: 1.5,
+    fontWeight: FontWeight.w500,
+    color: Colors.white);
+final TextStyle splashFontNow = const TextStyle(
+    fontSize: 20.0, fontWeight: FontWeight.w500, color: Colors.black);

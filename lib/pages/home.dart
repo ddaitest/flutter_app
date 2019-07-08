@@ -15,6 +15,8 @@ import 'package:flutter_app/pages/webview.dart';
 import 'package:package_info/package_info.dart';
 import 'dart:io';
 
+import '../test.dart';
+
 class HomePage extends StatefulWidget {
   @override
 //  HomeState createState() => HomeState();
@@ -29,6 +31,7 @@ class MyHomeState extends State<HomePage>
   int page = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isForce;
+
   String version;
   num buildName;
   String message;
@@ -56,6 +59,8 @@ class MyHomeState extends State<HomePage>
 
     ///弹窗延迟3s弹出
     Timer(const Duration(seconds: 1), () {
+      print(
+          "INFO.  upgrade info :${packageInfo.version} + ${packageInfo.buildNumber} >> $version + $buildName");
       if (compareVersion(version, packageInfo.version) > 0 &&
           compareVersion(buildName.toString(), packageInfo.buildNumber) > 0) {
         upgradeCard();
@@ -154,6 +159,7 @@ class MyHomeState extends State<HomePage>
           // Add tabs as widgets
           children: <Widget>[
             new FirstTab(),
+//            new TestPage(),
             new SecondTab(),
             new ThirdTab(),
           ],

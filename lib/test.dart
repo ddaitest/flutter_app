@@ -1,114 +1,144 @@
-
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
-class HomeState extends State<HomePage> {
+import 'common/utils.dart';
+import 'manager/beans.dart';
+
+class TestPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return TestState();
+  }
+}
+
+class TestState extends State<TestPage> {
   @override
   Widget build(BuildContext context) {
-    Color color = Theme.of(context).primaryColor;
-    Widget buttonSection = Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildButtonColumn(color, Icons.call, 'CALL'),
-          _buildButtonColumn(color, Icons.near_me, 'ROUTE'),
-          _buildButtonColumn(color, Icons.share, 'SHARE'),
-        ],
-      ),
-    );
-    return new Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-        actions: <Widget>[
-//          new IconButton(icon: const Icon(Icons.search), onPressed: search)
-        ],
-      ),
-      body: new ListView(
-        children: <Widget>[
-          Image.network(
-            'https://raw.githubusercontent.com/flutter/website/master/examples/layout/lakes/step5/images/lake.jpg',
-            width: 600,
-            height: 240,
-            fit: BoxFit.cover,
+    return Scaffold(
+      body: CustomScrollView(slivers: [
+//        SliverPersistentHeader(
+//          delegate: _SliverAppBarDelegate(
+//            TabBar(
+//              labelColor: Colors.black87,
+//              unselectedLabelColor: Colors.grey,
+//              tabs: [
+//                Tab(icon: Icon(Icons.info), text: "Tab 1"),
+//                Tab(icon: Icon(Icons.lightbulb_outline), text: "Tab 2"),
+//              ],
+//            ),
+//          ),
+//          pinned: false,
+//          floating: true,
+//        ),
+//        SliverToBoxAdapter(
+//          child: _getTestBanner(),
+//        ),
+        SliverPersistentHeader(
+          delegate: _SliverAppBarDelegate(_getTestBanner(), 120, 120),
+          pinned: false,
+          floating: false,
+        ),
+        SliverPersistentHeader(
+          delegate: _SliverAppBarDelegate(
+              Container(
+                height: 120,
+                color: Colors.orange,
+        child: Text("HAHAHA"),
+        ), 120, 120),
+          pinned: false,
+          floating: true,
+        ),
+        SliverFixedExtentList(
+          itemExtent: 150.0,
+          delegate: SliverChildListDelegate(
+            [
+              Container(color: Colors.grey[100]),
+              Container(color: Colors.grey[200]),
+              Container(color: Colors.grey[300]),
+              Container(color: Colors.grey[400]),
+              Container(color: Colors.grey[500]),
+              Container(color: Colors.grey[600]),
+              Container(color: Colors.grey[700]),
+              Container(color: Colors.grey[800]),
+              Container(color: Colors.grey[100]),
+              Container(color: Colors.grey[200]),
+              Container(color: Colors.grey[300]),
+              Container(color: Colors.grey[400]),
+              Container(color: Colors.grey[500]),
+              Container(color: Colors.grey[600]),
+              Container(color: Colors.grey[700]),
+              Container(color: Colors.grey[800]),
+            ],
           ),
-          titleSection,
-          buttonSection,
-          textSection,
-        ],
+        ),
+      ]),
+    );
+  }
+
+  _getTestBanner() {
+    BannerInfo b1 = BannerInfo(
+        image:
+            "https://img.zcool.cn/community/01a82c5711fd566ac7251343a63c56.jpg");
+    BannerInfo b2 = BannerInfo(
+        image:
+            "https://img.zcool.cn/community/01b0595711fd566ac725134316ff68.jpg");
+    BannerInfo b3 = BannerInfo(
+        image:
+            "https://img.zcool.cn/community/01f6155711fd5632f8758c9b02edfe.jpg");
+    return _getBannerView([b1, b2, b3]);
+  }
+
+  _getBannerView(List<BannerInfo> infos) {
+    return Container(
+      height: 120,
+      child: new Swiper(
+        itemBuilder: (BuildContext context, int index) {
+          return Image(
+            image: new CachedNetworkImageProvider(infos[index].image),
+            fit: BoxFit.fitWidth,
+          );
+        },
+        itemHeight: 120,
+        itemCount: infos.length,
+        viewportFraction: 0.8,
+        scale: 0.9,
+        pagination: new SwiperPagination(),
+        control: new SwiperControl(),
+        onTap: (index) {
+          try {
+            launchcaller(infos[index].action);
+          } catch (id) {}
+        },
       ),
     );
   }
 }
 
-Widget textSection = Container(
-  padding: const EdgeInsets.all(32.0),
-  child: Text(
-    'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
-        'Alps. Situated 1,578 meters above sea level, it is one of the '
-        'larger Alpine Lakes. A gondola ride from Kandersteg, followed by a '
-        'half-hour walk through pastures and pine forest, leads you to the '
-        'lake, which warms to 20 degrees Celsius in the summer. Activities '
-        'enjoyed here include rowing, and riding the summer toboggan run.',
-    softWrap: true,
-  ),
-);
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this.subView, this.minHeight, this.maxHeight);
 
-Widget titleSection = Container(
-  padding: const EdgeInsets.all(32.0),
-  child: Row(
-    children: [
-      Expanded(
-        /*1*/
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /*2*/
-            Container(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text(
-                'Oeschinen Lake Campground',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Text(
-              'Kandersteg, Switzerland',
-              style: TextStyle(
-                color: Colors.grey[500],
-              ),
-            ),
-          ],
-        ),
-      ),
-      /*3*/
-      Icon(
-        Icons.star,
-        color: Colors.red[500],
-      ),
-      Text('41'),
-    ],
-  ),
-);
+  final Widget subView;
+  final double minHeight;
+  final double maxHeight;
 
-Column _buildButtonColumn(Color color, IconData icon, String label) {
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Icon(icon, color: color),
-      Container(
-        margin: const EdgeInsets.only(top: 8.0),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 12.0,
-            fontWeight: FontWeight.w400,
-            color: color,
-          ),
-        ),
-      ),
-    ],
-  );
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return new Container(
+      child: subView,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
+  }
 }

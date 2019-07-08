@@ -30,9 +30,6 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
   GlobalKey<RefreshIndicatorState>();
 
   MainModel model;
-  String listUrl;
-  String listGoto;
-  int cardIndex;
 
   bool refreshing = false;
   bool loading = false;
@@ -78,21 +75,11 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
     return new Scaffold(key: _scaffoldKey, body: getBodyView(context));
   }
 
-//  initValue() async {
-//    SharedPreferences prefs = await SharedPreferences.getInstance();
-//    setState(() {
-//      listUrl = prefs.getString("list_url") ?? null;
-//      listGoto = prefs.getString("list_goto") ?? null;
-//      cardIndex = prefs.getInt("card_index") ?? null;
-//    });
-//  }
-
   @override
   void initState() {
     super.initState();
     refreshing = false;
     loading = false;
-//    initValue();
     Future.delayed(Duration.zero, () {
       var x = MainModel.of(context);
       //加载 list 数据
@@ -242,11 +229,12 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
           ? _getLoadMore()
           : ItemView2(data[index], index, 0),
       separatorBuilder: (BuildContext context, int index) {
-        if (index != null && listUrl != null && index == cardIndex) {
-          return _getListADItem();
-        } else {
           return Container();
-        }
+////        if (index != null && listUrl != null && index == cardIndex) {
+////          return _getListADItem();
+////        } else {
+////          return Container();
+////        }
       },
     );
   }
@@ -260,25 +248,25 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
         ));
   }
 
-  _getListADItem() {
-    return GestureDetector(
-      child: Card(
-        margin: EdgeInsets.all(8),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(2),
-          child: Image(
-            image: CachedNetworkImageProvider(listUrl),
-            fit: BoxFit.fitWidth,
-            width: 500,
-            height: 130,
-          ),
-        ),
-      ),
-      onTap: () {
-        launch(listGoto);
-      },
-    );
-  }
+//  _getListADItem() {
+//    return GestureDetector(
+//      child: Card(
+//        margin: EdgeInsets.all(8),
+//        child: ClipRRect(
+//          borderRadius: BorderRadius.circular(2),
+//          child: Image(
+//            image: CachedNetworkImageProvider(listUrl),
+//            fit: BoxFit.fitWidth,
+//            width: 500,
+//            height: 130,
+//          ),
+//        ),
+//      ),
+//      onTap: () {
+//        launch(listGoto);
+//      },
+//    );
+//  }
 
   @override
   bool get wantKeepAlive => true;
