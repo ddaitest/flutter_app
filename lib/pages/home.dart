@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/theme.dart';
 import 'package:flutter_app/common/utils.dart';
 import 'package:flutter_app/pages/first.dart';
 import 'package:flutter_app/pages/search.dart';
@@ -85,7 +86,7 @@ class MyHomeState extends State<HomePage>
     super.initState();
     initValue();
     // Initialize the Tab Controller
-    controller = new TabController(length: 3, vsync: this);
+    controller = new TabController(length: 2, vsync: this);
     controller.addListener(() {
       print("DDAI= controller.index=${controller.index}");
       page = controller.index;
@@ -114,45 +115,44 @@ class MyHomeState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    var primaryColor = Theme.of(context).primaryColor;
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         key: _scaffoldKey,
         // Appbar
         appBar: AppBar(
-          title: Text(getTitle()),
-          actions: <Widget>[
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SearchPage(findVehicle: page == 1)),
-                ).then((map) {
-                  print("callback = $map");
-                });
-              },
-              icon: const Icon(
-                Icons.search,
-                size: 30,
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PublishPage(page == 1)),
-                );
-              },
-              icon: const Icon(
-                Icons.add_circle_outline,
-                size: 30,
-              ),
-            ),
-            SizedBox(width: 10),
-//          ),
-          ],
+          title: Text(
+            getTitle(),
+            style: textStyle1,
+            textAlign: TextAlign.start,
+          ),
+          backgroundColor: Colors.white,
+          centerTitle: false,
+          elevation: 0,
+//          actions: <Widget>[
+//            IconButton(
+//              onPressed: () {
+//                _gotoSearch();
+//              },
+//              icon: const Icon(
+//                Icons.search,
+//                size: 30,
+//              ),
+//            ),
+//            IconButton(
+//              onPressed: () {
+//                _gotoPublish();
+//              },
+//              icon: const Icon(
+//                Icons.add_circle_outline,
+//                size: 30,
+//              ),
+//            ),
+//            SizedBox(width: 10),
+////          ),
+//          ],
         ),
         // Set the TabBar view as the body of the Scaffold
         body: new TabBarView(
@@ -161,24 +161,47 @@ class MyHomeState extends State<HomePage>
             new FirstTab(),
 //            new TestPage(),
             new SecondTab(),
-            new ThirdTab(),
+//            new ThirdTab(),
           ],
           // set the controller
           controller: controller,
         ),
         // Set the bottom navigation bar
 
-        bottomNavigationBar: new Material(
-          // set the color of the bottom navigation bar
-          color: Colors.blue,
-          // set the tab bar as the child of bottom navigation bar
+//        bottomNavigationBar: new Material(
+//          color: Colors.blue,
+//          child: new TabBar(
+//            tabs: <Tab>[
+//              Tab(icon: Icon(Icons.directions_car)),
+//              Tab(icon: Icon(Icons.record_voice_over)),
+//              Tab(icon: Icon(Icons.build)),
+//            ],
+//            controller: controller,
+//          ),
+//        ),
+//        floatingActionButton: FloatingActionButton(
+//          child: Icon(Icons.add),
+//          backgroundColor: primaryColor,
+//          onPressed: () {
+//            _gotoPublish();
+//          },
+//        ),
+        floatingActionButton: FloatingActionButton.extended(
+          elevation: 4.0,
+          icon: const Icon(Icons.add),
+          label: const Text('发布'),
+          onPressed: () {_gotoPublish();},
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBar(
+//          shape: CircularNotchedRectangle(),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          notchMargin: 4.0,
           child: new TabBar(
             tabs: <Tab>[
-              Tab(icon: Icon(Icons.directions_car)),
-              Tab(icon: Icon(Icons.record_voice_over)),
-              Tab(icon: Icon(Icons.build)),
+              Tab(icon: Icon(Icons.directions_car, color: primaryColor)),
+              Tab(icon: Icon(Icons.record_voice_over, color: primaryColor)),
             ],
-            // setup the controller
             controller: controller,
           ),
         ),
@@ -303,4 +326,15 @@ class MyHomeState extends State<HomePage>
 
   @override
   bool get wantKeepAlive => true;
+
+  _gotoPublish() => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PublishPage(page == 1)),
+      );
+
+  _gotoSearch() => Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SearchPage(findVehicle: page == 1)),
+      );
 }

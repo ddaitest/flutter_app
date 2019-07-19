@@ -36,20 +36,21 @@ class TestState extends State<TestPage> {
 //          child: _getTestBanner(),
 //        ),
         SliverPersistentHeader(
-          delegate: _SliverAppBarDelegate(_getTestBanner(), 120, 120),
-          pinned: false,
-          floating: false,
-        ),
-        SliverPersistentHeader(
           delegate: _SliverAppBarDelegate(
               Container(
                 height: 120,
                 color: Colors.orange,
-        child: Text("HAHAHA"),
-        ), 120, 120),
+                child: Text("HAHAHA"),
+              ), 120, 120),
           pinned: false,
           floating: true,
         ),
+        SliverPersistentHeader(
+          delegate: _SliverAppBarDelegate(_getTestBanner(), 120, 120),
+          pinned: false,
+          floating: false,
+        ),
+
         SliverFixedExtentList(
           itemExtent: 150.0,
           delegate: SliverChildListDelegate(

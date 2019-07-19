@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_app/common/theme.dart';
 import 'package:flutter_app/common/utils.dart';
 import 'package:flutter_app/manager/beans.dart';
 import 'package:flutter_app/manager/main_model.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_app/pages/search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class BasePage extends StatefulWidget {
   final bool pageType; //false if vehicle.
@@ -119,9 +121,12 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
 //      views.add(getBannerView(info));
 //    }
     //添加列表
-    views.add(Expanded(child: getListView()));
+    views.add(Expanded(child: _getScrollBody()));
 
-    return Container(child: Column(children: views));
+    return Container(
+      child: Column(children: views),
+      color: Colors.white,
+    );
   }
 
   /// View: 当前搜索信息。
@@ -164,34 +169,8 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  /// View: Banner
-  getBannerView(List<BannerInfo> infos) {
-    return Container(
-      height: 120,
-      child: new Swiper(
-        itemBuilder: (BuildContext context, int index) {
-          return Image(
-            image: new CachedNetworkImageProvider(infos[index].image),
-            fit: BoxFit.fitWidth,
-          );
-        },
-        itemHeight: 120,
-        itemCount: infos.length,
-        viewportFraction: 0.8,
-        scale: 0.9,
-        pagination: new SwiperPagination(),
-        control: new SwiperControl(),
-        onTap: (index) {
-          try {
-            launchcaller(infos[index].action);
-          } catch (id) {}
-        },
-      ),
-    );
-  }
-
   /// View: 列表。
-  getListView() {
+  _getScrollBody() {
     var status = model.getPageStatus(pageType);
     print("====== page status = $status ");
     if (status == PageDataStatus.READY) {
@@ -199,14 +178,14 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
         key: _refreshIndicatorKey,
         onRefresh: _onRefresh,
 //        child: _list(),
-        child: _listWrapper(),
+        child: _scrollViewWrapper(),
       );
     } else {
       return Center(child: CircularProgressIndicator());
     }
   }
 
-  _listWrapper() {
+  _scrollViewWrapper() {
     return NotificationListener<ScrollNotification>(
       onNotification: (ScrollNotification scrollInfo) {
         if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
@@ -220,28 +199,27 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
 
   Widget _scrollView() {
     final views = <Widget>[];
+    var searchCondition = model.getSearchCondition(pageType);
+    if (searchCondition == null) {
+      //添加 搜索bar
+      views.add(SliverPersistentHeader(
+        delegate: _SliverAppBarDelegate(_getSearchInput(), 60, 60),
+        floating: true,
+      ));
+    }
+
     //添加banner
     List<BannerInfo> info = model.getBannerInfoList();
     if (info != null && info.length > 0) {
       views.add(
         SliverPersistentHeader(
-          delegate: _SliverAppBarDelegate(getBannerView(info), 120, 120),
+          delegate: _SliverAppBarDelegate(_getBannerView(info), 120, 120),
           floating: false,
           pinned: false,
         ),
       );
     }
-    views.add(SliverPersistentHeader(
-      delegate: _SliverAppBarDelegate(
-          Container(
-            height: 120,
-            color: Colors.orange,
-            child: Text("HAHAHA"),
-          ),
-          120,
-          120),
-      floating: true,
-    ));
+
     views.add(_list());
     return CustomScrollView(
       slivers: views,
@@ -303,6 +281,68 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
 //      },
 //    );
 //  }
+
+  _getSearchInput() {
+    return Card(
+      elevation: 6.0,
+      margin: EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+      child: Container(
+        child: Row(
+          children: <Widget>[
+            SizedBox(height: 50, width: 20),
+            Icon(
+              Icons.search,
+              color: Theme.of(context).primaryColor,
+            ),
+            SizedBox(width: 10),
+            Text(
+              "搜索 起点 和 终点",
+              style: textStyle2,
+              maxLines: 1,
+            ),
+//            TextField(
+//              style: TextStyle(
+//                fontSize: 15.0,
+//                color: Colors.black,
+//              ),
+//              maxLines: 1,
+//            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// View: Banner
+  _getBannerView(List<BannerInfo> infos) {
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      height: 120,
+      child: new Swiper(
+        itemBuilder: (BuildContext context, int index) {
+          return ClipRRect(
+            borderRadius: new BorderRadius.circular(8.0),
+            child: Image(
+              image: new CachedNetworkImageProvider(infos[index].image),
+              fit: BoxFit.fitWidth,
+            ),
+          );
+        },
+        itemHeight: 120,
+        itemCount: infos.length,
+        viewportFraction: 0.8,
+        scale: 0.9,
+        pagination: new SwiperPagination(),
+        control: new SwiperControl(),
+        onTap: (index) {
+          try {
+            launchcaller(infos[index].action);
+          } catch (id) {}
+        },
+      ),
+    );
+  }
 
   @override
   bool get wantKeepAlive => true;

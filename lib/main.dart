@@ -40,6 +40,7 @@ class MyAppState extends State<MyApp> {
         model: mainModel,
         child: new MaterialApp(
           debugShowCheckedModeBanner: false,
+          theme: ThemeData(),
           home: new SplashPage(),
 //          routes: <String, WidgetBuilder>{
 //            '/publish': (BuildContext context) => PublishPage(),
