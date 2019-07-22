@@ -29,7 +29,7 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState>();
 
   MainModel model;
 
@@ -58,6 +58,16 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
       }
     });
   }
+
+  _gotoSearch() =>
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                SearchPage(
+                  findVehicle: pageType,
+                )),
+      );
 
   _onLoadMore() {
     print("INFO. _onLoadMore $loading");
@@ -103,14 +113,10 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
     if (searchCondition != null) {
       views.add(getSearchView(
         searchCondition,
-        () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SearchPage(findVehicle: pageType)),
-          );
+            () {
+          _gotoSearch();
         },
-        () {
+            () {
           model.updateSearchCondition(pageType, null);
         },
       ));
@@ -130,8 +136,8 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
   }
 
   /// View: 当前搜索信息。
-  getSearchView(
-      SearchCondition condition, Function callSearch, Function callClean) {
+  getSearchView(SearchCondition condition, Function callSearch,
+      Function callClean) {
     return Card(
       color: Colors.blue,
       child: Container(
@@ -231,11 +237,12 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
     final enablePullUp = model.getHasMore(pageType);
     return SliverList(
         delegate: SliverChildBuilderDelegate(
-      (BuildContext context, int index) => index == data.length
-          ? _getLoadMore()
-          : ItemView2(data[index], index, 0),
-      childCount: enablePullUp ? data.length + 1 : data.length,
-    ));
+              (BuildContext context, int index) =>
+          index == data.length
+              ? _getLoadMore()
+              : ItemView2(data[index], index, 0),
+          childCount: enablePullUp ? data.length + 1 : data.length,
+        ));
 //    return new ListView.separated(
 //      physics: const AlwaysScrollableScrollPhysics(),
 //      itemCount: enablePullUp ? data.length + 1 : data.length,
@@ -287,13 +294,16 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
       elevation: 6.0,
       margin: EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
-      child: Container(
+      child: InkWell(
+//      child: Container(
         child: Row(
           children: <Widget>[
             SizedBox(height: 50, width: 20),
             Icon(
               Icons.search,
-              color: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
             ),
             SizedBox(width: 10),
             Text(
@@ -310,6 +320,9 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
 //            ),
           ],
         ),
+        onTap: () {
+          _gotoSearch();
+        },
       ),
     );
   }
@@ -362,8 +375,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => maxHeight;
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context, double shrinkOffset,
+      bool overlapsContent) {
     return new Container(
       child: subView,
     );
