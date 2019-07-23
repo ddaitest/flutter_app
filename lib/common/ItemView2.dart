@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/theme.dart';
 import 'package:flutter_app/common/utils.dart';
 import 'package:flutter_app/manager/beans.dart';
 import 'package:intl/intl.dart';
@@ -10,8 +11,6 @@ import 'dart:math' as math;
 const Color c1 = Color(0xFF222222);
 const Color c2 = Color(0xFF444444);
 const Color c3 = Color(0xFFD8D8D8);
-const Color c4 = Color(0xFF13D3CE);
-const Color c5 = Color(0xFFFF7200);
 
 final TextStyle fontPhone =
     const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500, color: c1);
@@ -19,7 +18,7 @@ final TextStyle fontPhone =
 final TextStyle fontInfo = const TextStyle(fontSize: 16.0, color: c2);
 
 final TextStyle fontTime1 = const TextStyle(fontSize: 16.0, color: c3);
-final TextStyle fontTime2 = const TextStyle(fontSize: 16.0, color: c4);
+final TextStyle fontTime2 = const TextStyle(fontSize: 16.0, color: colorPick);
 
 final TextStyle fontCall =
     TextStyle(fontSize: 14.0, color: Colors.black, fontWeight: FontWeight.w500);
@@ -103,10 +102,12 @@ class ItemView2 extends StatelessWidget {
   }
 
   ///起点
-  _getPickup() => _getInfoView(Icons.trip_origin, c4, event.start, fontInfo);
+  _getPickup() =>
+      _getInfoView(Icons.trip_origin, colorPick, event.start, fontInfo);
 
   ///终点
-  _getDropoff() => _getInfoView(Icons.trip_origin, c5, event.end, fontInfo);
+  _getDropoff() =>
+      _getInfoView(Icons.trip_origin, colorDrop, event.end, fontInfo);
 
   ///出发时间
   _getDateTime() {

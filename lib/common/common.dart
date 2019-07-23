@@ -15,7 +15,10 @@ final TextStyle fontCall =
 final dateFormat = DateFormat("M月d日");
 final timeFormat = DateFormat("HH:mm");
 
-enum FindType { FindPassenger, FindVehicle }
+enum PageType { FindPassenger, FindVehicle }
+
+String getTitle(PageType type) =>
+    (type == PageType.FindPassenger ? "车找人" : "人找车");
 
 enum PageDataStatus { READY, LOADING, ERROR_EMPTY }
 

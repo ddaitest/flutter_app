@@ -3,143 +3,180 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/home.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
+import 'common/theme.dart';
 import 'common/utils.dart';
 import 'manager/beans.dart';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+
+const Test = false;
 
 class TestPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return TestState();
-  }
+  State<StatefulWidget> createState() => _TestState();
 }
 
-class TestState extends State<TestPage> {
+//测试 autocomplete text view.
+class _TestState extends State<TestPage> {
+  AutoCompleteTextField textField;
+  TextEditingController currentText1 = TextEditingController();
+  TextEditingController currentText2 = TextEditingController();
+  TextEditingController currentText3 = TextEditingController();
+  TextEditingController currentText4 = TextEditingController();
+  GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
+
+  String dropdownValue = "人找车";
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(slivers: [
-//        SliverPersistentHeader(
-//          delegate: _SliverAppBarDelegate(
-//            TabBar(
-//              labelColor: Colors.black87,
-//              unselectedLabelColor: Colors.grey,
-//              tabs: [
-//                Tab(icon: Icon(Icons.info), text: "Tab 1"),
-//                Tab(icon: Icon(Icons.lightbulb_outline), text: "Tab 2"),
-//              ],
-//            ),
-//          ),
-//          pinned: false,
-//          floating: true,
-//        ),
-//        SliverToBoxAdapter(
-//          child: _getTestBanner(),
-//        ),
-        SliverPersistentHeader(
-          delegate: _SliverAppBarDelegate(
-              Container(
-                height: 120,
-                color: Colors.orange,
-                child: Text("HAHAHA"),
-              ), 120, 120),
-          pinned: false,
-          floating: true,
-        ),
-        SliverPersistentHeader(
-          delegate: _SliverAppBarDelegate(_getTestBanner(), 120, 120),
-          pinned: false,
-          floating: false,
-        ),
-
-        SliverFixedExtentList(
-          itemExtent: 150.0,
-          delegate: SliverChildListDelegate(
-            [
-              Container(color: Colors.grey[100]),
-              Container(color: Colors.grey[200]),
-              Container(color: Colors.grey[300]),
-              Container(color: Colors.grey[400]),
-              Container(color: Colors.grey[500]),
-              Container(color: Colors.grey[600]),
-              Container(color: Colors.grey[700]),
-              Container(color: Colors.grey[800]),
-              Container(color: Colors.grey[100]),
-              Container(color: Colors.grey[200]),
-              Container(color: Colors.grey[300]),
-              Container(color: Colors.grey[400]),
-              Container(color: Colors.grey[500]),
-              Container(color: Colors.grey[600]),
-              Container(color: Colors.grey[700]),
-              Container(color: Colors.grey[800]),
-            ],
-          ),
-        ),
-      ]),
-    );
-  }
-
-  _getTestBanner() {
-    BannerInfo b1 = BannerInfo(
-        image:
-            "https://img.zcool.cn/community/01a82c5711fd566ac7251343a63c56.jpg");
-    BannerInfo b2 = BannerInfo(
-        image:
-            "https://img.zcool.cn/community/01b0595711fd566ac725134316ff68.jpg");
-    BannerInfo b3 = BannerInfo(
-        image:
-            "https://img.zcool.cn/community/01f6155711fd5632f8758c9b02edfe.jpg");
-    return _getBannerView([b1, b2, b3]);
-  }
-
-  _getBannerView(List<BannerInfo> infos) {
     return Container(
-      height: 120,
-      child: new Swiper(
-        itemBuilder: (BuildContext context, int index) {
-          return Image(
-            image: new CachedNetworkImageProvider(infos[index].image),
-            fit: BoxFit.fitWidth,
-          );
-        },
-        itemHeight: 120,
-        itemCount: infos.length,
-        viewportFraction: 0.8,
-        scale: 0.9,
-        pagination: new SwiperPagination(),
-        control: new SwiperControl(),
-        onTap: (index) {
-          try {
-            launchcaller(infos[index].action);
-          } catch (id) {}
-        },
+      color: Colors.white,
+      padding: EdgeInsets.all(20),
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: 50),
+          _getBody(),
+          SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            height: 55,
+            child: MaterialButton(
+              elevation: 4,
+              onPressed: () {
+                print("currentText1=${currentText1.text}");
+                print("currentText2=${currentText2.text}");
+                print("currentText3=${currentText3.text}");
+                print("currentText4=${currentText4.text}");
+              },
+              color: colorPrimary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+              ),
+              child: Text(
+                '发布',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          SizedBox(height: 50),
+        ],
       ),
     );
   }
-}
 
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this.subView, this.minHeight, this.maxHeight);
-
-  final Widget subView;
-  final double minHeight;
-  final double maxHeight;
-
-  @override
-  double get minExtent => minHeight;
-
-  @override
-  double get maxExtent => maxHeight;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return new Container(
-      child: subView,
+  _getBody() {
+    return Container(
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+//          border: Border.all(color: colorPrimary, width: 1),
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey[200],
+              blurRadius: 10.0,
+              spreadRadius: 5.0,
+            )
+          ]),
+      child: Column(
+        children: <Widget>[
+          SimpleAutoCompleteTextField(
+            decoration: _getDecoration("出发"),
+            controller: currentText1,
+            style: textStylePublish,
+          ),
+          SizedBox(height: 20),
+          SimpleAutoCompleteTextField(
+            decoration: _getDecoration("到达"),
+            controller: currentText2,
+            style: textStylePublish,
+          ),
+          SizedBox(height: 20),
+          TextField(
+            decoration: _getDecoration("手机"),
+            controller: currentText3,
+            style: textStylePublish,
+            keyboardType: TextInputType.phone,
+          ),
+          SizedBox(height: 20),
+          TextField(
+            decoration: _getDecoration("备注"),
+            controller: currentText4,
+            style: textStylePublish,
+          ),
+        ],
+      ),
     );
   }
 
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
+  InputDecoration _getDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: textStyleLabel,
+      focusedBorder:
+          UnderlineInputBorder(borderSide: BorderSide(color: colorGrey)),
+      enabledBorder:
+          UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey[200])),
+    );
   }
+
+  List<String> data = [
+    "a",
+    "aa",
+    "aaa",
+    "aaaa",
+    "aaaa",
+    "b",
+    "bb",
+    "bbb",
+    "bbbb",
+    "bbbb",
+    "c",
+    "cc",
+    "ccc",
+    "cccc",
+    "cccc",
+    "d",
+    "dd",
+    "ddd",
+    "dddd",
+    "dddd",
+    "e",
+    "ee",
+    "eee",
+    "eeee",
+    "eeee",
+    "f",
+    "ff",
+    "fff",
+    "ffff",
+    "ffff",
+    "g",
+    "gg",
+    "ggg",
+    "gggg",
+    "gggg"
+  ];
 }
+
+//SimpleAutoCompleteTextField(
+//decoration: new InputDecoration(
+//labelText: 'Drop off',
+//labelStyle: textStyleLabel,
+//focusedBorder: UnderlineInputBorder(
+//borderSide: BorderSide(color: colorGrey)),
+//enabledBorder: UnderlineInputBorder(
+//borderSide: BorderSide(color: Colors.grey[200])),
+//),
+//controller: TextEditingController(text: ""),
+//suggestions: [],
+//textChanged: (text) => currentText2 = text,
+//clearOnSubmit: true,
+//textSubmitted: (text) => setState(() {
+//if (text != "") {
+//print("added.add($text);");
+//}
+//}),
+//style: textStylePublish,
+//),
+
+//测试 silver scroll view.

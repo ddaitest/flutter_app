@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/common/date_time_picker.dart';
+import 'package:flutter_app/common/theme.dart';
+import 'package:flutter_app/manager/main_model.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -14,38 +17,47 @@ enum DialogDemoAction {
 }
 
 class PublishPage extends StatelessWidget {
-  final bool findVehicle;
+  final PageType pageType;
 
-  PublishPage(this.findVehicle, {Key key}) : super(key: key);
+  PublishPage(this.pageType, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("发布"),
+          title: Text(
+            "发布",
+            style: textStyle1,
+            textAlign: TextAlign.start,
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: colorPrimaryDark,
+              ),
+              onPressed: () => Navigator.of(context).pop(null)),
         ),
-        body: MyCustomForm(findVehicle)
+        body: MyCustomForm()..pageType = pageType
 //        MyCustomForm(),
         );
   }
 }
 
 class MyCustomForm extends StatefulWidget {
-  final bool findVehicle;
-
-  MyCustomForm(this.findVehicle, {Key key}) : super(key: key);
+  PageType pageType;
 
   @override
   MyCustomFormState createState() {
-    return MyCustomFormState(findVehicle);
+    return MyCustomFormState()..pageType = pageType;
   }
 }
 
 class MyCustomFormState extends State<MyCustomForm> {
   ///false if vehicle.
-  final bool findVehicle;
-
-  MyCustomFormState(this.findVehicle);
+  PageType pageType;
+  MainModel model;
 
   // Create a global key that will uniquely identify the Form widget and allow
   // us to validate the form
@@ -58,6 +70,17 @@ class MyCustomFormState extends State<MyCustomForm> {
   final myControllerPhone = TextEditingController();
   final myControllerRemark = TextEditingController();
 
+  DateTime _fromDate = DateTime.now();
+  TimeOfDay _fromTime = TimeOfDay.fromDateTime(DateTime.now());
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      model = MainModel.of(context);
+    });
+    super.initState();
+  }
+
   @override
   void dispose() {
     myControllerStart.dispose();
@@ -67,11 +90,10 @@ class MyCustomFormState extends State<MyCustomForm> {
     super.dispose();
   }
 
-  DateTime _fromDate = DateTime.now();
-  TimeOfDay _fromTime = TimeOfDay.fromDateTime(DateTime.now());
-
-  void _upload() async {
-    String dataURL = "http://39.96.16.125:8082/api/event/publish";
+  _doPublish() {
+//    Timer(const Duration(seconds: 2), () {
+//
+//    });
     final x = DateTime(
       _fromDate.year,
       _fromDate.month,
@@ -79,40 +101,22 @@ class MyCustomFormState extends State<MyCustomForm> {
       _fromTime.hour,
       _fromTime.minute,
     );
-    print(
-        "DDAI= _fromDate=${_fromDate.toString()} ; _fromDate=${_fromDate.toString()}; x=${x.toString()}");
-    print("<<<<==================${new DateFormat("y-M-D H:m ").format(x)}");
-    print(
-        "${x.millisecondsSinceEpoch}==================${new DateTime.now().millisecondsSinceEpoch}");
-    final body = {
-      'start': myControllerStart.text,
-      'end': myControllerEnd.text,
-      'time': x.millisecondsSinceEpoch.toString(),
-      'phone': myControllerPhone.text,
-      'remark': myControllerRemark.text,
-      'type': findVehicle ? '1' : '0',
-      'publish_time': '0',
-      'publish_id': '0',
-    };
-    http.Response response = await http.post(dataURL, body: body);
-    print("DDAI= code=${response.statusCode} ;end=${response.body}");
 
-//    final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
-//    final newData = parsed.map<Event>((json) => Event.fromJson(json)).toList();
-//    data.clear();
-//    data.addAll(newData);
-//    setState(() {
-//      data.clear();
-//      data.addAll(newData);
-//    });
-  }
-
-  _doPublish() {
-    Timer(const Duration(seconds: 2), () {
+    model
+        .publish(
+            x,
+            myControllerStart.text,
+            myControllerEnd.text,
+            myControllerPhone.text,
+            myControllerRemark.text,
+            pageType.index.toString(),
+            '0')
+        .then((result) {
+      print("result=$result");
       Navigator.pop(context, DialogDemoAction.cancel);
       Navigator.pop(context);
     });
-    _upload();
+
     return showDialog<DialogDemoAction>(
         context: context,
         barrierDismissible: false,
@@ -133,103 +137,155 @@ class MyCustomFormState extends State<MyCustomForm> {
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey we created above
-    return Form(
-      key: _formKey,
-      child: ListView(
-        padding: EdgeInsets.all(16),
-        children: <Widget>[
-          TextFormField(
-            decoration: InputDecoration(
-              hintText: '请输入 出发点',
-              icon: Icon(Icons.pin_drop),
-              labelText: '出发：',
+    return Container(
+      child: Form(
+        key: _formKey,
+        child: ListView(
+          padding: EdgeInsets.all(20),
+          children: <Widget>[
+            _getDropdown(),
+            SizedBox(height: 30),
+            Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey[200],
+                      blurRadius: 10.0,
+                      spreadRadius: 5.0,
+                    )
+                  ]),
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    decoration: getDecoration("出发："),
+                    controller: myControllerStart,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return '不能为空...';
+                      }
+                    },
+                  ),
+                  TextFormField(
+                    decoration: getDecoration("到达："),
+                    controller: myControllerEnd,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return '不能为空...';
+                      }
+                    },
+                  ),
+                  TextFormField(
+                    decoration: getDecoration("联系电话："),
+                    keyboardType: TextInputType.phone,
+                    controller: myControllerPhone,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return '不能为空...';
+                      }
+                    },
+                  ),
+                  TextFormField(
+                    decoration: getDecoration("备注："),
+                    controller: myControllerRemark,
+                  ),
+                  SizedBox(height: 20),
+                  DateTimePicker(
+                    labelText: '出发时间',
+                    selectedDate: _fromDate,
+                    selectedTime: _fromTime,
+                    selectDate: (DateTime date) {
+                      setState(() {
+                        _fromDate = date;
+                      });
+                    },
+                    selectTime: (TimeOfDay time) {
+                      setState(() {
+                        _fromTime = time;
+                      });
+                    },
+                  ),
+                ],
+              ),
             ),
-            controller: myControllerStart,
-            // The validator receives the text the user has typed in
-            validator: (value) {
-              if (value.isEmpty) {
-                return '不能为空...';
-              }
-            },
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-              hintText: '请输入 到达点',
-              icon: Icon(Icons.assistant_photo),
-              labelText: '到达：',
+            SizedBox(height: 30),
+            MaterialButton(
+              height: 55,
+              elevation: 4,
+              color: colorPrimary,
+              onPressed: () {
+                if (_formKey.currentState.validate()) {
+                  _doPublish();
+                }
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+              ),
+              child: Text(
+                '发布',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-            controller: myControllerEnd,
-            // The validator receives the text the user has typed in
-            validator: (value) {
-              if (value.isEmpty) {
-                return '不能为空...';
-              }
-            },
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-              hintText: '请输入 联系电话',
-              icon: Icon(Icons.mobile_screen_share),
-              labelText: '联系电话：',
-            ),
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            controller: myControllerPhone,
-            // The validator receives the text the user has typed in
-            validator: (value) {
-              if (value.isEmpty) {
-                return '不能为空...';
-              }
-            },
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-              hintText: '请输入 备注',
-              icon: Icon(Icons.textsms),
-              labelText: '备注：',
-            ),
-            controller: myControllerRemark,
-          ),
-          DateTimePicker(
-            labelText: '出发时间',
-            selectedDate: _fromDate,
-            selectedTime: _fromTime,
-            selectDate: (DateTime date) {
-              setState(() {
-                _fromDate = date;
-              });
-            },
-            selectTime: (TimeOfDay time) {
-              setState(() {
-                _fromTime = time;
-              });
-            },
-          ),
-          SizedBox(
-            height: 16,
-          ),
-          MaterialButton(
-            color: Colors.blue,
-            onPressed: () {
-              // Validate will return true if the form is valid, or false if
-              // the form is invalid.
-              if (_formKey.currentState.validate()) {
-                // If the form is valid, display a snackbar. In the real world, you'd
-                // often want to call a server or save the information in a database
-//                Scaffold.of(context)
-//                    .showSnackBar(SnackBar(content: Text('Processing Data')));
-                _doPublish();
-              }
-            },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-            ),
-            child: Text(
-              '发布',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
+      color: Colors.white,
     );
   }
+
+  _getDropdown() {
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(left: 20, right: 20),
+          height: 45,
+          decoration: BoxDecoration(
+              border: Border.all(color: colorPrimary, width: 1),
+              borderRadius: BorderRadius.circular(100.0),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey[200],
+                  blurRadius: 10.0,
+//                  spreadRadius: 5.0,
+                )
+              ]),
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: Container(
+            height: 40,
+            margin: EdgeInsets.only(left: 60, right: 50, top: 2),
+            child: DropdownButton<PageType>(
+              value: pageType,
+              onChanged: (PageType newValue) {
+                setState(() {
+                  pageType = newValue;
+                });
+              },
+              icon: Icon(
+                Icons.arrow_drop_down,
+                color: colorPrimary,
+              ),
+              elevation: 8,
+              style: textStyle3,
+              underline: Container(),
+              isExpanded: true,
+              items: <PageType>[PageType.FindPassenger, PageType.FindVehicle]
+                  .map<DropdownMenuItem<PageType>>((PageType value) {
+                return DropdownMenuItem<PageType>(
+                  value: value,
+                  child: Text(getTitle(value)),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+
 }

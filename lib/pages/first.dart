@@ -12,9 +12,9 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FirstTab extends BasePage {
-  FirstTab() : super(false);
+  FirstTab() : super(PageType.FindPassenger);
 }
 
 class SecondTab extends BasePage {
-  SecondTab() : super(true);
+  SecondTab() : super(PageType.FindVehicle);
 }

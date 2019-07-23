@@ -3,6 +3,7 @@ import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/manager/api.dart';
 import 'dart:convert';
 import 'package:flutter_app/manager/beans.dart';
+import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:equatable/equatable.dart';
@@ -24,8 +25,8 @@ class MainModel extends Model {
   SearchCondition _findPassenger;
 
   ///获取筛选条件
-  SearchCondition getSearchCondition(bool forFindVehicle) {
-    return forFindVehicle ? _findVehicle : _findPassenger;
+  SearchCondition getSearchCondition(PageType type) {
+    return (type == PageType.FindVehicle) ? _findVehicle : _findPassenger;
   }
 
   final PAGE_SIZE = 5;
@@ -38,8 +39,8 @@ class MainModel extends Model {
 
 //  getVehiclePageStatus() => _vehicleStatus;
 
-  getPageStatus(bool forFindVehicle) =>
-      forFindVehicle ? _vehicleStatus : _passengerStatus;
+  getPageStatus(PageType type) =>
+      (type == PageType.FindVehicle) ? _vehicleStatus : _passengerStatus;
 
   bool _passengerHasMore = true;
 
@@ -49,12 +50,12 @@ class MainModel extends Model {
 
 //  vehicleHasMore() => _vehicleHasMore;
 
-  getHasMore(bool forFindVehicle) =>
-      forFindVehicle ? _vehicleHasMore : _passengerHasMore;
+  getHasMore(PageType type) =>
+      (type == PageType.FindVehicle) ? _vehicleHasMore : _passengerHasMore;
 
   ///更新筛选条件
-  updateSearchCondition(bool forFindVehicle, SearchCondition newCondition) {
-    if (forFindVehicle) {
+  updateSearchCondition(PageType type, SearchCondition newCondition) {
+    if (type == PageType.FindVehicle) {
       //如果条件改变，根据新的条件，刷新数据
       if (_findVehicle != newCondition) {
         _findVehicle = newCondition;
@@ -84,13 +85,13 @@ class MainModel extends Model {
 
 //  getPassengerList() => _passengerList;
 
-  getListData(bool forFindVehicle) =>
-      forFindVehicle ? _vehicleList : _passengerList;
+  getListData(PageType type) =>
+      (type == PageType.FindVehicle) ? _vehicleList : _passengerList;
 
   getBannerInfoList() => _bannerList;
 
-  queryList(bool forFindVehicle, bool refresh, {Function done}) {
-    if (forFindVehicle) {
+  queryList(PageType type, bool refresh, {Function done}) {
+    if (type == PageType.FindVehicle) {
       queryVehicleList(refresh, done: done);
     } else {
       queryPassengerList(refresh, done: done);
@@ -107,13 +108,13 @@ class MainModel extends Model {
     Event after = refresh ? null : _passengerList.last;
     if (_findPassenger == null) {
       response = await API.queryEvents(
-        FindType.FindPassenger.index,
+        PageType.FindPassenger.index,
         afterId: after?.id,
         pageSize: PAGE_SIZE,
       );
     } else {
       response = await API.searchEvents(
-        FindType.FindPassenger.index,
+        PageType.FindPassenger.index,
         afterId: after?.id,
         afterTime: after?.time,
         pageSize: PAGE_SIZE,
@@ -151,13 +152,13 @@ class MainModel extends Model {
     Event after = refresh ? null : _vehicleList.last;
     if (_findVehicle == null) {
       response = await API.queryEvents(
-        FindType.FindVehicle.index,
+        PageType.FindVehicle.index,
         afterId: after?.id,
         pageSize: PAGE_SIZE,
       );
     } else {
       response = await API.searchEvents(
-        FindType.FindVehicle.index,
+        PageType.FindVehicle.index,
         afterId: after?.id,
         afterTime: after?.time,
         pageSize: PAGE_SIZE,
@@ -217,7 +218,7 @@ class MainModel extends Model {
 //  }
 
   //Search end.
-  queryBanner(bool forFindVehicle) async {
+  queryBanner(PageType pageType) async {
     Response response = await API.queryBanners(0);
     final parsed = json.decode(response.data);
     var resultCode = parsed['code'] ?? 0;
@@ -232,23 +233,33 @@ class MainModel extends Model {
     }
   }
 
-
-
-//  getAdData() async {
-//    Response response = await ApiForAd.queryAdData();
-//    final parsed = response.data;
-//    final data = AdInfo.fromJson(parsed[0]);
-//    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-//    sharedPreferences.setString("splash_url", data.splashUrl);
-//    sharedPreferences.setString("splash_goto", data.splashGoto);
-//    sharedPreferences.setString("showCard_url", data.showCardUrl);
-//    sharedPreferences.setString("showCard_goto", data.showCardGoto);
-//    sharedPreferences.setInt("card_index", data.cardIndex);
-//    sharedPreferences.setString("list_url", data.listUrl);
-//    sharedPreferences.setString("list_goto", data.listGoto);
-//  }
-
-
+  Future<int> publish(DateTime dateTime, String start, String end, String phone,
+      String remark, String type, String publishId) {
+    print(
+        "<<<<==================${new DateFormat("y-M-D H:m ").format(dateTime)}");
+    final body = {
+      'start': start,
+      'end': end,
+      'time': dateTime.millisecondsSinceEpoch.toString(),
+      'phone': phone,
+      'remark': remark,
+      'type': type,
+      'publish_time': '0',
+      'publish_id': publishId,
+    };
+//    String dataURL = "http://39.96.16.125:8082/api/event/publish";
+//    http.Response response = await http.post(dataURL, body: body);
+    return API.publish(body).then((response) {
+      final parsed = json.decode(response.data);
+      var resultCode = parsed['code'] ?? 0;
+      var resultData = parsed['data'];
+      print("DDAI= code=${response.statusCode} ;end=${response.data}");
+      return resultCode;
+    }, onError: (error) {
+      print("DDAI= onError");
+      return -1;
+    });
+  }
 }
 
 ///搜索条件

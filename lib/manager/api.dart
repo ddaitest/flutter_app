@@ -96,64 +96,69 @@ class API {
     return dio
         .get("api/config/", queryParameters: {"v": version, "n": buildNumber});
   }
+
+  ///升级信息
+  static Future<Response> publish(Map<String, String> body) {
+    return dio.post("api/event/publish", queryParameters: body);
+  }
 }
 
 ///广告相关api请求
-class ApiForAd {
-  static Dio dio = Dio(BaseOptions(
-    baseUrl: "http://34.92.69.146:5000/",
-    responseType: ResponseType.json,
-  ));
-
-  static InterceptorsWrapper _interceptorsWrapper = InterceptorsWrapper(
-    onRequest: (RequestOptions options) {
-      return options;
-    },
-    onResponse: (Response response) {
-      return response; // continue
-    },
-    onError: (DioError e) {
-      return e; //continue
-    },
-  );
-
-  static init() {
-    if (!dio.interceptors.contains(_interceptorsWrapper)) {
-      dio.interceptors.add(_interceptorsWrapper);
-    }
-  }
-
-  static queryAdData() {
-    return dio.get("api/ad/");
-  }
-}
-
-///升级相关api请求
-class ApiForUpdate {
-  static Dio dio = Dio(BaseOptions(
-    baseUrl: "http://34.92.69.146:5000/",
-    responseType: ResponseType.json,
-  ));
-
-  static InterceptorsWrapper _interceptorsWrapper = InterceptorsWrapper(
-    onRequest: (RequestOptions options) {
-      return options;
-    },
-    onResponse: (Response response) {
-      return response; // continue
-    },
-    onError: (DioError e) {
-      return e; //continue
-    },
-  );
-
-  static init() {
-    if (!dio.interceptors.contains(_interceptorsWrapper)) {
-      dio.interceptors.add(_interceptorsWrapper);
-    }
-  }
-
-  static queryUpdateData() {
-    return dio.get("api/update/");
-  }
-}
+//class ApiForAd {
+//  static Dio dio = Dio(BaseOptions(
+//    baseUrl: "http://34.92.69.146:5000/",
+//    responseType: ResponseType.json,
+//  ));
+//
+//  static InterceptorsWrapper _interceptorsWrapper = InterceptorsWrapper(
+//    onRequest: (RequestOptions options) {
+//      return options;
+//    },
+//    onResponse: (Response response) {
+//      return response; // continue
+//    },
+//    onError: (DioError e) {
+//      return e; //continue
+//    },
+//  );
+//
+//  static init() {
+//    if (!dio.interceptors.contains(_interceptorsWrapper)) {
+//      dio.interceptors.add(_interceptorsWrapper);
+//    }
+//  }
+//
+//  static queryAdData() {
+//    return dio.get("api/ad/");
+//  }
+//}
+//
+/////升级相关api请求
+//class ApiForUpdate {
+//  static Dio dio = Dio(BaseOptions(
+//    baseUrl: "http://34.92.69.146:5000/",
+//    responseType: ResponseType.json,
+//  ));
+//
+//  static InterceptorsWrapper _interceptorsWrapper = InterceptorsWrapper(
+//    onRequest: (RequestOptions options) {
+//      return options;
+//    },
+//    onResponse: (Response response) {
+//      return response; // continue
+//    },
+//    onError: (DioError e) {
+//      return e; //continue
+//    },
+//  );
+//
+//  static init() {
+//    if (!dio.interceptors.contains(_interceptorsWrapper)) {
+//      dio.interceptors.add(_interceptorsWrapper);
+//    }
+//  }
+//
+//  static queryUpdateData() {
+//    return dio.get("api/update/");
+//  }
+//}

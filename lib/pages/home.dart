@@ -89,7 +89,6 @@ class MyHomeState extends State<HomePage>
     controller = new TabController(length: 2, vsync: this);
     controller.addListener(() {
       print("DDAI= controller.index=${controller.index}");
-      page = controller.index;
       setState(() {
         page = controller.index;
       });
@@ -158,8 +157,8 @@ class MyHomeState extends State<HomePage>
         body: new TabBarView(
           // Add tabs as widgets
           children: <Widget>[
-            new FirstTab(),
-//            new TestPage(),
+//            new FirstTab(),
+            Test ? TestPage() : FirstTab(),
             new SecondTab(),
 //            new ThirdTab(),
           ],
@@ -190,7 +189,9 @@ class MyHomeState extends State<HomePage>
           elevation: 4.0,
           icon: const Icon(Icons.add),
           label: const Text('发布'),
-          onPressed: () {_gotoPublish();},
+          onPressed: () {
+            _gotoPublish();
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
@@ -329,12 +330,14 @@ class MyHomeState extends State<HomePage>
 
   _gotoPublish() => Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PublishPage(page == 1)),
+        MaterialPageRoute(
+            builder: (context) => PublishPage(
+                page == 0 ? PageType.FindPassenger : PageType.FindVehicle)),
       );
 
-  _gotoSearch() => Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SearchPage(findVehicle: page == 1)),
-      );
+//  _gotoSearch() => Navigator.push(
+//        context,
+//        MaterialPageRoute(
+//            builder: (context) => SearchPage(pageType: type)),
+//      );
 }

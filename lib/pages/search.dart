@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/common/date_time_picker.dart';
 import 'package:flutter_app/manager/main_model.dart';
 import 'package:intl/intl.dart';
@@ -9,35 +10,32 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class SearchPage extends StatelessWidget {
   ///表示从哪个页面进来的。 true = 人找车；false = 车找人；
-  final bool findVehicle;
+  final PageType pageType;
 
-  SearchPage({Key key, @required this.findVehicle}) : super(key: key);
+  SearchPage({Key key, @required this.pageType}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("筛选 " + (findVehicle ? "人找车" : "车找人")),
+          title: Text(
+              "筛选 " + ((pageType == PageType.FindVehicle) ? "人找车" : "车找人")),
         ),
-        body: MyCustomForm(findVehicle));
+        body: MyCustomForm()..pageType = pageType);
   }
 }
 
 class MyCustomForm extends StatefulWidget {
-  final bool findVehicle;
-
-  MyCustomForm(this.findVehicle);
+  PageType pageType;
 
   @override
   MyCustomFormState createState() {
-    return MyCustomFormState(findVehicle);
+    return MyCustomFormState()..pageType = pageType;
   }
 }
 
 class MyCustomFormState extends State<MyCustomForm> {
-  final bool findVehicle;
-
-  MyCustomFormState(this.findVehicle);
+  PageType pageType;
 
   // Create a global key that will uniquely identify the Form widget and allow
   // us to validate the form
@@ -70,7 +68,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     );
 
     model.updateSearchCondition(
-        findVehicle,
+        pageType,
         new SearchCondition(
             pickup: myControllerStart.text,
             dropoff: myControllerEnd.text,
@@ -84,7 +82,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     Future.delayed(Duration.zero, () {
       print("ERROR. initState work");
       model = model ?? MainModel.of(context);
-      var condition = model.getSearchCondition(findVehicle);
+      var condition = model.getSearchCondition(pageType);
       if (condition != null) {
         if (condition.pickup != null) {
           myControllerStart.text = condition.pickup;
