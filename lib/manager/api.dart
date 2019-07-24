@@ -97,7 +97,7 @@ class API {
         .get("api/config/", queryParameters: {"v": version, "n": buildNumber});
   }
 
-  ///升级信息
+  ///发布
   static Future<Response> publish(Map<String, String> body) {
     return dio.post("api/event/publish", queryParameters: body);
   }

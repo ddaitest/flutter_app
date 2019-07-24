@@ -80,7 +80,11 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     model = MainModel.of(context);
-    return new Scaffold(key: _scaffoldKey, body: getBodyView(context));
+    return new Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: Colors.white,
+      body: getBodyView(context),
+    );
   }
 
   @override
@@ -130,39 +134,41 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
   /// View: 当前搜索信息。
   getSearchView(
       SearchCondition condition, Function callSearch, Function callClean) {
-    return Card(
-      color: Colors.blue,
-      child: Container(
-        height: 50,
-        padding: EdgeInsets.only(left: 8, right: 8),
-        child: InkWell(
-          child: Row(
-            children: <Widget>[
-              SizedBox(width: 8),
-              Icon(Icons.search, color: Colors.white),
-              SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  getDesc(condition),
-                  style: TextStyle(color: Colors.white),
-                ),
-                flex: 1,
+    return Container(
+      margin: EdgeInsets.only(left: 20, right: 20),
+      padding: EdgeInsets.only(left: 16, right: 16),
+      decoration: BoxDecoration(
+        color: Colors.blue,
+        borderRadius: BorderRadius.all(Radius.circular(100)),
+      ),
+      height: 55,
+      child: InkWell(
+        child: Row(
+          children: <Widget>[
+            SizedBox(width: 8),
+            Icon(Icons.search, color: Colors.white),
+            SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                getDesc(condition),
+                style: TextStyle(color: Colors.white),
               ),
-              InkWell(
-                child: Container(
-                  child: Icon(
-                    Icons.clear,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                  padding: EdgeInsets.all(10),
+              flex: 1,
+            ),
+            InkWell(
+              child: Container(
+                child: Icon(
+                  Icons.clear,
+                  color: Colors.white,
+                  size: 24,
                 ),
-                onTap: callClean,
+                padding: EdgeInsets.all(10),
               ),
-            ],
-          ),
-          onTap: callSearch,
+              onTap: callClean,
+            ),
+          ],
         ),
+        onTap: callSearch,
       ),
     );
   }
@@ -201,7 +207,7 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
     if (searchCondition == null) {
       //添加 搜索bar
       views.add(SliverPersistentHeader(
-        delegate: _SliverAppBarDelegate(_getSearchInput(), 60, 60),
+        delegate: _SliverAppBarDelegate(_getSearchInput(), 85, 85),
         floating: true,
       ));
     }
@@ -246,6 +252,44 @@ class BasePageState extends State<BasePage> with AutomaticKeepAliveClientMixin {
   }
 
   _getSearchInput() {
+    return Container(
+      height: 55,
+      margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100.0),
+          border: Border.all(width: 0.5, color: Colors.grey[400]),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey[200],
+              blurRadius: 10.0,
+              spreadRadius: 1.0,
+            )
+          ]),
+      child: InkWell(
+        child: Row(
+          children: <Widget>[
+            SizedBox(height: 50, width: 20),
+            Icon(
+              Icons.search,
+              color: Theme.of(context).primaryColor,
+            ),
+            SizedBox(width: 10),
+            Text(
+              "搜索 起点 和 终点",
+              style: textStyle2,
+              maxLines: 1,
+            ),
+          ],
+        ),
+        onTap: () {
+          _gotoSearch();
+        },
+      ),
+    );
+  }
+
+  _getSearchInput2() {
     return Card(
       elevation: 6.0,
       margin: EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),

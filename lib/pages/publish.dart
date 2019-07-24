@@ -5,9 +5,6 @@ import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/common/date_time_picker.dart';
 import 'package:flutter_app/common/theme.dart';
 import 'package:flutter_app/manager/main_model.dart';
-import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 enum DialogDemoAction {
   cancel,
@@ -91,9 +88,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
 
   _doPublish() {
-//    Timer(const Duration(seconds: 2), () {
-//
-//    });
     final x = DateTime(
       _fromDate.year,
       _fromDate.month,
@@ -286,6 +280,4 @@ class MyCustomFormState extends State<MyCustomForm> {
       ],
     );
   }
-
-
 }

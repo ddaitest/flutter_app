@@ -33,35 +33,44 @@ class ItemView2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Card(
-        margin: EdgeInsets.all(8),
-        child: Container(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: event.remark != null && event.remark.isNotEmpty
-                ? <Widget>[
-                    _getHeader(),
-                    _getPadding(),
-                    _getPickup(),
-                    _getPadding(),
-                    _getDropoff(),
-                    _getPadding(),
-                    _getDateTime(),
-                    _getPadding(),
-                    _getRemark(),
-                  ]
-                : <Widget>[
-                    _getHeader(),
-                    _getPadding(),
-                    _getPickup(),
-                    _getPadding(),
-                    _getDropoff(),
-                    _getPadding(),
-                    _getDateTime(),
-                  ],
-          ),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            border: Border.all(color: Colors.grey[400], width: 0.5),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey[200],
+                blurRadius: 10.0,
+//                  spreadRadius: 1.0,
+              )
+            ]),
+        margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: event.remark != null && event.remark.isNotEmpty
+              ? <Widget>[
+                  _getHeader(),
+                  _getPadding(),
+                  _getPickup(),
+                  _getPadding(),
+                  _getDropoff(),
+                  _getPadding(),
+                  _getDateTime(),
+                  _getPadding(),
+                  _getRemark(),
+                ]
+              : <Widget>[
+                  _getHeader(),
+                  _getPadding(),
+                  _getPickup(),
+                  _getPadding(),
+                  _getDropoff(),
+                  _getPadding(),
+                  _getDateTime(),
+                ],
         ),
       ),
 //      onTap: () {

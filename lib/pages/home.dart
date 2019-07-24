@@ -119,6 +119,7 @@ class MyHomeState extends State<HomePage>
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        backgroundColor: Colors.white,
         key: _scaffoldKey,
         // Appbar
         appBar: AppBar(
@@ -127,31 +128,9 @@ class MyHomeState extends State<HomePage>
             style: textStyle1,
             textAlign: TextAlign.start,
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           centerTitle: false,
           elevation: 0,
-//          actions: <Widget>[
-//            IconButton(
-//              onPressed: () {
-//                _gotoSearch();
-//              },
-//              icon: const Icon(
-//                Icons.search,
-//                size: 30,
-//              ),
-//            ),
-//            IconButton(
-//              onPressed: () {
-//                _gotoPublish();
-//              },
-//              icon: const Icon(
-//                Icons.add_circle_outline,
-//                size: 30,
-//              ),
-//            ),
-//            SizedBox(width: 10),
-////          ),
-//          ],
         ),
         // Set the TabBar view as the body of the Scaffold
         body: new TabBarView(

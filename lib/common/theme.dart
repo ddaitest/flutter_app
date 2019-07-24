@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 ThemeData getTheme() {
   return ThemeData(
-      brightness: Brightness.light,
-      primaryColor: const Color(0xff5680fa),
+      brightness: Brightness.dark,
+      backgroundColor: Colors.blue,
       textTheme: TextTheme(subhead: textStyleLabel));
 }
 
@@ -45,8 +45,21 @@ InputDecoration getDecoration(String label) {
     labelText: label,
     labelStyle: textStyleLabel,
     focusedBorder:
-    UnderlineInputBorder(borderSide: BorderSide(color: colorGrey)),
+        UnderlineInputBorder(borderSide: BorderSide(color: colorGrey)),
     enabledBorder:
-    UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey[200])),
+        UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey[200])),
   );
+}
+
+BoxDecoration getContainerBg(double radius) {
+  return BoxDecoration(
+      borderRadius: BorderRadius.circular(radius),
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey[200],
+          blurRadius: 10.0,
+          spreadRadius: 5.0,
+        )
+      ]);
 }

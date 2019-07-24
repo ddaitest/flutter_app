@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/common/common.dart';
 import 'package:flutter_app/common/date_time_picker.dart';
+import 'package:flutter_app/common/theme.dart';
 import 'package:flutter_app/manager/main_model.dart';
-import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class SearchPage extends StatelessWidget {
   ///表示从哪个页面进来的。 true = 人找车；false = 车找人；
@@ -17,9 +15,21 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text(
-              "筛选 " + ((pageType == PageType.FindVehicle) ? "人找车" : "车找人")),
+            "搜索 " + ((pageType == PageType.FindVehicle) ? "人找车" : "车找人"),
+            style: textStyle1,
+            textAlign: TextAlign.start,
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: colorPrimaryDark,
+              ),
+              onPressed: () => Navigator.of(context).pop(null)),
         ),
         body: MyCustomForm()..pageType = pageType);
   }
@@ -107,58 +117,124 @@ class MyCustomFormState extends State<MyCustomForm> {
     return Form(
       key: _formKey,
       child: ListView(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(20),
         children: <Widget>[
-          TextFormField(
-            decoration: InputDecoration(
-              hintText: '请输入出发点',
-              icon: Icon(Icons.pin_drop),
-              labelText: '出发地',
+          _getDropdown(),
+          SizedBox(height: 30),
+          Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey[200],
+                    blurRadius: 10.0,
+                    spreadRadius: 5.0,
+                  )
+                ]),
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  decoration: getDecoration("出发："),
+                  controller: myControllerStart,
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  decoration: getDecoration("到达："),
+                  controller: myControllerEnd,
+                ),
+                SizedBox(height: 20),
+                DateTimePicker(
+                  labelText: '出发时间',
+                  selectedDate: _fromDate,
+                  selectedTime: _fromTime,
+                  selectDate: (DateTime date) {
+                    setState(() {
+                      _fromDate = date;
+                    });
+                  },
+                  selectTime: (TimeOfDay time) {
+                    setState(() {
+                      _fromTime = time;
+                    });
+                  },
+                ),
+              ],
             ),
-            controller: myControllerStart,
           ),
-          TextFormField(
-            decoration: InputDecoration(
-              hintText: '请输入目的地',
-              icon: Icon(Icons.assistant_photo),
-              labelText: '目的地',
-            ),
-            controller: myControllerEnd,
-          ),
-          DateTimePicker(
-            labelText: '出发日期',
-            selectedDate: _fromDate,
-            selectedTime: _fromTime,
-            selectDate: (DateTime date) {
-              setState(() {
-                _fromDate = date;
-              });
-            },
-            selectTime: (TimeOfDay time) {
-              setState(() {
-                _fromTime = time;
-              });
-            },
-          ),
-          SizedBox(
-            height: 16,
-          ),
+          SizedBox(height: 30),
           MaterialButton(
-            color: Colors.blue,
+            height: 55,
+            elevation: 4,
+            color: colorPrimary,
             onPressed: () {
-              // Validate will return true if the form is valid, or false if
-              // the form is invalid.
               if (_formKey.currentState.validate()) {
                 _search();
               }
             },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(100)),
+            ),
             child: Text(
-              '搜索',
+              '发布',
               style: TextStyle(color: Colors.white),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  _getDropdown() {
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(left: 20, right: 20),
+          height: 45,
+          decoration: BoxDecoration(
+              border: Border.all(color: colorPrimary, width: 1),
+              borderRadius: BorderRadius.circular(100.0),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey[200],
+                  blurRadius: 10.0,
+//                  spreadRadius: 5.0,
+                )
+              ]),
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: Container(
+            height: 40,
+            margin: EdgeInsets.only(left: 60, right: 50, top: 2),
+            child: DropdownButton<PageType>(
+              value: pageType,
+              onChanged: (PageType newValue) {
+                setState(() {
+                  pageType = newValue;
+                });
+              },
+              icon: Icon(
+                Icons.arrow_drop_down,
+                color: colorPrimary,
+              ),
+              elevation: 8,
+              style: textStyle3,
+              underline: Container(),
+              isExpanded: true,
+              items: <PageType>[PageType.FindPassenger, PageType.FindVehicle]
+                  .map<DropdownMenuItem<PageType>>((PageType value) {
+                return DropdownMenuItem<PageType>(
+                  value: value,
+                  child: Text(getTitle(value)),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
