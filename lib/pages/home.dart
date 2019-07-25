@@ -4,7 +4,7 @@ import 'package:flutter_app/common/theme.dart';
 import 'package:flutter_app/common/utils.dart';
 import 'package:flutter_app/pages/first.dart';
 import 'package:flutter_app/pages/search.dart';
-import 'package:flutter_app/pages/third.dart';
+import 'package:flutter_app/pages/about.dart';
 import 'package:flutter_app/router/routers.dart';
 import 'package:flutter_app/pages/publish.dart';
 import 'package:flutter_app/common/common.dart';
@@ -115,7 +115,6 @@ class MyHomeState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var primaryColor = Theme.of(context).primaryColor;
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -131,7 +130,21 @@ class MyHomeState extends State<HomePage>
           backgroundColor: Colors.transparent,
           centerTitle: false,
           elevation: 0,
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                _gotoAbout();
+              },
+              icon: Icon(
+                Icons.error_outline,
+                size: 30,
+                color: colorPrimary,
+              ),
+            ),
+            SizedBox(width: 20),
+          ],
         ),
+
         // Set the TabBar view as the body of the Scaffold
         body: new TabBarView(
           // Add tabs as widgets
@@ -145,27 +158,9 @@ class MyHomeState extends State<HomePage>
           controller: controller,
         ),
         // Set the bottom navigation bar
-
-//        bottomNavigationBar: new Material(
-//          color: Colors.blue,
-//          child: new TabBar(
-//            tabs: <Tab>[
-//              Tab(icon: Icon(Icons.directions_car)),
-//              Tab(icon: Icon(Icons.record_voice_over)),
-//              Tab(icon: Icon(Icons.build)),
-//            ],
-//            controller: controller,
-//          ),
-//        ),
-//        floatingActionButton: FloatingActionButton(
-//          child: Icon(Icons.add),
-//          backgroundColor: primaryColor,
-//          onPressed: () {
-//            _gotoPublish();
-//          },
-//        ),
         floatingActionButton: FloatingActionButton.extended(
           elevation: 4.0,
+          backgroundColor: colorPrimary,
           icon: const Icon(Icons.add),
           label: const Text('发布'),
           onPressed: () {
@@ -179,8 +174,8 @@ class MyHomeState extends State<HomePage>
           notchMargin: 4.0,
           child: new TabBar(
             tabs: <Tab>[
-              Tab(icon: Icon(Icons.directions_car, color: primaryColor)),
-              Tab(icon: Icon(Icons.record_voice_over, color: primaryColor)),
+              Tab(icon: Icon(Icons.directions_car, color: colorPrimary)),
+              Tab(icon: Icon(Icons.record_voice_over, color: colorPrimary)),
             ],
             controller: controller,
           ),
@@ -308,11 +303,13 @@ class MyHomeState extends State<HomePage>
   bool get wantKeepAlive => true;
 
   _gotoPublish() => Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PublishPage(
-                page == 0 ? PageType.FindPassenger : PageType.FindVehicle)),
-      );
+      context,
+      MaterialPageRoute(
+          builder: (context) => PublishPage(
+              page == 0 ? PageType.FindPassenger : PageType.FindVehicle)));
+
+  _gotoAbout() => Navigator.push(
+      context, MaterialPageRoute(builder: (context) => AboutPage()));
 
 //  _gotoSearch() => Navigator.push(
 //        context,

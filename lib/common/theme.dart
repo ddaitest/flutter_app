@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 ThemeData getTheme() {
   return ThemeData(
       brightness: Brightness.dark,
-      backgroundColor: Colors.blue,
+      primaryColor: Colors.grey,
       textTheme: TextTheme(subhead: textStyleLabel));
 }
 
@@ -40,6 +40,7 @@ const TextStyle textStylePublish = const TextStyle(
   color: colorPrimaryDark,
 );
 
+///发布 和 搜索中 输入框的样式，主要是下划线和label
 InputDecoration getDecoration(String label) {
   return InputDecoration(
     labelText: label,
@@ -51,6 +52,7 @@ InputDecoration getDecoration(String label) {
   );
 }
 
+///发布 和 搜索中 Container 背景的样式
 BoxDecoration getContainerBg(double radius) {
   return BoxDecoration(
       borderRadius: BorderRadius.circular(radius),

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info/package_info.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_app/common/utils.dart';
 
-class ThirdTab extends StatefulWidget {
+class AboutPage extends StatefulWidget {
   @override
-  ThirdTabState createState() => ThirdTabState();
+  AboutPageState createState() => AboutPageState();
 }
 
-class ThirdTabState extends State<ThirdTab> {
+class AboutPageState extends State<AboutPage> {
   String localVersionName = '';
   String telphoneNum = '1234567';
   String thirdMessage = '';
@@ -30,6 +31,33 @@ class ThirdTabState extends State<ThirdTab> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(
+            "关于我们",
+            style: textStyle1,
+            textAlign: TextAlign.start,
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: colorPrimaryDark,
+              ),
+              onPressed: () => Navigator.of(context).pop(null)),
+        ),
+        body: _getBody());
+  }
+
+  _getVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    localVersionName = packageInfo.version;
+    return localVersionName;
+  }
+
+  _getBody() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -82,39 +110,4 @@ class ThirdTabState extends State<ThirdTab> {
       ],
     );
   }
-
-  _getVersion() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    localVersionName = packageInfo.version;
-    return localVersionName;
-  }
-
-//
-//  _checkVersion() {
-//    LocalVersionName = int.parse(localVersionName.replaceAll('.', ''));
-//    OnlineVersionName = int.parse(onlineVersionName.replaceAll('.', ''));
-//    if (LocalVersionName < OnlineVersionName) {
-//      _updateURL();
-//    }else{
-//      _checkVersionToast();
-//    }
-//  }
-//}
-
-//  _aboutURL() async {
-//    launch('https://$website');
-//  }
-
-//
-//_updateURL() async {
-//  launch('http:///www.sina.com.cn');
-//}
-//
-//_checkVersionToast(){
-//  Fluttertoast.showToast(
-//    msg: '当前已是最新版本',
-//    toastLength: Toast.LENGTH_SHORT,
-//    gravity: ToastGravity.BOTTOM,
-//    timeInSecForIos: 1,
-//  );
 }

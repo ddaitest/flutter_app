@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/common/theme.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,9 +24,9 @@ getRoundIcon(IconData icon) {
       size: 22,
     ),
     decoration: BoxDecoration(
-      color: Colors.blue,
+      color: colorPrimary,
       shape: BoxShape.circle,
-      border: Border.all(color: Colors.blue, width: 2),
+      border: Border.all(color: colorPrimary, width: 2),
     ),
   );
 }
